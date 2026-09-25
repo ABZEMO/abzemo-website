@@ -364,6 +364,92 @@
         min-height: auto;
       }
     }
+
+    /* =========================================================
+       MASTER HEADER PROTECTION — VENTURES
+       Keeps this page aligned with the locked Home header.
+       ========================================================= */
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      overflow-x: hidden;
+    }
+
+    body.menu-open {
+      overflow: hidden;
+    }
+
+    .site-header {
+      width: 100%;
+    }
+
+    .site-header .container.navbar {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 30px;
+    }
+
+    .site-header .desktop-nav {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
+    .site-header .nav-links {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 28px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .site-header .nav-links li {
+      margin: 0;
+      padding: 0;
+    }
+
+    .site-header .nav-links a {
+      display: inline-flex;
+      align-items: center;
+      white-space: nowrap;
+    }
+
+    .site-header .menu-button {
+      flex: 0 0 auto;
+    }
+
+    /* Prevent legacy header systems from affecting the master header. */
+    .site-header .header-inner,
+    .site-header .top-nav,
+    .site-header .brand,
+    .site-header .menu-toggle {
+      all: unset;
+    }
+
+    /* Keep anchored venture cards clear of the fixed/sticky header. */
+    .venture-card[id] {
+      scroll-margin-top: 120px;
+    }
+
+    @media (max-width: 900px) {
+      .site-header .desktop-nav {
+        display: none;
+      }
+
+      .site-header .container.navbar {
+        gap: 16px;
+      }
+    }
+
   </style>
 </head>
 
