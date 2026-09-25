@@ -1,6 +1,7 @@
 /* =========================================
    ABZEMO — Global Website Styles
    Building What’s Next.
+   MASTER GLOBAL VERSION
    ========================================= */
 
 :root {
@@ -19,7 +20,9 @@
   --shadow: 0 12px 35px rgba(7, 17, 31, 0.08);
 }
 
-/* ---------- Reset ---------- */
+/* =========================================
+   RESET
+   ========================================= */
 
 * {
   margin: 0;
@@ -36,6 +39,11 @@ body {
   background: var(--bg);
   color: var(--text);
   line-height: 1.7;
+  overflow-x: hidden;
+}
+
+body.menu-open {
+  overflow: hidden;
 }
 
 a {
@@ -55,7 +63,9 @@ select {
   font: inherit;
 }
 
-/* ---------- Global ---------- */
+/* =========================================
+   GLOBAL
+   ========================================= */
 
 .container {
   width: min(92%, var(--max-width));
@@ -102,114 +112,66 @@ select {
 }
 
 /* =========================================
-   HEADER
+   MASTER ABZEMO HEADER
+   SAME ACROSS ALL PAGES
    ========================================= */
 
 .site-header {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
+  position: relative;
   width: 100%;
-  background: rgba(255, 255, 255, 0.96);
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.97);
   border-bottom: 1px solid var(--line);
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
-/* Current ABZEMO header structure */
-
-.site-header .header-inner {
-  width: min(92%, var(--max-width));
-  min-height: 76px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 30px;
-}
-
-/* Brand */
-
-.site-header .brand {
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
-  line-height: 1.1;
-}
-
-.site-header .brand-name {
-  font-size: 25px;
-  font-weight: 800;
-  letter-spacing: 2px;
-  color: var(--dark);
-}
-
-.site-header .brand-tagline {
-  margin-top: 5px;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 1.2px;
-  color: var(--muted);
-}
-
-/* Current top navigation */
-
-.top-nav {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 26px;
-  margin-left: auto;
-}
-
-.top-nav a {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text);
-  transition: color 0.2s ease;
-}
-
-.top-nav a:hover,
-.top-nav a.active {
-  color: var(--blue);
-}
-
-/* Old header compatibility */
-
-.navbar {
-  min-height: 76px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 30px;
-}
+/* Master Home structure:
+   .site-header
+      .container.navbar
+         .logo
+         .desktop-nav
+            .nav-links
+         .menu-button
+*/
 
 .site-header .navbar {
   width: min(92%, var(--max-width));
-  min-height: 76px;
+  min-height: 82px;
   margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 30px;
+  gap: 32px;
 }
 
-.logo {
+/* =========================================
+   MASTER LOGO
+   ========================================= */
+
+.site-header .logo {
+  display: inline-flex;
+  align-items: baseline;
+  flex-shrink: 0;
   font-size: 25px;
+  line-height: 1;
   font-weight: 800;
   letter-spacing: 2px;
   color: var(--dark);
-  flex-shrink: 0;
+  white-space: nowrap;
+  text-decoration: none;
 }
 
-.logo span {
+.site-header .logo span {
   color: var(--blue);
 }
 
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: 26px;
-  list-style: none;
+/* =========================================
+   MASTER DESKTOP NAVIGATION
+   ========================================= */
+
+.site-header .desktop-nav {
+  margin-left: auto;
 }
 
 .site-header .nav-links {
@@ -222,36 +184,60 @@ select {
   padding: 0;
 }
 
-.nav-links a {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text);
-  transition: color 0.2s ease;
+.site-header .nav-links li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
-.nav-links a:hover {
+.site-header .nav-links a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  padding: 0;
+  font-size: 14px;
+  line-height: 1;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  text-decoration: none;
+  transition:
+    color 0.2s ease,
+    background 0.2s ease;
+}
+
+.site-header .nav-links a:hover {
   color: var(--blue);
 }
 
-.nav-button {
+/* Contact button — SAME everywhere */
+
+.site-header .nav-links a.nav-button {
+  height: auto;
   padding: 10px 18px;
   border-radius: 8px;
   background: var(--blue);
   color: var(--white) !important;
 }
 
-.nav-button:hover {
+.site-header .nav-links a.nav-button:hover {
   background: var(--blue-dark);
+  color: var(--white) !important;
 }
 
-/* ---------- Three-Line Menu Button ---------- */
+/* =========================================
+   MASTER THREE-LINE MENU
+   ========================================= */
 
-.menu-toggle {
-  display: flex;
+.site-header .menu-button {
+  display: inline-flex;
   width: 42px;
   height: 42px;
   padding: 8px;
+  margin: 0;
   border: 0;
+  border-radius: 0;
   background: transparent;
   cursor: pointer;
   flex-direction: column;
@@ -259,13 +245,16 @@ select {
   align-items: center;
   gap: 5px;
   flex-shrink: 0;
+  appearance: none;
+  -webkit-appearance: none;
 }
 
-.menu-toggle span {
+.site-header .menu-button span {
   display: block;
   width: 25px;
   height: 2px;
   background: var(--dark);
+  border-radius: 2px;
   transition: 0.25s ease;
 }
 
@@ -450,7 +439,7 @@ select {
 }
 
 /* =========================================
-   EYEBROW / SECTION LABEL
+   EYEBROW
    ========================================= */
 
 .eyebrow {
@@ -582,7 +571,7 @@ select {
 }
 
 /* =========================================
-   CURRENT VENTURES / CONTENT COMPATIBILITY
+   CONTENT COMPATIBILITY
    ========================================= */
 
 .dark-section {
@@ -943,14 +932,35 @@ select {
   text-align: center;
 }
 
-/* ==========================================
-   ABZEMO MEGA MENU
-   ========================================== */
+/* =========================================
+   MASTER ABZEMO MEGA MENU
+   ========================================= */
+
+.mega-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1090;
+  background: rgba(7, 26, 53, 0.45);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s ease;
+}
+
+.mega-overlay.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
 
 .mega-menu {
   position: fixed;
   inset: 0;
-  z-index: 9999;
+  z-index: 1100;
+  width: 100%;
+  height: 100%;
   background: rgba(7, 26, 53, 0.98);
   color: var(--white);
   opacity: 0;
@@ -970,6 +980,117 @@ select {
   pointer-events: auto;
   transform: translateX(0);
 }
+
+/* Master menu top */
+
+.mega-top {
+  width: min(92%, var(--max-width));
+  margin: 0 auto;
+  min-height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.mega-brand {
+  font-size: 25px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: var(--white);
+}
+
+.mega-brand span {
+  color: #67a8ff;
+}
+
+.mega-close {
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--white);
+  font-size: 38px;
+  line-height: 1;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.mega-close:hover {
+  color: #83b9ff;
+}
+
+/* Master menu content */
+
+.mega-content {
+  width: min(92%, var(--max-width));
+  margin: 0 auto;
+  padding: 60px 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 55px;
+}
+
+.mega-section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.mega-section-title {
+  margin-bottom: 20px;
+  color: #83b9ff;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.mega-section a {
+  display: block;
+  padding: 7px 0;
+  color: #d8e3ef;
+  font-size: 15px;
+  line-height: 1.5;
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.mega-section a:hover {
+  color: var(--white);
+  transform: translateX(4px);
+}
+
+.mega-section a.sub-link {
+  padding-left: 12px;
+  color: #aebfd2;
+}
+
+.mega-section a.sub-link:hover {
+  color: var(--white);
+}
+
+.mega-footer {
+  width: min(92%, var(--max-width));
+  margin: 0 auto;
+  padding: 22px 0 30px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  color: #8fa4bb;
+  font-size: 13px;
+}
+
+/* =========================================
+   OLD MEGA MENU COMPATIBILITY
+   Kept for pages that may still contain
+   legacy content. Does not affect master menu.
+   ========================================= */
 
 .mega-menu-inner {
   width: min(92%, var(--max-width));
@@ -1011,45 +1132,14 @@ select {
   padding-top: 55px;
 }
 
-/* Current mega-menu classes used by Ventures and other pages */
-
-.mega-column {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.mega-title {
-  margin-bottom: 20px;
-  color: #83b9ff;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-}
-
-.mega-column a {
-  display: block;
-  padding: 7px 0;
-  color: #d8e3ef;
-  font-size: 15px;
-  line-height: 1.5;
-  transition: color 0.2s ease, transform 0.2s ease;
-}
-
-.mega-column a:hover {
-  color: var(--white);
-  transform: translateX(4px);
-}
-
-/* Old mega-menu compatibility */
-
+.mega-column,
 .mega-menu-column {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
 
+.mega-title,
 .mega-menu-label {
   margin-bottom: 20px;
   color: #83b9ff;
@@ -1059,27 +1149,27 @@ select {
   text-transform: uppercase;
 }
 
+.mega-column a,
 .mega-menu-column a {
   display: block;
   padding: 7px 0;
   color: #d8e3ef;
   font-size: 15px;
   line-height: 1.5;
-  transition: color 0.2s ease, transform 0.2s ease;
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
 }
 
+.mega-column a:hover,
 .mega-menu-column a:hover {
   color: var(--white);
   transform: translateX(4px);
 }
 
-body.menu-open {
-  overflow: hidden;
-}
-
-/* ==========================================
+/* =========================================
    OLD SIDE MENU COMPATIBILITY
-   ========================================== */
+   ========================================= */
 
 .side-menu {
   position: fixed;
@@ -1146,9 +1236,9 @@ body.menu-open {
   visibility: visible;
 }
 
-/* ==========================================
-   CEO NOTE — Compatibility
-   ========================================== */
+/* =========================================
+   CEO NOTE COMPATIBILITY
+   ========================================= */
 
 .ceo-note {
   background: var(--bg-soft);
@@ -1188,9 +1278,9 @@ body.menu-open {
   font-weight: 700;
 }
 
-/* ==========================================
+/* =========================================
    ABZEMO AI FLOATING CHAT
-   ========================================== */
+   ========================================= */
 
 .abzemo-ai-float {
   position: fixed;
@@ -1209,7 +1299,9 @@ body.menu-open {
   align-items: center;
   justify-content: center;
   font-size: 24px;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
 }
 
 .abzemo-ai-float:hover {
@@ -1222,8 +1314,6 @@ body.menu-open {
   font-weight: 800;
   letter-spacing: 0.5px;
 }
-
-/* Chat window */
 
 .abzemo-ai-chat {
   position: fixed;
@@ -1257,7 +1347,7 @@ body.menu-open {
 }
 
 .abzemo-ai-header {
-  padding: 18px 18px;
+  padding: 18px;
   background: linear-gradient(135deg, #071a35, #103d70);
   color: var(--white);
   display: flex;
@@ -1396,23 +1486,35 @@ body.menu-open {
   font-size: 10px;
 }
 
-/* ==========================================
-   RESPONSIVE
-   ========================================== */
+/* =========================================
+   VENTURES LEGACY HEADER SAFETY
+   If any old markup remains temporarily,
+   make it visually match the master.
+   ========================================= */
+
+.site-header .header-inner,
+.site-header .brand,
+.site-header .top-nav,
+.site-header .menu-toggle {
+  box-sizing: border-box;
+}
+
+/* =========================================
+   RESPONSIVE — TABLET
+   ========================================= */
 
 @media (max-width: 900px) {
 
-  .site-header .header-inner {
+  .site-header .navbar {
     min-height: 76px;
   }
 
-  .site-header .nav-links,
-  .top-nav {
+  .site-header .desktop-nav {
     display: none;
   }
 
-  .menu-toggle {
-    display: flex;
+  .site-header .menu-button {
+    display: inline-flex;
   }
 
   .card-grid {
@@ -1436,14 +1538,18 @@ body.menu-open {
     grid-template-columns: 1fr 1fr;
   }
 
-  .mega-menu-grid {
+  .mega-content {
     grid-template-columns: 1fr;
     gap: 35px;
-    padding-top: 35px;
+    padding-top: 45px;
   }
 
-  .mega-menu-inner {
-    padding-top: 30px;
+  .mega-top {
+    min-height: 80px;
+  }
+
+  .mega-footer {
+    margin-top: 10px;
   }
 
   .footer-content {
@@ -1469,6 +1575,10 @@ body.menu-open {
   }
 }
 
+/* =========================================
+   RESPONSIVE — MOBILE
+   ========================================= */
+
 @media (max-width: 768px) {
 
   html {
@@ -1486,12 +1596,16 @@ body.menu-open {
     padding-right: 20px;
   }
 
-  .navbar {
-    flex-wrap: wrap;
+  .site-header .navbar {
+    width: 100%;
+    min-height: 72px;
+    padding-left: 20px;
+    padding-right: 20px;
+    gap: 16px;
   }
 
-  .logo {
-    white-space: nowrap;
+  .site-header .logo {
+    font-size: 23px;
   }
 
   h1,
@@ -1522,9 +1636,19 @@ body.menu-open {
     grid-template-columns: 1fr;
   }
 
-  .site-header .header-inner {
-    padding-left: 20px;
-    padding-right: 20px;
+  .mega-content {
+    width: calc(100% - 40px);
+    padding: 35px 0;
+  }
+
+  .mega-top {
+    width: calc(100% - 40px);
+  }
+
+  .mega-footer {
+    width: calc(100% - 40px);
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 
@@ -1534,16 +1658,12 @@ body.menu-open {
     padding: 65px 0;
   }
 
-  .site-header .header-inner {
+  .site-header .navbar {
     min-height: 68px;
   }
 
-  .site-header .brand-name {
+  .site-header .logo {
     font-size: 22px;
-  }
-
-  .site-header .brand-tagline {
-    font-size: 9px;
   }
 
   .hero {
@@ -1571,14 +1691,6 @@ body.menu-open {
 
   .page-hero {
     padding: 75px 0;
-  }
-
-  .mega-menu-header {
-    padding-bottom: 25px;
-  }
-
-  .mega-menu-grid {
-    gap: 30px;
   }
 
   .note {
@@ -1612,124 +1724,16 @@ body.menu-open {
     width: calc(100vw - 30px);
     height: calc(100vh - 110px);
   }
-}
-/* =========================================================
-   ABZEMO — UNIFIED GLOBAL HEADER
-   Master: Home
-   Applies consistently across all pages
-   ========================================================= */
 
-.site-header,
-header.site-header {
-  width: 100%;
-  position: relative;
-  z-index: 1000;
-}
-
-.site-header .header-inner,
-.site-header .header-inner {
-  width: min(1180px, calc(100% - 48px));
-  min-height: 82px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 32px;
-}
-
-.site-header .brand {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  flex-shrink: 0;
-  text-decoration: none;
-}
-
-.site-header .brand-name {
-  margin: 0;
-  line-height: 1;
-}
-
-.site-header .brand-tagline {
-  margin-top: 6px;
-  line-height: 1.2;
-}
-
-.site-header .top-nav {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 28px;
-  margin-left: auto;
-}
-
-.site-header .top-nav a {
-  display: inline-flex;
-  align-items: center;
-  height: 40px;
-  white-space: nowrap;
-  text-decoration: none;
-}
-
-.site-header .menu-toggle {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-/* Keep all header elements vertically aligned */
-.site-header .header-inner > * {
-  box-sizing: border-box;
-}
-
-/* =========================================================
-   MEGA MENU — SAME POSITIONING EVERYWHERE
-   ========================================================= */
-
-.site-header + .mega-menu,
-.mega-menu {
-  z-index: 1100;
-}
-
-/* =========================================================
-   VENTURES / OTHER PAGES COMPATIBILITY
-   ========================================================= */
-
-header.site-header .header-inner,
-header.site-header .brand,
-header.site-header .top-nav,
-header.site-header .menu-toggle {
-  box-sizing: border-box;
-}
-
-/* =========================================================
-   MOBILE
-   ========================================================= */
-
-@media (max-width: 900px) {
-
-  .site-header .header-inner {
-    width: min(100% - 32px, 1180px);
-    min-height: 76px;
+  .mega-top {
+    min-height: 70px;
   }
 
-  .site-header .top-nav {
-    gap: 18px;
+  .mega-content {
+    gap: 28px;
   }
 
-}
-
-@media (max-width: 760px) {
-
-  .site-header .header-inner {
-    width: calc(100% - 28px);
-    min-height: 72px;
-    gap: 16px;
+  .mega-section a {
+    font-size: 14px;
   }
-
-  .site-header .top-nav {
-    display: none;
-  }
-
 }
