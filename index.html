@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,344 +15,727 @@
   <link rel="stylesheet" href="styles.css">
 
   <style>
-    /* =========================
-       ABZEMO HOMEPAGE
-       ========================= */
 
-    .abz-home {
-      background: #ffffff;
-      color: #0a0d12;
+    /* =====================================================
+       ABZEMO CORPORATE HOMEPAGE
+       ===================================================== */
+
+    :root {
+      --abz-blue: #1769ff;
+      --abz-blue-dark: #0d4ed8;
+      --abz-navy: #071a35;
+      --abz-text: #172033;
+      --abz-muted: #667085;
+      --abz-light: #f5f8fc;
+      --abz-line: #e4eaf2;
     }
 
-    /* HERO */
+    body {
+      background: #ffffff;
+      color: var(--abz-text);
+    }
+
+    /* =====================================================
+       HERO
+       ===================================================== */
 
     .abz-hero {
-      min-height: 82vh;
-      display: flex;
-      align-items: center;
       position: relative;
+      min-height: 760px;
       overflow: hidden;
-      border-bottom: 1px solid #e8ebef;
+      background:
+        linear-gradient(
+          120deg,
+          #ffffff 0%,
+          #ffffff 52%,
+          #f4f8ff 100%
+        );
+    }
+
+    .abz-hero::before {
+      content: "";
+      position: absolute;
+      width: 620px;
+      height: 620px;
+      right: -180px;
+      top: 40px;
+      border-radius: 50%;
+      background:
+        radial-gradient(
+          circle,
+          rgba(23,105,255,0.18) 0%,
+          rgba(23,105,255,0.08) 35%,
+          rgba(23,105,255,0) 72%
+        );
     }
 
     .abz-hero::after {
       content: "";
       position: absolute;
-      width: 650px;
-      height: 650px;
+      width: 520px;
+      height: 520px;
+      right: 40px;
+      top: 120px;
       border-radius: 50%;
-      background: radial-gradient(
-        circle,
-        rgba(30, 110, 255, 0.13),
-        rgba(30, 110, 255, 0) 70%
-      );
-      right: -180px;
-      top: -180px;
-      pointer-events: none;
+      border: 1px solid rgba(23,105,255,0.12);
+      box-shadow:
+        0 0 0 45px rgba(23,105,255,0.025),
+        0 0 0 95px rgba(23,105,255,0.018);
     }
 
-    .abz-hero-inner {
+    .abz-hero-container {
       position: relative;
-      z-index: 2;
-      width: 100%;
-      padding: 110px 0 100px;
+      z-index: 3;
+      min-height: 760px;
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      align-items: center;
+      gap: 60px;
     }
 
-    .abz-wordmark {
-      font-size: clamp(4rem, 9vw, 8rem);
+    .abz-hero-left {
+      padding: 80px 0;
+    }
+
+    .abz-logo-large {
+      font-size: clamp(3.2rem, 6vw, 5.8rem);
       font-weight: 800;
-      letter-spacing: -0.075em;
-      line-height: 0.9;
-      margin-bottom: 25px;
+      letter-spacing: -0.065em;
+      line-height: 0.95;
+      color: var(--abz-navy);
+      margin-bottom: 18px;
+    }
+
+    .abz-logo-large span {
+      color: var(--abz-blue);
     }
 
     .abz-tagline {
-      font-size: 0.85rem;
-      letter-spacing: 0.22em;
+      display: inline-block;
+      color: var(--abz-blue);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
-      opacity: 0.55;
-      margin-bottom: 42px;
+      margin-bottom: 34px;
     }
 
     .abz-hero-title {
-      font-size: clamp(2.5rem, 5vw, 5.4rem);
-      line-height: 1.02;
-      letter-spacing: -0.05em;
-      max-width: 920px;
-      margin: 0 0 30px;
-      font-weight: 700;
+      font-size: clamp(2.7rem, 5vw, 5.2rem);
+      line-height: 1.03;
+      letter-spacing: -0.052em;
+      color: var(--abz-navy);
+      max-width: 760px;
+      margin: 0 0 28px;
+      font-weight: 750;
     }
 
-    .abz-hero-text {
-      max-width: 700px;
-      font-size: 1.18rem;
+    .abz-hero-title span {
+      color: var(--abz-blue);
+    }
+
+    .abz-hero-description {
+      max-width: 650px;
+      color: var(--abz-muted);
+      font-size: 1.15rem;
       line-height: 1.75;
-      opacity: 0.65;
-      margin-bottom: 38px;
+      margin: 0 0 38px;
     }
 
-    .abz-actions {
+    .abz-hero-buttons {
       display: flex;
-      flex-wrap: wrap;
       gap: 14px;
+      flex-wrap: wrap;
     }
 
-    /* INTRO */
-
-    .abz-section {
-      padding: 120px 0;
+    .abz-primary-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 23px;
+      border-radius: 7px;
+      background: var(--abz-blue);
+      color: #ffffff !important;
+      text-decoration: none;
+      font-weight: 600;
+      transition: 0.25s ease;
     }
 
-    .abz-section-light {
-      background: #f5f7f9;
+    .abz-primary-button:hover {
+      background: var(--abz-blue-dark);
+      transform: translateY(-2px);
     }
 
-    .abz-label {
-      font-size: 0.75rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      opacity: 0.5;
-      margin-bottom: 24px;
-    }
-
-    .abz-big-text {
-      max-width: 1050px;
-      font-size: clamp(2rem, 4vw, 4.2rem);
-      line-height: 1.08;
-      letter-spacing: -0.045em;
-      margin: 0;
-    }
-
-    /* WHAT WE DO */
-
-    .abz-build {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1px;
-      background: #dfe3e8;
-      border: 1px solid #dfe3e8;
-      margin-top: 60px;
-    }
-
-    .abz-build-item {
+    .abz-outline-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 13px 23px;
+      border-radius: 7px;
+      border: 1px solid #cfd8e6;
       background: #ffffff;
-      padding: 42px;
-      min-height: 260px;
+      color: var(--abz-navy) !important;
+      text-decoration: none;
+      font-weight: 600;
+      transition: 0.25s ease;
     }
 
-    .abz-number {
-      font-size: 0.75rem;
-      opacity: 0.4;
-      margin-bottom: 70px;
+    .abz-outline-button:hover {
+      border-color: var(--abz-blue);
+      color: var(--abz-blue) !important;
     }
 
-    .abz-build-item h3 {
-      font-size: 1.65rem;
-      margin: 0 0 14px;
-      letter-spacing: -0.02em;
-    }
+    /* HERO VISUAL */
 
-    .abz-build-item p {
-      max-width: 450px;
-      line-height: 1.65;
-      opacity: 0.62;
-      margin: 0;
-    }
-
-    /* ABZEMO AI */
-
-    .abz-ai {
-      background: #07111f;
-      color: #ffffff;
-      border-radius: 30px;
-      padding: clamp(40px, 7vw, 85px);
+    .abz-hero-visual {
       position: relative;
+      min-height: 560px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .abz-globe {
+      width: min(500px, 90%);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      position: relative;
+      background:
+        radial-gradient(
+          circle at 35% 30%,
+          rgba(255,255,255,0.95),
+          rgba(231,241,255,0.95) 35%,
+          rgba(194,216,250,0.75) 62%,
+          rgba(151,184,236,0.35) 100%
+        );
+      box-shadow:
+        0 35px 90px rgba(25,91,190,0.16),
+        inset -25px -25px 70px rgba(44,92,170,0.10);
       overflow: hidden;
     }
 
-    .abz-ai::after {
+    .abz-globe::before,
+    .abz-globe::after {
       content: "";
       position: absolute;
-      width: 500px;
-      height: 500px;
-      right: -180px;
-      top: -180px;
+      inset: 8%;
+      border: 1px solid rgba(23,105,255,0.18);
       border-radius: 50%;
-      background: rgba(35, 125, 255, 0.2);
-      filter: blur(70px);
     }
 
-    .abz-ai-content {
-      position: relative;
-      z-index: 2;
+    .abz-globe::after {
+      inset: 20%;
+      transform: rotate(35deg);
     }
 
-    .abz-ai h2 {
-      font-size: clamp(3rem, 6vw, 6.5rem);
-      line-height: 0.95;
-      letter-spacing: -0.055em;
-      margin: 0 0 28px;
+    .abz-orbit {
+      position: absolute;
+      width: 125%;
+      height: 42%;
+      border: 1px solid rgba(23,105,255,0.24);
+      border-radius: 50%;
+      left: -12%;
+      top: 29%;
+      transform: rotate(-22deg);
     }
 
-    .abz-ai p {
-      max-width: 720px;
-      font-size: 1.15rem;
-      line-height: 1.75;
-      opacity: 0.72;
-      margin-bottom: 38px;
+    .abz-orbit.two {
+      transform: rotate(58deg);
+      opacity: 0.65;
     }
 
-    .abz-ai-tags {
+    .abz-node {
+      position: absolute;
+      width: 13px;
+      height: 13px;
+      background: var(--abz-blue);
+      border-radius: 50%;
+      box-shadow: 0 0 0 8px rgba(23,105,255,0.10);
+    }
+
+    .abz-node.one {
+      top: 24%;
+      left: 27%;
+    }
+
+    .abz-node.two {
+      top: 43%;
+      right: 19%;
+    }
+
+    .abz-node.three {
+      bottom: 24%;
+      left: 35%;
+    }
+
+    .abz-node.four {
+      top: 63%;
+      right: 38%;
+    }
+
+    .abz-center {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 118px;
+      height: 118px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(10px);
       display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 42px;
+      align-items: center;
+      justify-content: center;
+      color: var(--abz-navy);
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      box-shadow: 0 15px 45px rgba(20,66,130,0.13);
     }
 
-    .abz-ai-tags span {
-      padding: 10px 16px;
-      border: 1px solid rgba(255,255,255,0.18);
-      border-radius: 100px;
-      font-size: 0.82rem;
-      opacity: 0.9;
+    /* =====================================================
+       INTRO
+       ===================================================== */
+
+    .abz-section {
+      padding: 115px 0;
     }
 
-    /* FUTURE */
-
-    .abz-future {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 80px;
-      align-items: start;
-      margin-top: 60px;
+    .abz-section-label {
+      color: var(--abz-blue);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin-bottom: 22px;
     }
 
-    .abz-future h2 {
-      font-size: clamp(2.8rem, 5vw, 5rem);
-      line-height: 1;
-      letter-spacing: -0.05em;
+    .abz-intro-title {
+      max-width: 1050px;
+      font-size: clamp(2.2rem, 4.3vw, 4.4rem);
+      line-height: 1.08;
+      letter-spacing: -0.045em;
+      color: var(--abz-navy);
       margin: 0;
     }
 
-    .abz-future-list {
-      border-top: 1px solid #dfe3e8;
+    .abz-intro-title span {
+      color: var(--abz-blue);
     }
 
-    .abz-future-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 20px;
-      padding: 24px 0;
-      border-bottom: 1px solid #dfe3e8;
+    /* =====================================================
+       BUSINESS AREAS
+       ===================================================== */
+
+    .abz-business-section {
+      background: var(--abz-light);
     }
 
-    .abz-future-row strong {
-      font-size: 1.05rem;
+    .abz-section-heading {
+      max-width: 760px;
+      margin-bottom: 55px;
     }
 
-    .abz-future-row span {
-      font-size: 0.72rem;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      opacity: 0.45;
-      white-space: nowrap;
-    }
-
-    /* MISSION */
-
-    .abz-purpose {
-      max-width: 1100px;
-    }
-
-    .abz-purpose h2 {
-      font-size: clamp(2.8rem, 6vw, 6rem);
-      line-height: 1;
-      letter-spacing: -0.055em;
-      margin: 0 0 45px;
-    }
-
-    .abz-purpose-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    /* DIRECTOR */
-
-    .abz-director {
-      background: #f2f4f6;
-    }
-
-    .abz-director-quote {
-      max-width: 1050px;
-      font-size: clamp(2.2rem, 4.8vw, 5rem);
-      line-height: 1.05;
+    .abz-section-heading h2 {
+      font-size: clamp(2.5rem, 4.5vw, 4.7rem);
+      line-height: 1.02;
       letter-spacing: -0.05em;
+      color: var(--abz-navy);
+      margin: 0 0 18px;
+    }
+
+    .abz-section-heading p {
+      color: var(--abz-muted);
+      line-height: 1.7;
+      font-size: 1.05rem;
+      margin: 0;
+    }
+
+    .abz-business-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .abz-business-card {
+      position: relative;
+      min-height: 280px;
+      background: #ffffff;
+      border: 1px solid var(--abz-line);
+      border-radius: 16px;
+      padding: 35px;
+      overflow: hidden;
+      transition: 0.3s ease;
+    }
+
+    .abz-business-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 45px rgba(18,48,88,0.08);
+    }
+
+    .abz-business-number {
+      color: var(--abz-blue);
+      font-size: 0.78rem;
+      font-weight: 700;
+      margin-bottom: 70px;
+    }
+
+    .abz-business-card h3 {
+      color: var(--abz-navy);
+      font-size: 1.65rem;
+      margin: 0 0 12px;
+      letter-spacing: -0.025em;
+    }
+
+    .abz-business-card p {
+      color: var(--abz-muted);
+      line-height: 1.65;
+      margin: 0;
+      max-width: 500px;
+    }
+
+    /* =====================================================
+       ABZEMO AI FEATURE
+       ===================================================== */
+
+    .abz-ai-section {
+      background: var(--abz-navy);
+      color: #ffffff;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .abz-ai-section::after {
+      content: "";
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      right: -220px;
+      top: -180px;
+      border-radius: 50%;
+      background: radial-gradient(
+        circle,
+        rgba(23,105,255,0.32),
+        rgba(23,105,255,0) 70%
+      );
+    }
+
+    .abz-ai-container {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .abz-ai-content .abz-section-label {
+      color: #7fb1ff;
+    }
+
+    .abz-ai-content h2 {
+      font-size: clamp(3rem, 6vw, 6.3rem);
+      line-height: 0.95;
+      letter-spacing: -0.055em;
+      margin: 0 0 25px;
+    }
+
+    .abz-ai-content p {
+      max-width: 650px;
+      color: rgba(255,255,255,0.68);
+      font-size: 1.12rem;
+      line-height: 1.75;
       margin: 0 0 35px;
     }
 
-    .abz-director-name {
-      opacity: 0.5;
+    .abz-ai-pill-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
       margin-bottom: 35px;
     }
 
-    /* FINAL CTA */
+    .abz-ai-pill-list span {
+      border: 1px solid rgba(255,255,255,0.18);
+      padding: 9px 14px;
+      border-radius: 100px;
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.85);
+    }
+
+    .abz-ai-visual {
+      min-height: 420px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .abz-ai-circle {
+      width: 330px;
+      height: 330px;
+      border-radius: 50%;
+      border: 1px solid rgba(127,177,255,0.35);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .abz-ai-circle::before,
+    .abz-ai-circle::after {
+      content: "";
+      position: absolute;
+      border: 1px solid rgba(127,177,255,0.22);
+      border-radius: 50%;
+    }
+
+    .abz-ai-circle::before {
+      width: 240px;
+      height: 240px;
+    }
+
+    .abz-ai-circle::after {
+      width: 150px;
+      height: 150px;
+    }
+
+    .abz-ai-center {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: #1769ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      box-shadow: 0 0 55px rgba(23,105,255,0.5);
+    }
+
+    /* =====================================================
+       FUTURE
+       ===================================================== */
+
+    .abz-future-layout {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 90px;
+      align-items: start;
+    }
+
+    .abz-future-layout h2 {
+      font-size: clamp(2.7rem, 5vw, 5.2rem);
+      line-height: 1;
+      letter-spacing: -0.05em;
+      color: var(--abz-navy);
+      margin: 0;
+    }
+
+    .abz-future-layout h2 span {
+      color: var(--abz-blue);
+    }
+
+    .abz-future-list {
+      border-top: 1px solid var(--abz-line);
+    }
+
+    .abz-future-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 25px;
+      padding: 27px 0;
+      border-bottom: 1px solid var(--abz-line);
+    }
+
+    .abz-future-item strong {
+      color: var(--abz-navy);
+      font-size: 1.15rem;
+    }
+
+    .abz-future-item span {
+      color: var(--abz-muted);
+      font-size: 0.73rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      white-space: nowrap;
+    }
+
+    /* =====================================================
+       PURPOSE
+       ===================================================== */
+
+    .abz-purpose {
+      background:
+        linear-gradient(
+          135deg,
+          #eef5ff 0%,
+          #ffffff 65%
+        );
+      border: 1px solid #dfeaff;
+      border-radius: 24px;
+      padding: clamp(40px, 7vw, 80px);
+    }
+
+    .abz-purpose h2 {
+      max-width: 1000px;
+      font-size: clamp(2.6rem, 5vw, 5.3rem);
+      line-height: 1;
+      letter-spacing: -0.052em;
+      color: var(--abz-navy);
+      margin: 0 0 38px;
+    }
+
+    .abz-purpose h2 span {
+      color: var(--abz-blue);
+    }
+
+    .abz-purpose-buttons {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    /* =====================================================
+       DIRECTOR
+       ===================================================== */
+
+    .abz-director-section {
+      background: #f7f9fc;
+    }
+
+    .abz-director-layout {
+      max-width: 1100px;
+    }
+
+    .abz-director-quote {
+      font-size: clamp(2.2rem, 4.5vw, 4.7rem);
+      line-height: 1.06;
+      letter-spacing: -0.045em;
+      color: var(--abz-navy);
+      margin: 0 0 32px;
+    }
+
+    .abz-director-credit {
+      color: var(--abz-muted);
+      margin-bottom: 30px;
+    }
+
+    /* =====================================================
+       FINAL CTA
+       ===================================================== */
 
     .abz-final {
       text-align: center;
-      padding: 140px 0;
+      padding: 130px 0;
+      background: #ffffff;
     }
 
     .abz-final h2 {
       font-size: clamp(3rem, 7vw, 7rem);
       line-height: 0.92;
       letter-spacing: -0.06em;
-      margin: 0 0 38px;
+      color: var(--abz-navy);
+      margin: 0 0 35px;
     }
 
-    /* MOBILE */
+    .abz-final h2 span {
+      color: var(--abz-blue);
+    }
 
-    @media (max-width: 700px) {
+    /* =====================================================
+       MOBILE
+       ===================================================== */
 
-      .abz-hero-inner {
-        padding: 80px 0;
+    @media (max-width: 800px) {
+
+      .abz-hero {
+        min-height: auto;
       }
 
-      .abz-wordmark {
-        font-size: clamp(3.8rem, 18vw, 6rem);
+      .abz-hero-container {
+        min-height: auto;
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding-top: 70px;
+        padding-bottom: 70px;
       }
 
-      .abz-hero-title {
-        font-size: clamp(2.4rem, 11vw, 4rem);
+      .abz-hero-left {
+        padding: 20px 0;
+      }
+
+      .abz-hero-visual {
+        min-height: 350px;
+      }
+
+      .abz-globe {
+        width: 330px;
+      }
+
+      .abz-business-grid,
+      .abz-ai-container,
+      .abz-future-layout {
+        grid-template-columns: 1fr;
       }
 
       .abz-section {
         padding: 80px 0;
       }
 
-      .abz-build {
-        grid-template-columns: 1fr;
+      .abz-ai-visual {
+        min-height: 300px;
       }
 
-      .abz-build-item {
-        min-height: auto;
-      }
-
-      .abz-future {
-        grid-template-columns: 1fr;
-        gap: 50px;
-      }
-
-      .abz-final {
-        padding: 90px 0;
+      .abz-ai-circle {
+        width: 280px;
+        height: 280px;
       }
     }
+
+    @media (max-width: 500px) {
+
+      .abz-logo-large {
+        font-size: 3.5rem;
+      }
+
+      .abz-hero-title {
+        font-size: 2.6rem;
+      }
+
+      .abz-business-card {
+        min-height: auto;
+        padding: 28px;
+      }
+
+      .abz-business-number {
+        margin-bottom: 45px;
+      }
+
+      .abz-future-item {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .abz-purpose {
+        padding: 32px 25px;
+      }
+
+    }
+
   </style>
 </head>
 
+
 <body>
 
+
+<!-- =====================================================
+     HEADER
+     ===================================================== -->
+
 <header class="site-header">
+
   <div class="container navbar">
 
     <a href="index.html" class="logo">
@@ -359,33 +743,70 @@
     </a>
 
     <nav>
+
       <ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="solutions.html">Solutions</a></li>
-        <li><a href="industries.html">Industries</a></li>
-        <li><a href="abzemo-ai.html">ABZEMO AI</a></li>
-        <li><a href="mission.html">Mission</a></li>
-        <li><a href="vision.html">Vision</a></li>
-        <li><a href="director-note.html">Director's Note</a></li>
-        <li><a href="contact.html" class="nav-button">Contact</a></li>
+
+        <li>
+          <a href="index.html">Home</a>
+        </li>
+
+        <li>
+          <a href="about.html">About</a>
+        </li>
+
+        <li>
+          <a href="solutions.html">Solutions</a>
+        </li>
+
+        <li>
+          <a href="industries.html">Industries</a>
+        </li>
+
+        <li>
+          <a href="abzemo-ai.html">ABZEMO AI</a>
+        </li>
+
+        <li>
+          <a href="mission.html">Mission</a>
+        </li>
+
+        <li>
+          <a href="vision.html">Vision</a>
+        </li>
+
+        <li>
+          <a href="director-note.html">Director's Note</a>
+        </li>
+
+        <li>
+          <a href="contact.html" class="nav-button">Contact</a>
+        </li>
+
       </ul>
+
     </nav>
 
   </div>
+
 </header>
 
 
-<main class="abz-home">
+<main>
 
-  <!-- HERO -->
 
-  <section class="abz-hero">
+<!-- =====================================================
+     HERO
+     ===================================================== -->
 
-    <div class="container abz-hero-inner">
+<section class="abz-hero">
 
-      <div class="abz-wordmark">
-        ABZEMO
+  <div class="container abz-hero-container">
+
+
+    <div class="abz-hero-left">
+
+      <div class="abz-logo-large">
+        ABZEMO<span>.</span>
       </div>
 
       <div class="abz-tagline">
@@ -393,328 +814,481 @@
       </div>
 
       <h1 class="abz-hero-title">
-        Building businesses, technology
-        and opportunities for the world ahead.
+        Building businesses,
+        technology and
+        <span>opportunities</span>
+        for the world ahead.
       </h1>
 
-      <p class="abz-hero-text">
+      <p class="abz-hero-description">
         ABZEMO is a global business and technology company
-        creating solutions, ventures and opportunities across
-        a changing world.
+        focused on creating solutions, ventures and
+        opportunities for a changing world.
       </p>
 
-      <div class="abz-actions">
+      <div class="abz-hero-buttons">
 
-        <a href="about.html" class="btn btn-primary">
+        <a
+          href="about.html"
+          class="abz-primary-button"
+        >
           Explore ABZEMO
         </a>
 
-        <a href="abzemo-ai.html" class="btn btn-secondary">
-          Explore ABZEMO AI
+        <a
+          href="vision.html"
+          class="abz-outline-button"
+        >
+          Our Vision →
         </a>
 
       </div>
 
     </div>
 
-  </section>
 
+    <div class="abz-hero-visual">
 
-  <!-- WHO WE ARE -->
+      <div class="abz-globe">
 
-  <section class="abz-section">
+        <div class="abz-orbit"></div>
 
-    <div class="container">
+        <div class="abz-orbit two"></div>
 
-      <div class="abz-label">
-        01 — The Company
+        <div class="abz-node one"></div>
+        <div class="abz-node two"></div>
+        <div class="abz-node three"></div>
+        <div class="abz-node four"></div>
+
+        <div class="abz-center">
+          ABZEMO
+        </div>
+
       </div>
 
-      <p class="abz-big-text">
-        ABZEMO is a long-term platform for building
-        businesses, technology and opportunities that
-        move forward with the world.
+    </div>
+
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     INTRO
+     ===================================================== -->
+
+<section class="abz-section">
+
+  <div class="container">
+
+    <div class="abz-section-label">
+      About ABZEMO
+    </div>
+
+    <h2 class="abz-intro-title">
+
+      One company.
+      <span>
+        Many possibilities.
+      </span>
+      One long-term vision.
+
+    </h2>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     WHAT ABZEMO BUILDS
+     ===================================================== -->
+
+<section class="abz-section abz-business-section">
+
+  <div class="container">
+
+    <div class="abz-section-heading">
+
+      <div class="abz-section-label">
+        What We Build
+      </div>
+
+      <h2>
+        Creating what
+        businesses and
+        people need next.
+      </h2>
+
+      <p>
+        ABZEMO brings together technology, business
+        solutions and future opportunities under one
+        growing global platform.
       </p>
 
     </div>
 
-  </section>
+
+    <div class="abz-business-grid">
 
 
-  <!-- WHAT WE BUILD -->
+      <div class="abz-business-card">
 
-  <section class="abz-section abz-section-light">
+        <div class="abz-business-number">
+          01
+        </div>
 
-    <div class="container">
+        <h3>
+          Technology
+        </h3>
 
-      <div class="abz-label">
-        02 — What We Build
+        <p>
+          Intelligent products, platforms and digital
+          systems designed around real-world needs.
+        </p>
+
       </div>
 
-      <p class="abz-big-text">
-        One company. Multiple possibilities.
+
+      <div class="abz-business-card">
+
+        <div class="abz-business-number">
+          02
+        </div>
+
+        <h3>
+          Business Solutions
+        </h3>
+
+        <p>
+          Practical solutions that help organizations
+          improve operations, efficiency and growth.
+        </p>
+
+      </div>
+
+
+      <div class="abz-business-card">
+
+        <div class="abz-business-number">
+          03
+        </div>
+
+        <h3>
+          Digital Transformation
+        </h3>
+
+        <p>
+          Connecting people, processes and technology
+          to create better ways of working.
+        </p>
+
+      </div>
+
+
+      <div class="abz-business-card">
+
+        <div class="abz-business-number">
+          04
+        </div>
+
+        <h3>
+          Future Ventures
+        </h3>
+
+        <p>
+          Exploring new industries, markets and
+          opportunities as ABZEMO continues to grow.
+        </p>
+
+      </div>
+
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     ABZEMO AI
+     ===================================================== -->
+
+<section class="abz-section abz-ai-section">
+
+  <div class="container abz-ai-container">
+
+
+    <div class="abz-ai-content">
+
+      <div class="abz-section-label">
+        Our First Major Technology Vision
+      </div>
+
+      <h2>
+        ABZEMO AI
+      </h2>
+
+      <p>
+        Intelligent AI agents designed to understand
+        conversations, business context and workflows —
+        helping organizations turn information into action.
       </p>
 
 
-      <div class="abz-build">
+      <div class="abz-ai-pill-list">
 
-        <div class="abz-build-item">
+        <span>Sales</span>
+        <span>Finance</span>
+        <span>ERP</span>
+        <span>Real Estate</span>
+        <span>Healthcare</span>
+        <span>Education</span>
+        <span>Enterprise</span>
 
-          <div class="abz-number">01</div>
-
-          <h3>Technology</h3>
-
-          <p>
-            Technology-led products, platforms and
-            intelligent systems designed around real
-            business and human needs.
-          </p>
-
-        </div>
+      </div>
 
 
-        <div class="abz-build-item">
+      <a
+        href="abzemo-ai.html"
+        class="abz-primary-button"
+      >
+        Explore ABZEMO AI →
+      </a>
 
-          <div class="abz-number">02</div>
-
-          <h3>Business Solutions</h3>
-
-          <p>
-            Practical solutions that improve operations,
-            processes, productivity and growth.
-          </p>
-
-        </div>
+    </div>
 
 
-        <div class="abz-build-item">
+    <div class="abz-ai-visual">
 
-          <div class="abz-number">03</div>
+      <div class="abz-ai-circle">
 
-          <h3>Digital Transformation</h3>
-
-          <p>
-            Connecting people, processes and technology
-            to create better ways of working.
-          </p>
-
-        </div>
-
-
-        <div class="abz-build-item">
-
-          <div class="abz-number">04</div>
-
-          <h3>Future Ventures</h3>
-
-          <p>
-            New businesses and opportunities that expand
-            ABZEMO into new industries and markets.
-          </p>
-
+        <div class="abz-ai-center">
+          AI
         </div>
 
       </div>
 
     </div>
 
-  </section>
+
+  </div>
+
+</section>
 
 
-  <!-- ABZEMO AI -->
+<!-- =====================================================
+     FUTURE VENTURES
+     ===================================================== -->
 
-  <section class="abz-section">
+<section class="abz-section">
 
-    <div class="container">
+  <div class="container">
 
-      <div class="abz-ai">
-
-        <div class="abz-ai-content">
-
-          <div class="abz-label">
-            03 — Current Technology Focus
-          </div>
-
-          <h2>
-            ABZEMO AI
-          </h2>
-
-          <p>
-            Our first major technology vision is a new
-            generation of intelligent AI agents designed
-            to understand conversations, business context
-            and workflows — and turn intelligence into action.
-          </p>
-
-          <div class="abz-ai-tags">
-
-            <span>Sales Agents</span>
-            <span>Finance Agents</span>
-            <span>ERP Agents</span>
-            <span>Real Estate</span>
-            <span>Healthcare</span>
-            <span>Education</span>
-            <span>Enterprise</span>
-
-          </div>
-
-          <a href="abzemo-ai.html" class="btn btn-primary">
-            Discover ABZEMO AI →
-          </a>
-
-        </div>
-
-      </div>
-
-    </div>
-
-  </section>
+    <div class="abz-future-layout">
 
 
-  <!-- FUTURE -->
+      <div>
 
-  <section class="abz-section abz-section-light">
-
-    <div class="container">
-
-      <div class="abz-label">
-        04 — Looking Ahead
-      </div>
-
-      <div class="abz-future">
-
-        <div>
-
-          <h2>
-            The future is bigger than one idea.
-          </h2>
-
-        </div>
-
-
-        <div class="abz-future-list">
-
-          <div class="abz-future-row">
-            <strong>ABZEMO AI</strong>
-            <span>Current Focus</span>
-          </div>
-
-          <div class="abz-future-row">
-            <strong>Healthcare</strong>
-            <span>Future Venture</span>
-          </div>
-
-          <div class="abz-future-row">
-            <strong>Global Trade</strong>
-            <span>Future Venture</span>
-          </div>
-
-          <div class="abz-future-row">
-            <strong>New Opportunities</strong>
-            <span>What's Next</span>
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
-
-  </section>
-
-
-  <!-- MISSION / VISION -->
-
-  <section class="abz-section">
-
-    <div class="container">
-
-      <div class="abz-purpose">
-
-        <div class="abz-label">
-          05 — Our Purpose
+        <div class="abz-section-label">
+          Looking Ahead
         </div>
 
         <h2>
-          Build with purpose.<br>
-          Think beyond today.<br>
-          Create what comes next.
+          The future of
+          <span>ABZEMO</span>
+          goes beyond one industry.
         </h2>
 
-        <div class="abz-purpose-links">
+      </div>
 
-          <a href="mission.html" class="btn btn-secondary">
-            Our Mission
-          </a>
 
-          <a href="vision.html" class="btn btn-secondary">
-            Our Vision
-          </a>
+      <div class="abz-future-list">
+
+
+        <div class="abz-future-item">
+
+          <strong>
+            ABZEMO AI
+          </strong>
+
+          <span>
+            Current Focus
+          </span>
 
         </div>
+
+
+        <div class="abz-future-item">
+
+          <strong>
+            Healthcare
+          </strong>
+
+          <span>
+            Future Venture
+          </span>
+
+        </div>
+
+
+        <div class="abz-future-item">
+
+          <strong>
+            Global Trade
+          </strong>
+
+          <span>
+            Future Venture
+          </span>
+
+        </div>
+
+
+        <div class="abz-future-item">
+
+          <strong>
+            New Opportunities
+          </strong>
+
+          <span>
+            What's Next
+          </span>
+
+        </div>
+
+
+      </div>
+
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     MISSION / VISION
+     ===================================================== -->
+
+<section class="abz-section">
+
+  <div class="container">
+
+    <div class="abz-purpose">
+
+      <div class="abz-section-label">
+        Purpose
+      </div>
+
+      <h2>
+        Build with purpose.
+        Think beyond today.
+        <span>Create what comes next.</span>
+      </h2>
+
+
+      <div class="abz-purpose-buttons">
+
+        <a
+          href="mission.html"
+          class="abz-primary-button"
+        >
+          Our Mission
+        </a>
+
+        <a
+          href="vision.html"
+          class="abz-outline-button"
+        >
+          Our Vision
+        </a>
 
       </div>
 
     </div>
 
-  </section>
+  </div>
+
+</section>
 
 
-  <!-- DIRECTOR'S NOTE -->
+<!-- =====================================================
+     DIRECTOR'S NOTE
+     ===================================================== -->
 
-  <section class="abz-section abz-director">
+<section class="abz-section abz-director-section">
 
-    <div class="container">
+  <div class="container">
 
-      <div class="abz-label">
-        06 — Director's Note
+    <div class="abz-director-layout">
+
+      <div class="abz-section-label">
+        Director's Note
       </div>
 
       <p class="abz-director-quote">
-        We are not building technology simply because
-        it is possible. We are building it because
-        businesses and people need better ways to
-        move forward.
+        “We are building ABZEMO to create
+        meaningful businesses, technology and
+        opportunities for the world ahead.”
       </p>
 
-      <div class="abz-director-name">
+      <div class="abz-director-credit">
         — Director, ABZEMO
       </div>
 
-      <a href="director-note.html" class="btn btn-secondary">
+      <a
+        href="director-note.html"
+        class="abz-outline-button"
+      >
         Read the Director's Note →
       </a>
 
     </div>
 
-  </section>
+  </div>
+
+</section>
 
 
-  <!-- FINAL CTA -->
+<!-- =====================================================
+     FINAL CTA
+     ===================================================== -->
 
-  <section class="abz-final">
+<section class="abz-final">
 
-    <div class="container">
+  <div class="container">
 
-      <div class="abz-label">
-        07 — Start a Conversation
-      </div>
-
-      <h2>
-        LET'S BUILD<br>
-        WHAT'S NEXT.
-      </h2>
-
-      <a href="contact.html" class="btn btn-primary">
-        Talk to ABZEMO →
-      </a>
-
+    <div class="abz-section-label">
+      Start a Conversation
     </div>
 
-  </section>
+    <h2>
+      Let's build
+      <span>what's next.</span>
+    </h2>
+
+    <a
+      href="contact.html"
+      class="abz-primary-button"
+    >
+      Talk to ABZEMO →
+    </a>
+
+  </div>
+
+</section>
+
 
 </main>
 
+
+<!-- =====================================================
+     FOOTER
+     ===================================================== -->
 
 <footer class="site-footer">
 
@@ -727,6 +1301,7 @@
   </div>
 
 </footer>
+
 
 </body>
 </html>
