@@ -758,12 +758,12 @@
     }
 
     /* =========================
-       NOTES
+       LEADERSHIP NOTE
     ========================= */
 
     .notes {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: 1fr;
       gap: 24px;
     }
 
@@ -772,6 +772,7 @@
       background: var(--light);
       border: 1px solid var(--line);
       position: relative;
+      max-width: 920px;
     }
 
     .quote-mark {
@@ -796,16 +797,17 @@
     }
 
     .author-photo {
-      width: 52px;
-      height: 52px;
+      width: 62px;
+      height: 62px;
       border-radius: 50%;
       background: #dce5f0;
       display: flex;
       align-items: center;
       justify-content: center;
       color: var(--navy);
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 700;
+      flex-shrink: 0;
     }
 
     .author-info strong {
@@ -948,10 +950,6 @@
 
       .ventures-grid {
         grid-template-columns: repeat(2, 1fr);
-      }
-
-      .notes {
-        grid-template-columns: 1fr;
       }
 
       .footer-top {
@@ -1253,39 +1251,39 @@
           ABZEMO VENTURES
         </div>
 
-        <a href="ventures.html">
+        <a href="#ventures">
           Ventures Overview
         </a>
 
-        <a href="#" class="sub-link">
+        <a href="#ventures" class="sub-link">
           ABZEMO Medical
         </a>
 
-        <a href="#" class="sub-link">
+        <a href="#ventures" class="sub-link">
           ABZEMO Trade
         </a>
 
-        <a href="#" class="sub-link">
+        <a href="#ventures" class="sub-link">
           ABZEMO Smart Schooling
         </a>
 
-        <a href="#" class="sub-link">
+        <a href="#ventures" class="sub-link">
           ABZEMO Fashions
         </a>
 
-        <a href="#" class="sub-link">
+        <a href="#ventures" class="sub-link">
           ABZEMO Real Estate
         </a>
 
-        <a href="#" class="sub-link">
+        <a href="#ventures" class="sub-link">
           ABZEMO Logistics
         </a>
 
-        <a href="#" class="sub-link">
+        <a href="#ventures" class="sub-link">
           ABZEMO Finance
         </a>
 
-        <a href="#" class="sub-link">
+        <a href="#ventures" class="sub-link">
           Future Ventures
         </a>
 
@@ -1593,7 +1591,7 @@
          VENTURES
     ========================= -->
 
-    <section class="section section-light">
+    <section class="section section-light" id="ventures">
 
       <div class="container">
 
@@ -1667,7 +1665,7 @@
 
 
     <!-- =========================
-         DIRECTOR / CEO NOTES
+         COMBINED LEADERSHIP NOTE
     ========================= -->
 
     <section class="section">
@@ -1700,40 +1698,8 @@
               ABZEMO is being built with a simple belief:
               the future belongs to organizations willing to
               imagine beyond the obvious and build with purpose.
-            </p>
-
-            <div class="note-author">
-
-              <div class="author-photo">
-                PHOTO
-              </div>
-
-              <div class="author-info">
-
-                <strong>
-                  Director’s Note
-                </strong>
-
-                <span>
-                  ABZEMO
-                </span>
-
-              </div>
-
-            </div>
-
-          </div>
-
-
-          <div class="note">
-
-            <div class="quote-mark">
-              “
-            </div>
-
-            <p>
               Our ambition is not to build one product or one
-              business. It is to create a platform from which
+              business, but to create a platform from which
               meaningful possibilities can grow.
             </p>
 
@@ -1746,7 +1712,7 @@
               <div class="author-info">
 
                 <strong>
-                  CEO Note
+                  Director & CEO
                 </strong>
 
                 <span>
@@ -1872,19 +1838,19 @@
               Ventures
             </h4>
 
-            <a href="#">
+            <a href="#ventures">
               Medical
             </a>
 
-            <a href="#">
+            <a href="#ventures">
               Trade
             </a>
 
-            <a href="#">
+            <a href="#ventures">
               Smart Schooling
             </a>
 
-            <a href="#">
+            <a href="#ventures">
               Future Ventures
             </a>
 
