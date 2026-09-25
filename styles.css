@@ -1613,3 +1613,123 @@ body.menu-open {
     height: calc(100vh - 110px);
   }
 }
+/* =========================================================
+   ABZEMO — UNIFIED GLOBAL HEADER
+   Master: Home
+   Applies consistently across all pages
+   ========================================================= */
+
+.site-header,
+header.site-header {
+  width: 100%;
+  position: relative;
+  z-index: 1000;
+}
+
+.site-header .header-inner,
+.site-header .header-inner {
+  width: min(1180px, calc(100% - 48px));
+  min-height: 82px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+}
+
+.site-header .brand {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+
+.site-header .brand-name {
+  margin: 0;
+  line-height: 1;
+}
+
+.site-header .brand-tagline {
+  margin-top: 6px;
+  line-height: 1.2;
+}
+
+.site-header .top-nav {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 28px;
+  margin-left: auto;
+}
+
+.site-header .top-nav a {
+  display: inline-flex;
+  align-items: center;
+  height: 40px;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.site-header .menu-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Keep all header elements vertically aligned */
+.site-header .header-inner > * {
+  box-sizing: border-box;
+}
+
+/* =========================================================
+   MEGA MENU — SAME POSITIONING EVERYWHERE
+   ========================================================= */
+
+.site-header + .mega-menu,
+.mega-menu {
+  z-index: 1100;
+}
+
+/* =========================================================
+   VENTURES / OTHER PAGES COMPATIBILITY
+   ========================================================= */
+
+header.site-header .header-inner,
+header.site-header .brand,
+header.site-header .top-nav,
+header.site-header .menu-toggle {
+  box-sizing: border-box;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+  .site-header .header-inner {
+    width: min(100% - 32px, 1180px);
+    min-height: 76px;
+  }
+
+  .site-header .top-nav {
+    gap: 18px;
+  }
+
+}
+
+@media (max-width: 760px) {
+
+  .site-header .header-inner {
+    width: calc(100% - 28px);
+    min-height: 72px;
+    gap: 16px;
+  }
+
+  .site-header .top-nav {
+    display: none;
+  }
+
+}
