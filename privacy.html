@@ -6,7 +6,10 @@
 
     <title>Privacy Policy | ABZEMO</title>
 
-    <meta name="description" content="ABZEMO Privacy Policy explaining how information may be handled when visitors interact with the ABZEMO website.">
+    <meta
+        name="description"
+        content="ABZEMO Privacy Policy explaining how information may be handled when visitors interact with the ABZEMO website."
+    >
 
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -14,30 +17,90 @@
 <body>
 
 <header class="site-header">
-  <div class="container navbar">
+    <div class="container navbar">
 
-    <a href="index.html" class="logo">
-      ABZEMO<span>.</span>
-    </a>
+        <a href="index.html" class="logo">
+            ABZEMO<span>.</span>
+        </a>
 
-    <nav>
-      <ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="solutions.html">Solutions</a></li>
-        <li><a href="industries.html">Industries</a></li>
-        <li><a href="abzemo-ai.html">ABZEMO AI</a></li>
-        <li><a href="mission.html">Mission</a></li>
-        <li><a href="vision.html">Vision</a></li>
-        <li><a href="director-note.html">Director's Note</a></li>
-        <li>
-          <a href="contact.html" class="nav-button">Contact</a>
-        </li>
-      </ul>
-    </nav>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="mission.html">Mission</a></li>
+                <li><a href="vision.html">Vision</a></li>
+                <li><a href="#ventures">Ventures</a></li>
+                <li>
+                    <a href="contact.html" class="nav-button">Contact</a>
+                </li>
+            </ul>
+        </nav>
 
-  </div>
+        <button class="menu-toggle" aria-label="Open menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+    </div>
 </header>
+
+
+<!-- SIDE MENU -->
+
+<div class="mega-menu">
+
+    <div class="mega-menu-inner">
+
+        <div class="mega-column">
+
+            <p class="menu-label">ABZEMO</p>
+
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="mission.html">Mission</a>
+            <a href="vision.html">Vision</a>
+            <a href="contact.html">Contact</a>
+
+        </div>
+
+
+        <div class="mega-column">
+
+            <p class="menu-label">ABZEMO AI</p>
+
+            <a href="abzemo-ai.html">Overview</a>
+            <a href="abzemo-ai.html">AI Agents</a>
+            <a href="abzemo-ai.html">Multilingual Intelligence</a>
+            <a href="abzemo-ai.html">Sales AI</a>
+            <a href="abzemo-ai.html">Finance AI</a>
+            <a href="abzemo-ai.html">ERP AI</a>
+            <a href="abzemo-ai.html">Real Estate AI</a>
+            <a href="abzemo-ai.html">Healthcare AI</a>
+            <a href="abzemo-ai.html">Education AI</a>
+            <a href="abzemo-ai.html">Enterprise AI</a>
+
+        </div>
+
+
+        <div class="mega-column">
+
+            <p class="menu-label">ABZEMO VENTURES</p>
+
+            <a href="#ventures">ABZEMO Medical</a>
+            <a href="#ventures">ABZEMO Trade</a>
+            <a href="#ventures">ABZEMO Smart Schooling</a>
+            <a href="#ventures">ABZEMO Fashions</a>
+            <a href="#ventures">ABZEMO Real Estate</a>
+            <a href="#ventures">ABZEMO Logistics</a>
+            <a href="#ventures">ABZEMO Finance</a>
+            <a href="#ventures">Future Ventures</a>
+
+        </div>
+
+    </div>
+
+</div>
 
 
 <main>
@@ -73,6 +136,7 @@
             <p>
                 <strong>Last updated: September 2026</strong>
             </p>
+
 
             <h2>1. Introduction</h2>
 
@@ -224,9 +288,13 @@
 
         <div>
 
-            <div class="logo">ABZEMO</div>
+            <div class="logo">
+                ABZEMO
+            </div>
 
-            <p>Building What’s Next.</p>
+            <p>
+                Building What’s Next.
+            </p>
 
         </div>
 
@@ -234,8 +302,8 @@
         <div class="footer-links">
 
             <a href="about.html">About</a>
-            <a href="solutions.html">Solutions</a>
-            <a href="industries.html">Industries</a>
+            <a href="mission.html">Mission</a>
+            <a href="vision.html">Vision</a>
             <a href="abzemo-ai.html">ABZEMO AI</a>
             <a href="contact.html">Contact</a>
             <a href="privacy.html">Privacy</a>
@@ -248,11 +316,32 @@
 
     <div class="container footer-bottom">
 
-        <p>© 2026 ABZEMO. All rights reserved.</p>
+        <p>
+            © 2026 ABZEMO. All rights reserved.
+        </p>
 
     </div>
 
 </footer>
+
+
+<script>
+
+const menuToggle = document.querySelector(".menu-toggle");
+const megaMenu = document.querySelector(".mega-menu");
+
+if (menuToggle && megaMenu) {
+
+    menuToggle.addEventListener("click", () => {
+
+        megaMenu.classList.toggle("active");
+        menuToggle.classList.toggle("active");
+
+    });
+
+}
+
+</script>
 
 </body>
 </html>
