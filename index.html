@@ -8,7 +8,7 @@
 
   <meta
     name="description"
-    content="ABZEMO is a global business and innovation company building solutions across AI, technology, healthcare, trade, education and future ventures."
+    content="ABZEMO is a global business platform building solutions across AI, technology, healthcare, trade, education and future ventures."
   >
 
   <style>
@@ -299,56 +299,46 @@
       display: flex;
       align-items: center;
       background:
-        radial-gradient(circle at 80% 20%, rgba(18,100,216,.12), transparent 30%),
+        radial-gradient(circle at 82% 45%, rgba(18,100,216,.13), transparent 30%),
         linear-gradient(135deg, #ffffff 0%, #f5f8fc 100%);
     }
 
     .hero-grid {
       display: grid;
-      grid-template-columns: 1.08fr .92fr;
+      grid-template-columns: 1fr 1fr;
       gap: 70px;
       align-items: center;
-      padding: 100px 0;
+      padding: 90px 0;
     }
 
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      color: var(--blue);
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 2px;
-      text-transform: uppercase;
+    .hero-brand {
+      color: var(--navy);
+      font-size: clamp(72px, 9vw, 126px);
+      line-height: .88;
+      letter-spacing: -7px;
+      font-weight: 900;
       margin-bottom: 22px;
     }
 
-    .eyebrow::before {
-      content: "";
-      width: 30px;
-      height: 2px;
-      background: var(--blue);
-    }
-
-    .hero h1 {
-      font-size: clamp(54px, 7vw, 92px);
-      line-height: .94;
-      letter-spacing: -5px;
-      color: var(--navy);
-      font-weight: 800;
-      margin-bottom: 28px;
-    }
-
-    .hero h1 span {
+    .hero-brand span {
       color: var(--blue);
     }
 
+    .hero-slogan {
+      color: var(--blue);
+      font-size: clamp(23px, 3vw, 34px);
+      line-height: 1.15;
+      letter-spacing: -1.2px;
+      font-weight: 700;
+      margin-bottom: 26px;
+    }
+
     .hero-text {
-      max-width: 650px;
-      font-size: 20px;
-      line-height: 1.7;
+      max-width: 610px;
+      font-size: 19px;
+      line-height: 1.75;
       color: var(--muted);
-      margin-bottom: 34px;
+      margin-bottom: 32px;
     }
 
     .hero-actions {
@@ -390,70 +380,187 @@
       color: var(--blue);
     }
 
-    /* HERO VISUAL */
+    /* =========================
+       GLOBAL NETWORK VISUAL
+    ========================= */
 
     .hero-visual {
-      min-height: 500px;
+      min-height: 540px;
       position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    .orb {
-      width: 360px;
-      height: 360px;
+    .global-ring {
+      width: 430px;
+      height: 430px;
       border-radius: 50%;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       background:
-        radial-gradient(circle at 35% 30%, #ffffff 0 8%, transparent 9%),
-        radial-gradient(circle at center, rgba(18,100,216,.16), rgba(18,100,216,.04) 55%, transparent 70%);
-      border: 1px solid rgba(18,100,216,.18);
+        radial-gradient(
+          circle at center,
+          rgba(255,255,255,.98) 0%,
+          rgba(255,255,255,.92) 25%,
+          rgba(18,100,216,.10) 52%,
+          rgba(18,100,216,.035) 70%,
+          transparent 72%
+        );
+      border: 1px solid rgba(18,100,216,.20);
       box-shadow:
         inset 0 0 80px rgba(18,100,216,.08),
-        0 30px 90px rgba(18,100,216,.10);
-      position: relative;
+        0 30px 100px rgba(18,100,216,.12);
     }
 
-    .orb::before,
-    .orb::after {
+    .global-ring::before,
+    .global-ring::after {
       content: "";
       position: absolute;
-      border: 1px solid rgba(18,100,216,.18);
       border-radius: 50%;
-      inset: 35px;
+      border: 1px solid rgba(18,100,216,.16);
     }
 
-    .orb::after {
-      inset: 85px;
+    .global-ring::before {
+      inset: 48px;
     }
 
-    .node {
+    .global-ring::after {
+      inset: 105px;
+    }
+
+    .globe-core {
+      width: 185px;
+      height: 185px;
+      border-radius: 50%;
+      border: 1px solid rgba(18,100,216,.20);
+      position: relative;
+      background:
+        linear-gradient(
+          90deg,
+          transparent 31%,
+          rgba(18,100,216,.12) 32%,
+          transparent 33%,
+          transparent 66%,
+          rgba(18,100,216,.12) 67%,
+          transparent 68%
+        ),
+        linear-gradient(
+          0deg,
+          transparent 31%,
+          rgba(18,100,216,.12) 32%,
+          transparent 33%,
+          transparent 66%,
+          rgba(18,100,216,.12) 67%,
+          transparent 68%
+        ),
+        radial-gradient(
+          circle,
+          rgba(18,100,216,.12),
+          rgba(18,100,216,.025) 68%,
+          transparent 70%
+        );
+      box-shadow: inset 0 0 45px rgba(18,100,216,.08);
+    }
+
+    .global-core-line {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      top: 50%;
+      height: 1px;
+      background: rgba(18,100,216,.15);
+    }
+
+    .global-core-line.vertical {
+      top: 18px;
+      bottom: 18px;
+      left: 50%;
+      width: 1px;
+      height: auto;
+    }
+
+    .connection {
+      position: absolute;
+      height: 1px;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(18,100,216,.42),
+        transparent
+      );
+      transform-origin: left center;
+    }
+
+    .connection.one {
+      width: 145px;
+      top: 92px;
+      left: 205px;
+      transform: rotate(-32deg);
+    }
+
+    .connection.two {
+      width: 150px;
+      top: 215px;
+      left: 45px;
+      transform: rotate(8deg);
+    }
+
+    .connection.three {
+      width: 145px;
+      top: 315px;
+      left: 220px;
+      transform: rotate(-18deg);
+    }
+
+    .connection.four {
+      width: 125px;
+      top: 355px;
+      left: 105px;
+      transform: rotate(-58deg);
+    }
+
+    .global-node {
       position: absolute;
       width: 13px;
       height: 13px;
-      background: var(--blue);
       border-radius: 50%;
-      box-shadow: 0 0 0 7px rgba(18,100,216,.10);
+      background: var(--blue);
+      box-shadow:
+        0 0 0 7px rgba(18,100,216,.10),
+        0 0 24px rgba(18,100,216,.22);
     }
 
-    .node.one {
-      top: 35px;
-      right: 80px;
+    .global-node.one {
+      top: 55px;
+      right: 68px;
     }
 
-    .node.two {
-      left: 35px;
-      top: 160px;
+    .global-node.two {
+      top: 198px;
+      left: 25px;
     }
 
-    .node.three {
-      right: 35px;
-      bottom: 105px;
+    .global-node.three {
+      right: 24px;
+      bottom: 88px;
     }
 
-    .node.four {
-      left: 110px;
-      bottom: 35px;
+    .global-node.four {
+      left: 88px;
+      bottom: 32px;
+    }
+
+    .global-node.five {
+      left: 198px;
+      top: 22px;
+    }
+
+    .global-node.six {
+      right: 105px;
+      top: 235px;
     }
 
     /* =========================
@@ -581,6 +688,7 @@
 
     .ai-identity h3 {
       font-size: 34px;
+      line-height: 1.1;
       margin-bottom: 15px;
     }
 
@@ -816,6 +924,7 @@
     ========================= */
 
     @media (max-width: 1050px) {
+
       .desktop-nav {
         display: none;
       }
@@ -826,7 +935,7 @@
       }
 
       .hero-visual {
-        min-height: 350px;
+        min-height: 430px;
       }
 
       .possibilities {
@@ -851,6 +960,7 @@
     }
 
     @media (max-width: 650px) {
+
       .container {
         width: min(100% - 32px, 1180px);
       }
@@ -864,12 +974,16 @@
       }
 
       .hero-grid {
-        padding: 75px 0;
+        padding: 70px 0 60px;
       }
 
-      .hero h1 {
-        font-size: 52px;
-        letter-spacing: -3px;
+      .hero-brand {
+        font-size: 72px;
+        letter-spacing: -5px;
+      }
+
+      .hero-slogan {
+        font-size: 24px;
       }
 
       .hero-text {
@@ -877,12 +991,71 @@
       }
 
       .hero-visual {
-        min-height: 300px;
+        min-height: 330px;
       }
 
-      .orb {
-        width: 260px;
-        height: 260px;
+      .global-ring {
+        width: 290px;
+        height: 290px;
+      }
+
+      .globe-core {
+        width: 125px;
+        height: 125px;
+      }
+
+      .connection.one {
+        width: 100px;
+        top: 62px;
+        left: 142px;
+      }
+
+      .connection.two {
+        width: 100px;
+        top: 145px;
+        left: 25px;
+      }
+
+      .connection.three {
+        width: 100px;
+        top: 220px;
+        left: 150px;
+      }
+
+      .connection.four {
+        width: 90px;
+        top: 240px;
+        left: 75px;
+      }
+
+      .global-node.one {
+        top: 36px;
+        right: 46px;
+      }
+
+      .global-node.two {
+        top: 133px;
+        left: 12px;
+      }
+
+      .global-node.three {
+        right: 12px;
+        bottom: 60px;
+      }
+
+      .global-node.four {
+        left: 60px;
+        bottom: 22px;
+      }
+
+      .global-node.five {
+        left: 133px;
+        top: 10px;
+      }
+
+      .global-node.six {
+        right: 70px;
+        top: 158px;
       }
 
       .section {
@@ -921,6 +1094,7 @@
   ========================= -->
 
   <header class="site-header">
+
     <div class="container navbar">
 
       <a href="index.html" class="logo">
@@ -928,6 +1102,7 @@
       </a>
 
       <nav class="desktop-nav">
+
         <ul class="nav-links">
 
           <li>
@@ -947,7 +1122,10 @@
           </li>
 
           <li>
-            <button class="ventures-trigger" onclick="openMegaMenu()">
+            <button
+              class="ventures-trigger"
+              onclick="openMegaMenu()"
+            >
               Ventures <span>⌄</span>
             </button>
           </li>
@@ -959,6 +1137,7 @@
           </li>
 
         </ul>
+
       </nav>
 
       <button
@@ -972,6 +1151,7 @@
       </button>
 
     </div>
+
   </header>
 
 
@@ -1003,10 +1183,7 @@
 
     </div>
 
-
     <div class="mega-content">
-
-      <!-- ABZEMO -->
 
       <div class="mega-section">
 
@@ -1022,8 +1199,6 @@
 
       </div>
 
-
-      <!-- ABZEMO AI -->
 
       <div class="mega-section">
 
@@ -1072,8 +1247,6 @@
       </div>
 
 
-      <!-- VENTURES -->
-
       <div class="mega-section">
 
         <div class="mega-section-title">
@@ -1120,7 +1293,6 @@
 
     </div>
 
-
     <div class="mega-footer">
 
       <span>
@@ -1148,13 +1320,13 @@
 
         <div>
 
-          <div class="eyebrow">
-  ABZEMO
-</div>
+          <div class="hero-brand">
+            ABZEMO<span>.</span>
+          </div>
 
-<h1>
-  Building What’s <span>Next.</span>
-</h1>
+          <div class="hero-slogan">
+            Building What’s Next.
+          </div>
 
           <p class="hero-text">
             ABZEMO is building a future-ready business ecosystem
@@ -1177,14 +1349,30 @@
         </div>
 
 
+        <!-- GLOBAL NETWORK VISUAL -->
+
         <div class="hero-visual">
 
-          <div class="orb">
+          <div class="global-ring">
 
-            <div class="node one"></div>
-            <div class="node two"></div>
-            <div class="node three"></div>
-            <div class="node four"></div>
+            <div class="globe-core">
+
+              <div class="global-core-line"></div>
+              <div class="global-core-line vertical"></div>
+
+            </div>
+
+            <div class="connection one"></div>
+            <div class="connection two"></div>
+            <div class="connection three"></div>
+            <div class="connection four"></div>
+
+            <div class="global-node one"></div>
+            <div class="global-node two"></div>
+            <div class="global-node three"></div>
+            <div class="global-node four"></div>
+            <div class="global-node five"></div>
+            <div class="global-node six"></div>
 
           </div>
 
