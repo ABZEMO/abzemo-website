@@ -642,3 +642,145 @@ select {
     grid-template-columns: 1fr;
   }
 }
+/* ==========================================
+   ABZEMO MEGA MENU
+========================================== */
+
+.menu-toggle{
+    display:none;
+    font-size:28px;
+    cursor:pointer;
+    color:#0b1f3a;
+}
+
+.side-menu{
+    position:fixed;
+    top:0;
+    left:-340px;
+    width:320px;
+    height:100%;
+    background:#071a35;
+    z-index:9999;
+    padding:40px 30px;
+    overflow-y:auto;
+    transition:0.4s;
+}
+
+.side-menu.active{
+    left:0;
+}
+
+.close-menu{
+    color:white;
+    font-size:30px;
+    cursor:pointer;
+    margin-bottom:30px;
+    display:block;
+}
+
+.side-title{
+    color:#7fb1ff;
+    font-size:13px;
+    text-transform:uppercase;
+    letter-spacing:2px;
+    margin-top:30px;
+    margin-bottom:15px;
+}
+
+.side-menu a{
+    display:block;
+    color:white;
+    text-decoration:none;
+    padding:10px 0;
+    font-size:15px;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+.side-menu a:hover{
+    color:#4f8cff;
+}
+
+.menu-overlay{
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.45);
+    top:0;
+    left:0;
+    opacity:0;
+    visibility:hidden;
+    transition:0.4s;
+    z-index:9998;
+}
+
+.menu-overlay.active{
+    opacity:1;
+    visibility:visible;
+}
+
+/* ==========================================
+   CEO NOTE
+========================================== */
+
+.ceo-note{
+    background:#f5f8fc;
+    padding:100px 0;
+}
+
+.ceo-card{
+    max-width:1000px;
+    margin:auto;
+    background:white;
+    border-radius:20px;
+    padding:50px;
+    box-shadow:0 20px 50px rgba(0,0,0,0.08);
+    display:grid;
+    grid-template-columns:250px 1fr;
+    gap:40px;
+    align-items:center;
+}
+
+.ceo-image{
+    width:250px;
+    height:250px;
+    border-radius:20px;
+    background:linear-gradient(135deg,#1769ff,#071a35);
+}
+
+.ceo-quote{
+    font-size:32px;
+    line-height:1.4;
+    color:#071a35;
+    font-style:italic;
+}
+
+.ceo-name{
+    margin-top:20px;
+    color:#1769ff;
+    font-weight:700;
+}
+
+/* ==========================================
+   MOBILE
+========================================== */
+
+@media(max-width:900px){
+
+    .menu-toggle{
+        display:block;
+    }
+
+    .nav-links{
+        display:none;
+    }
+
+    .ceo-card{
+        grid-template-columns:1fr;
+        text-align:center;
+    }
+
+    .ceo-image{
+        margin:auto;
+    }
+
+}
