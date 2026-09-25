@@ -5,245 +5,345 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>ABZEMO | Building What's Next.</title>
-  <meta name="description" content="ABZEMO is a global business and technology company building solutions, opportunities and ventures for what comes next.">
+
+  <meta
+    name="description"
+    content="ABZEMO is a global business and technology company building businesses, solutions and opportunities for what comes next."
+  >
 
   <link rel="stylesheet" href="styles.css">
 
   <style>
-    .home-hero {
-      min-height: 88vh;
+    /* =========================
+       ABZEMO HOMEPAGE
+       ========================= */
+
+    .abz-home {
+      background: #ffffff;
+      color: #0a0d12;
+    }
+
+    /* HERO */
+
+    .abz-hero {
+      min-height: 82vh;
       display: flex;
       align-items: center;
       position: relative;
       overflow: hidden;
-      background:
-        radial-gradient(circle at 80% 30%, rgba(30,120,255,.16), transparent 32%),
-        radial-gradient(circle at 20% 80%, rgba(0,180,255,.08), transparent 30%);
+      border-bottom: 1px solid #e8ebef;
     }
 
-    .home-hero h1 {
-      font-size: clamp(4rem, 9vw, 8.5rem);
-      line-height: .9;
-      letter-spacing: -.06em;
-      max-width: 1000px;
-      margin: 0 0 28px;
+    .abz-hero::after {
+      content: "";
+      position: absolute;
+      width: 650px;
+      height: 650px;
+      border-radius: 50%;
+      background: radial-gradient(
+        circle,
+        rgba(30, 110, 255, 0.13),
+        rgba(30, 110, 255, 0) 70%
+      );
+      right: -180px;
+      top: -180px;
+      pointer-events: none;
     }
 
-    .home-hero h1 span {
-      display: block;
-      opacity: .72;
+    .abz-hero-inner {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      padding: 110px 0 100px;
     }
 
-    .hero-copy {
-      max-width: 720px;
-      font-size: 1.25rem;
-      line-height: 1.7;
-      opacity: .78;
+    .abz-wordmark {
+      font-size: clamp(4rem, 9vw, 8rem);
+      font-weight: 800;
+      letter-spacing: -0.075em;
+      line-height: 0.9;
+      margin-bottom: 25px;
+    }
+
+    .abz-tagline {
+      font-size: 0.85rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      opacity: 0.55;
+      margin-bottom: 42px;
+    }
+
+    .abz-hero-title {
+      font-size: clamp(2.5rem, 5vw, 5.4rem);
+      line-height: 1.02;
+      letter-spacing: -0.05em;
+      max-width: 920px;
+      margin: 0 0 30px;
+      font-weight: 700;
+    }
+
+    .abz-hero-text {
+      max-width: 700px;
+      font-size: 1.18rem;
+      line-height: 1.75;
+      opacity: 0.65;
       margin-bottom: 38px;
     }
 
-    .hero-actions {
+    .abz-actions {
       display: flex;
-      gap: 14px;
       flex-wrap: wrap;
+      gap: 14px;
     }
 
-    .section-large {
+    /* INTRO */
+
+    .abz-section {
       padding: 120px 0;
     }
 
-    .section-label {
-      font-size: .78rem;
-      letter-spacing: .18em;
+    .abz-section-light {
+      background: #f5f7f9;
+    }
+
+    .abz-label {
+      font-size: 0.75rem;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
-      opacity: .55;
-      margin-bottom: 20px;
+      opacity: 0.5;
+      margin-bottom: 24px;
     }
 
-    .section-title {
-      font-size: clamp(2.5rem, 5vw, 5rem);
-      line-height: 1;
-      letter-spacing: -.04em;
-      max-width: 900px;
-      margin-bottom: 55px;
-    }
-
-    .statement {
-      font-size: clamp(2rem, 4vw, 4rem);
-      line-height: 1.08;
-      letter-spacing: -.04em;
+    .abz-big-text {
       max-width: 1050px;
+      font-size: clamp(2rem, 4vw, 4.2rem);
+      line-height: 1.08;
+      letter-spacing: -0.045em;
+      margin: 0;
     }
 
-    .build-grid {
+    /* WHAT WE DO */
+
+    .abz-build {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 1px;
-      background: rgba(255,255,255,.12);
-      border: 1px solid rgba(255,255,255,.12);
+      background: #dfe3e8;
+      border: 1px solid #dfe3e8;
+      margin-top: 60px;
     }
 
-    .build-item {
-      min-height: 230px;
-      padding: 38px;
-      background: #fff;
-      transition: transform .25s ease;
+    .abz-build-item {
+      background: #ffffff;
+      padding: 42px;
+      min-height: 260px;
     }
 
-    .build-item:hover {
-      transform: translateY(-4px);
+    .abz-number {
+      font-size: 0.75rem;
+      opacity: 0.4;
+      margin-bottom: 70px;
     }
 
-    .build-number {
-      font-size: .75rem;
-      opacity: .45;
-      margin-bottom: 55px;
+    .abz-build-item h3 {
+      font-size: 1.65rem;
+      margin: 0 0 14px;
+      letter-spacing: -0.02em;
     }
 
-    .build-item h3 {
-      font-size: 1.7rem;
-      margin-bottom: 12px;
+    .abz-build-item p {
+      max-width: 450px;
+      line-height: 1.65;
+      opacity: 0.62;
+      margin: 0;
     }
 
-    .build-item p {
-      opacity: .65;
-      line-height: 1.6;
-      max-width: 420px;
-    }
+    /* ABZEMO AI */
 
-    .ai-feature {
+    .abz-ai {
       background: #07111f;
-      color: #fff;
-      border-radius: 28px;
-      padding: clamp(35px, 6vw, 80px);
+      color: #ffffff;
+      border-radius: 30px;
+      padding: clamp(40px, 7vw, 85px);
       position: relative;
       overflow: hidden;
     }
 
-    .ai-feature:after {
+    .abz-ai::after {
       content: "";
       position: absolute;
-      width: 420px;
-      height: 420px;
+      width: 500px;
+      height: 500px;
+      right: -180px;
+      top: -180px;
       border-radius: 50%;
-      background: rgba(30,130,255,.18);
-      filter: blur(80px);
-      right: -120px;
-      top: -120px;
+      background: rgba(35, 125, 255, 0.2);
+      filter: blur(70px);
     }
 
-    .ai-feature > * {
+    .abz-ai-content {
       position: relative;
       z-index: 2;
     }
 
-    .ai-feature h2 {
-      font-size: clamp(3rem, 6vw, 6rem);
-      letter-spacing: -.05em;
-      line-height: .95;
-      max-width: 850px;
-      margin-bottom: 25px;
+    .abz-ai h2 {
+      font-size: clamp(3rem, 6vw, 6.5rem);
+      line-height: 0.95;
+      letter-spacing: -0.055em;
+      margin: 0 0 28px;
     }
 
-    .ai-feature p {
-      max-width: 700px;
+    .abz-ai p {
+      max-width: 720px;
       font-size: 1.15rem;
-      line-height: 1.7;
-      opacity: .72;
+      line-height: 1.75;
+      opacity: 0.72;
+      margin-bottom: 38px;
     }
 
-    .agent-line {
+    .abz-ai-tags {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
-      margin: 40px 0;
+      margin-bottom: 42px;
     }
 
-    .agent-line span {
-      border: 1px solid rgba(255,255,255,.18);
-      padding: 11px 17px;
+    .abz-ai-tags span {
+      padding: 10px 16px;
+      border: 1px solid rgba(255,255,255,0.18);
       border-radius: 100px;
-      font-size: .85rem;
+      font-size: 0.82rem;
+      opacity: 0.9;
     }
 
-    .future-grid {
+    /* FUTURE */
+
+    .abz-future {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 60px;
-      align-items: end;
+      gap: 80px;
+      align-items: start;
+      margin-top: 60px;
     }
 
-    .future-list {
-      border-top: 1px solid rgba(0,0,0,.15);
+    .abz-future h2 {
+      font-size: clamp(2.8rem, 5vw, 5rem);
+      line-height: 1;
+      letter-spacing: -0.05em;
+      margin: 0;
     }
 
-    .future-list div {
-      padding: 23px 0;
-      border-bottom: 1px solid rgba(0,0,0,.15);
+    .abz-future-list {
+      border-top: 1px solid #dfe3e8;
+    }
+
+    .abz-future-row {
       display: flex;
       justify-content: space-between;
       gap: 20px;
-      font-size: 1.15rem;
+      padding: 24px 0;
+      border-bottom: 1px solid #dfe3e8;
     }
 
-    .future-list span {
-      opacity: .45;
-      font-size: .8rem;
+    .abz-future-row strong {
+      font-size: 1.05rem;
+    }
+
+    .abz-future-row span {
+      font-size: 0.72rem;
       text-transform: uppercase;
-      letter-spacing: .1em;
+      letter-spacing: 0.1em;
+      opacity: 0.45;
+      white-space: nowrap;
     }
 
-    .quote-section {
-      background: #f3f5f7;
-      padding: 120px 0;
-    }
+    /* MISSION */
 
-    .quote {
-      font-size: clamp(2.2rem, 5vw, 5rem);
-      line-height: 1.05;
-      letter-spacing: -.045em;
+    .abz-purpose {
       max-width: 1100px;
     }
 
-    .quote-credit {
-      margin-top: 35px;
-      opacity: .55;
+    .abz-purpose h2 {
+      font-size: clamp(2.8rem, 6vw, 6rem);
+      line-height: 1;
+      letter-spacing: -0.055em;
+      margin: 0 0 45px;
     }
 
-    .final-cta {
-      padding: 130px 0;
-      text-align: center;
+    .abz-purpose-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
     }
 
-    .final-cta h2 {
-      font-size: clamp(3rem, 7vw, 7rem);
-      line-height: .92;
-      letter-spacing: -.06em;
+    /* DIRECTOR */
+
+    .abz-director {
+      background: #f2f4f6;
+    }
+
+    .abz-director-quote {
+      max-width: 1050px;
+      font-size: clamp(2.2rem, 4.8vw, 5rem);
+      line-height: 1.05;
+      letter-spacing: -0.05em;
+      margin: 0 0 35px;
+    }
+
+    .abz-director-name {
+      opacity: 0.5;
       margin-bottom: 35px;
     }
 
+    /* FINAL CTA */
+
+    .abz-final {
+      text-align: center;
+      padding: 140px 0;
+    }
+
+    .abz-final h2 {
+      font-size: clamp(3rem, 7vw, 7rem);
+      line-height: 0.92;
+      letter-spacing: -0.06em;
+      margin: 0 0 38px;
+    }
+
+    /* MOBILE */
+
     @media (max-width: 700px) {
-      .home-hero {
-        min-height: 78vh;
-      }
 
-      .home-hero h1 {
-        font-size: clamp(3.3rem, 17vw, 5rem);
-      }
-
-      .build-grid,
-      .future-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .section-large,
-      .quote-section,
-      .final-cta {
+      .abz-hero-inner {
         padding: 80px 0;
       }
 
-      .build-item {
+      .abz-wordmark {
+        font-size: clamp(3.8rem, 18vw, 6rem);
+      }
+
+      .abz-hero-title {
+        font-size: clamp(2.4rem, 11vw, 4rem);
+      }
+
+      .abz-section {
+        padding: 80px 0;
+      }
+
+      .abz-build {
+        grid-template-columns: 1fr;
+      }
+
+      .abz-build-item {
         min-height: auto;
+      }
+
+      .abz-future {
+        grid-template-columns: 1fr;
+        gap: 50px;
+      }
+
+      .abz-final {
+        padding: 90px 0;
       }
     }
   </style>
@@ -276,166 +376,240 @@
 </header>
 
 
-<main>
+<main class="abz-home">
 
   <!-- HERO -->
-  <section class="home-hero">
-    <div class="container">
 
-      <div class="section-label">ABZEMO</div>
+  <section class="abz-hero">
 
-      <h1>
-        BUILDING
-        <span>WHAT'S NEXT.</span>
+    <div class="container abz-hero-inner">
+
+      <div class="abz-wordmark">
+        ABZEMO
+      </div>
+
+      <div class="abz-tagline">
+        Building What's Next.
+      </div>
+
+      <h1 class="abz-hero-title">
+        Building businesses, technology
+        and opportunities for the world ahead.
       </h1>
 
-      <p class="hero-copy">
-        A global business and technology company building solutions,
-        opportunities and ventures for a rapidly changing world.
+      <p class="abz-hero-text">
+        ABZEMO is a global business and technology company
+        creating solutions, ventures and opportunities across
+        a changing world.
       </p>
 
-      <div class="hero-actions">
-        <a href="about.html" class="btn btn-primary">Explore ABZEMO</a>
-        <a href="abzemo-ai.html" class="btn btn-secondary">Discover ABZEMO AI</a>
-      </div>
+      <div class="abz-actions">
 
-    </div>
-  </section>
+        <a href="about.html" class="btn btn-primary">
+          Explore ABZEMO
+        </a>
 
-
-  <!-- WHO WE ARE -->
-  <section class="section-large">
-    <div class="container">
-
-      <div class="section-label">01 — The Company</div>
-
-      <p class="statement">
-        ABZEMO is built as a long-term platform for creating
-        businesses, technology and opportunities that move forward
-        with the world.
-      </p>
-
-    </div>
-  </section>
-
-
-  <!-- WHAT WE BUILD -->
-  <section class="section-large">
-    <div class="container">
-
-      <div class="section-label">02 — What We Build</div>
-
-      <h2 class="section-title">
-        Multiple possibilities.<br>
-        One ABZEMO.
-      </h2>
-
-      <div class="build-grid">
-
-        <div class="build-item">
-          <div class="build-number">01</div>
-          <h3>Technology</h3>
-          <p>Technology-led products, platforms and intelligent systems designed for real-world needs.</p>
-        </div>
-
-        <div class="build-item">
-          <div class="build-number">02</div>
-          <h3>Business Solutions</h3>
-          <p>Practical solutions that help organizations improve processes, operations and growth.</p>
-        </div>
-
-        <div class="build-item">
-          <div class="build-number">03</div>
-          <h3>Digital Transformation</h3>
-          <p>Connecting people, processes and technology to create better ways of working.</p>
-        </div>
-
-        <div class="build-item">
-          <div class="build-number">04</div>
-          <h3>Future Ventures</h3>
-          <p>New businesses and opportunities built as ABZEMO evolves into a broader global ecosystem.</p>
-        </div>
-
-      </div>
-
-    </div>
-  </section>
-
-
-  <!-- ABZEMO AI -->
-  <section class="section-large">
-    <div class="container">
-
-      <div class="ai-feature">
-
-        <div class="section-label">03 — Current Technology Focus</div>
-
-        <h2>Meet ABZEMO AI.</h2>
-
-        <p>
-          Our first major technology vision: intelligent AI agents
-          designed to understand conversations, business context
-          and workflows — and turn intelligence into action.
-        </p>
-
-        <div class="agent-line">
-          <span>Sales Agents</span>
-          <span>Finance Agents</span>
-          <span>ERP Agents</span>
-          <span>Real Estate</span>
-          <span>Healthcare</span>
-          <span>Education</span>
-          <span>Enterprise</span>
-        </div>
-
-        <a href="abzemo-ai.html" class="btn btn-primary">
-          Explore ABZEMO AI →
+        <a href="abzemo-ai.html" class="btn btn-secondary">
+          Explore ABZEMO AI
         </a>
 
       </div>
 
     </div>
+
+  </section>
+
+
+  <!-- WHO WE ARE -->
+
+  <section class="abz-section">
+
+    <div class="container">
+
+      <div class="abz-label">
+        01 — The Company
+      </div>
+
+      <p class="abz-big-text">
+        ABZEMO is a long-term platform for building
+        businesses, technology and opportunities that
+        move forward with the world.
+      </p>
+
+    </div>
+
+  </section>
+
+
+  <!-- WHAT WE BUILD -->
+
+  <section class="abz-section abz-section-light">
+
+    <div class="container">
+
+      <div class="abz-label">
+        02 — What We Build
+      </div>
+
+      <p class="abz-big-text">
+        One company. Multiple possibilities.
+      </p>
+
+
+      <div class="abz-build">
+
+        <div class="abz-build-item">
+
+          <div class="abz-number">01</div>
+
+          <h3>Technology</h3>
+
+          <p>
+            Technology-led products, platforms and
+            intelligent systems designed around real
+            business and human needs.
+          </p>
+
+        </div>
+
+
+        <div class="abz-build-item">
+
+          <div class="abz-number">02</div>
+
+          <h3>Business Solutions</h3>
+
+          <p>
+            Practical solutions that improve operations,
+            processes, productivity and growth.
+          </p>
+
+        </div>
+
+
+        <div class="abz-build-item">
+
+          <div class="abz-number">03</div>
+
+          <h3>Digital Transformation</h3>
+
+          <p>
+            Connecting people, processes and technology
+            to create better ways of working.
+          </p>
+
+        </div>
+
+
+        <div class="abz-build-item">
+
+          <div class="abz-number">04</div>
+
+          <h3>Future Ventures</h3>
+
+          <p>
+            New businesses and opportunities that expand
+            ABZEMO into new industries and markets.
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ABZEMO AI -->
+
+  <section class="abz-section">
+
+    <div class="container">
+
+      <div class="abz-ai">
+
+        <div class="abz-ai-content">
+
+          <div class="abz-label">
+            03 — Current Technology Focus
+          </div>
+
+          <h2>
+            ABZEMO AI
+          </h2>
+
+          <p>
+            Our first major technology vision is a new
+            generation of intelligent AI agents designed
+            to understand conversations, business context
+            and workflows — and turn intelligence into action.
+          </p>
+
+          <div class="abz-ai-tags">
+
+            <span>Sales Agents</span>
+            <span>Finance Agents</span>
+            <span>ERP Agents</span>
+            <span>Real Estate</span>
+            <span>Healthcare</span>
+            <span>Education</span>
+            <span>Enterprise</span>
+
+          </div>
+
+          <a href="abzemo-ai.html" class="btn btn-primary">
+            Discover ABZEMO AI →
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
   </section>
 
 
   <!-- FUTURE -->
-  <section class="section-large">
+
+  <section class="abz-section abz-section-light">
+
     <div class="container">
 
-      <div class="future-grid">
+      <div class="abz-label">
+        04 — Looking Ahead
+      </div>
+
+      <div class="abz-future">
 
         <div>
-          <div class="section-label">04 — Looking Ahead</div>
 
-          <h2 class="section-title">
+          <h2>
             The future is bigger than one idea.
           </h2>
 
-          <p style="max-width:600px;line-height:1.8;opacity:.65;">
-            ABZEMO begins with technology and AI, but the long-term
-            vision extends beyond a single industry, product or
-            business model.
-          </p>
         </div>
 
-        <div class="future-list">
 
-          <div>
+        <div class="abz-future-list">
+
+          <div class="abz-future-row">
             <strong>ABZEMO AI</strong>
             <span>Current Focus</span>
           </div>
 
-          <div>
+          <div class="abz-future-row">
             <strong>Healthcare</strong>
             <span>Future Venture</span>
           </div>
 
-          <div>
+          <div class="abz-future-row">
             <strong>Global Trade</strong>
             <span>Future Venture</span>
           </div>
 
-          <div>
+          <div class="abz-future-row">
             <strong>New Opportunities</strong>
             <span>What's Next</span>
           </div>
@@ -445,78 +619,113 @@
       </div>
 
     </div>
+
   </section>
 
 
   <!-- MISSION / VISION -->
-  <section class="section-large">
+
+  <section class="abz-section">
+
     <div class="container">
 
-      <div class="section-label">05 — Why We Build</div>
+      <div class="abz-purpose">
 
-      <p class="statement">
-        Build with purpose.<br>
-        Think beyond today.<br>
-        Create what comes next.
-      </p>
+        <div class="abz-label">
+          05 — Our Purpose
+        </div>
 
-      <div style="margin-top:55px;">
-        <a href="mission.html" class="btn btn-secondary">Our Mission</a>
-        <a href="vision.html" class="btn btn-secondary">Our Vision</a>
+        <h2>
+          Build with purpose.<br>
+          Think beyond today.<br>
+          Create what comes next.
+        </h2>
+
+        <div class="abz-purpose-links">
+
+          <a href="mission.html" class="btn btn-secondary">
+            Our Mission
+          </a>
+
+          <a href="vision.html" class="btn btn-secondary">
+            Our Vision
+          </a>
+
+        </div>
+
       </div>
 
     </div>
+
   </section>
 
 
   <!-- DIRECTOR'S NOTE -->
-  <section class="quote-section">
+
+  <section class="abz-section abz-director">
+
     <div class="container">
 
-      <div class="section-label">06 — Director's Note</div>
+      <div class="abz-label">
+        06 — Director's Note
+      </div>
 
-      <p class="quote">
-        “We are not building technology simply because it is possible.
-        We are building it because businesses and people need better
-        ways to move forward.”
+      <p class="abz-director-quote">
+        We are not building technology simply because
+        it is possible. We are building it because
+        businesses and people need better ways to
+        move forward.
       </p>
 
-      <div class="quote-credit">
+      <div class="abz-director-name">
         — Director, ABZEMO
       </div>
 
-      <div style="margin-top:35px;">
-        <a href="director-note.html" class="btn btn-secondary">
-          Read the Director's Note →
-        </a>
-      </div>
+      <a href="director-note.html" class="btn btn-secondary">
+        Read the Director's Note →
+      </a>
 
     </div>
+
   </section>
 
 
-  <!-- CTA -->
-  <section class="final-cta">
+  <!-- FINAL CTA -->
+
+  <section class="abz-final">
+
     <div class="container">
 
-      <div class="section-label">07 — Start a Conversation</div>
+      <div class="abz-label">
+        07 — Start a Conversation
+      </div>
 
-      <h2>LET'S BUILD<br>WHAT'S NEXT.</h2>
+      <h2>
+        LET'S BUILD<br>
+        WHAT'S NEXT.
+      </h2>
 
       <a href="contact.html" class="btn btn-primary">
         Talk to ABZEMO →
       </a>
 
     </div>
+
   </section>
 
 </main>
 
 
 <footer class="site-footer">
+
   <div class="container">
-    <p>© 2026 ABZEMO. Building What's Next.</p>
+
+    <p>
+      © 2026 ABZEMO. Building What's Next.
+    </p>
+
   </div>
+
 </footer>
 
 </body>
