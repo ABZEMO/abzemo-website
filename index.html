@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ABZEMO | Building What's Next.</title>
+
+<meta name="description" content="ABZEMO builds intelligent business solutions, AI automation and future-ready technologies for organizations worldwide.">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    font-family:Arial, Helvetica, sans-serif;
+    color:#101828;
+    background:#ffffff;
+    line-height:1.6;
+}
+
+a{
+    text-decoration:none;
+    color:inherit;
+}
+
+.container{
+    width:min(1180px,92%);
+    margin:auto;
+}
+
+/* NAVIGATION */
+
+header{
+    position:sticky;
+    top:0;
+    z-index:1000;
+    background:rgba(255,255,255,.96);
+    border-bottom:1px solid #e7eaf0;
+    backdrop-filter:blur(10px);
+}
+
+.nav{
+    min-height:76px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:30px;
+}
+
+.logo{
+    font-size:28px;
+    font-weight:800;
+    letter-spacing:2px;
+}
+
+.logo span{
+    color:#1264ff;
+}
+
+.nav-links{
+    display:flex;
+    align-items:center;
+    gap:25px;
+    font-size:14px;
+    font-weight:600;
+}
+
+.nav-links a:hover{
+    color:#1264ff;
+}
+
+.nav-button{
+    background:#1264ff;
+    color:white;
+    padding:11px 19px;
+    border-radius:7px;
+}
+
+/* HERO */
+
+.hero{
+    min-height:650px;
+    display:flex;
+    align-items:center;
+    background:
+        radial-gradient(circle at 80% 20%,#dce9ff 0,transparent 30%),
+        linear-gradient(135deg,#f8fbff,#ffffff);
+}
+
+.hero-content{
+    max-width:780px;
+}
+
+.badge{
+    display:inline-block;
+    padding:8px 14px;
+    border:1px solid #cbdcff;
+    border-radius:30px;
+    color:#1264ff;
+    font-size:13px;
+    font-weight:700;
+    margin-bottom:22px;
+    background:white;
+}
+
+.hero h1{
+    font-size:clamp(48px,7vw,82px);
+    line-height:1.02;
+    letter-spacing:-3px;
+    margin-bottom:25px;
+}
+
+.hero h1 span{
+    color:#1264ff;
+}
+
+.hero p{
+    font-size:20px;
+    color:#475467;
+    max-width:700px;
+    margin-bottom:34px;
+}
+
+.buttons{
+    display:flex;
+    gap:14px;
+    flex-wrap:wrap;
+}
+
+.btn{
+    padding:14px 23px;
+    border-radius:7px;
+    font-weight:700;
+    display:inline-block;
+}
+
+.btn-primary{
+    background:#1264ff;
+    color:white;
+}
+
+.btn-secondary{
+    border:1px solid #cfd5df;
+    background:white;
+}
+
+/* SECTIONS */
+
+section{
+    padding:100px 0;
+}
+
+.section-light{
+    background:#f8fafc;
+}
+
+.section-title{
+    max-width:720px;
+    margin-bottom:50px;
+}
+
+.section-title .small{
+    color:#1264ff;
+    text-transform:uppercase;
+    letter-spacing:2px;
+    font-size:12px;
+    font-weight:800;
+    margin-bottom:12px;
+}
+
+.section-title h2{
+    font-size:42px;
+    line-height:1.15;
+    margin-bottom:15px;
+}
+
+.section-title p{
+    color:#667085;
+    font-size:17px;
+}
+
+/* CARDS */
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:24px;
+}
+
+.card{
+    padding:30px;
+    background:white;
+    border:1px solid #e5e7eb;
+    border-radius:14px;
+    transition:.25s;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 15px 35px rgba(16,24,40,.08);
+}
+
+.icon{
+    width:48px;
+    height:48px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:10px;
+    background:#eaf1ff;
+    color:#1264ff;
+    font-weight:800;
+    margin-bottom:20px;
+}
+
+.card h3{
+    margin-bottom:10px;
+    font-size:20px;
+}
+
+.card p{
+    color:#667085;
+}
+
+/* AI FEATURE */
+
+.ai-section{
+    background:#07111f;
+    color:white;
+}
+
+.ai-section .section-title p{
+    color:#b8c3d1;
+}
+
+.ai-box{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:30px;
+    align-items:stretch;
+}
+
+.ai-info{
+    padding:40px;
+    border:1px solid #26364b;
+    border-radius:16px;
+    background:#0c1929;
+}
+
+.ai-info h3{
+    font-size:30px;
+    margin-bottom:15px;
+}
+
+.ai-info p{
+    color:#b8c3d1;
+    margin-bottom:25px;
+}
+
+.ai-list{
+    list-style:none;
+}
+
+.ai-list li{
+    padding:12px 0;
+    border-bottom:1px solid #26364b;
+    color:#d7deea;
+}
+
+.ai-list li::before{
+    content:"✓";
+    color:#4d91ff;
+    margin-right:10px;
+}
+
+.chat-demo{
+    border-radius:16px;
+    background:white;
+    color:#101828;
+    padding:25px;
+}
+
+.chat-header{
+    font-weight:800;
+    padding-bottom:18px;
+    border-bottom:1px solid #e5e7eb;
+}
+
+.chat-message{
+    margin-top:18px;
+    padding:13px 15px;
+    border-radius:10px;
+    max-width:85%;
+    font-size:14px;
+}
+
+.user-message{
+    background:#1264ff;
+    color:white;
+    margin-left:auto;
+}
+
+.ai-message{
+    background:#f1f4f8;
+}
+
+/* MISSION / VISION */
+
+.two-column{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:30px;
+}
+
+.large-card{
+    padding:45px;
+    border-radius:16px;
+    border:1px solid #e5e7eb;
+    background:white;
+}
+
+.large-card h3{
+    font-size:28px;
+    margin-bottom:15px;
+}
+
+.large-card p{
+    color:#667085;
+    font-size:17px;
+}
+
+/* DIRECTOR */
+
+.director{
+    max-width:850px;
+}
+
+.quote{
+    font-size:30px;
+    line-height:1.35;
+    margin-bottom:25px;
+}
+
+.director p{
+    color:#667085;
+}
+
+/* CONTACT */
+
+.contact-box{
+    background:#1264ff;
+    color:white;
+    border-radius:18px;
+    padding:60px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:30px;
+}
+
+.contact-box h2{
+    font-size:38px;
+    line-height:1.15;
+    margin-bottom:10px;
+}
+
+.contact-box p{
+    color:#dce9ff;
+}
+
+.contact-box .btn{
+    background:white;
+    color:#1264ff;
+    white-space:nowrap;
+}
+
+/* FOOTER */
+
+footer{
+    background:#07111f;
+    color:#b8c3d1;
+    padding:55px 0 25px;
+}
+
+.footer-grid{
+    display:grid;
+    grid-template-columns:2fr 1fr 1fr;
+    gap:50px;
+    margin-bottom:40px;
+}
+
+.footer-brand{
+    color:white;
+    font-size:26px;
+    font-weight:800;
+    letter-spacing:2px;
+    margin-bottom:15px;
+}
+
+.footer-title{
+    color:white;
+    font-weight:700;
+    margin-bottom:12px;
+}
+
+.footer-links a{
+    display:block;
+    margin:7px 0;
+    font-size:14px;
+}
+
+.footer-links a:hover{
+    color:white;
+}
+
+.copyright{
+    border-top:1px solid #26364b;
+    padding-top:20px;
+    font-size:13px;
+}
+
+/* MOBILE */
+
+@media(max-width:850px){
+
+    .nav-links{
+        display:none;
+    }
+
+    .hero{
+        min-height:570px;
+    }
+
+    .hero h1{
+        font-size:52px;
+        letter-spacing:-2px;
+    }
+
+    .hero p{
+        font-size:17px;
+    }
+
+    .grid,
+    .two-column,
+    .ai-box,
+    .footer-grid{
+        grid-template-columns:1fr;
+    }
+
+    section{
+        padding:70px 0;
+    }
+
+    .section-title h2{
+        font-size:34px;
+    }
+
+    .contact-box{
+        padding:35px;
+        flex-direction:column;
+        align-items:flex-start;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="container nav">
+
+<a href="#home" class="logo">ABZEMO<span>.</span></a>
+
+<nav class="nav-links">
+<a href="#about">About</a>
+<a href="#solutions">Solutions</a>
+<a href="#industries">Industries</a>
+<a href="#ai">ABZEMO AI</a>
+<a href="#vision">Vision</a>
+<a href="#contact" class="nav-button">Contact</a>
+</nav>
+
+</div>
+</header>
+
+
+<!-- HERO -->
+
+<section class="hero" id="home">
+<div class="container">
+<div class="hero-content">
+
+<div class="badge">BUILDING WHAT'S NEXT.</div>
+
+<h1>
+Building the future of
+<span>business.</span>
+</h1>
+
+<p>
+ABZEMO develops intelligent business solutions, automation
+and future-ready technologies designed to help organizations
+operate smarter, connect better and grow with confidence.
+</p>
+
+<div class="buttons">
+<a href="#ai" class="btn btn-primary">Explore ABZEMO AI</a>
+<a href="#about" class="btn btn-secondary">Discover ABZEMO</a>
+</div>
+
+</div>
+</div>
+</section>
+
+
+<!-- ABOUT -->
+
+<section id="about">
+<div class="container">
+
+<div class="section-title">
+<div class="small">About ABZEMO</div>
+<h2>A company built for what comes next.</h2>
+<p>
+ABZEMO is a future-focused business built to create
+technology-enabled solutions across industries and markets.
+</p>
+</div>
+
+<div class="grid">
+
+<div class="card">
+<div class="icon">01</div>
+<h3>Innovation</h3>
+<p>
+We explore emerging technologies and transform them into
+practical solutions for real business challenges.
+</p>
+</div>
+
+<div class="card">
+<div class="icon">02</div>
+<h3>Business</h3>
+<p>
+We focus on solutions that create measurable operational
+value, efficiency and better customer experiences.
+</p>
+</div>
+
+<div class="card">
+<div class="icon">03</div>
+<h3>Global Vision</h3>
+<p>
+ABZEMO is designed from the beginning with a global
+perspective and a long-term international ambition.
+</p>
+</div>
+
+</div>
+</div>
+</section>
+
+
+<!-- SOLUTIONS -->
+
+<section class="section-light" id="solutions">
+<div class="container">
+
+<div class="section-title">
+<div class="small">Solutions</div>
+<h2>Technology designed around business needs.</h2>
+<p>
+Our solutions are built to connect people, processes,
+data and intelligent automation.
+</p>
+</div>
+
+<div class="grid">
+
+<div class="card">
+<div class="icon">AI</div>
+<h3>AI & Automation</h3>
+<p>
+Intelligent agents and automation systems that help
+organizations reduce repetitive work and improve processes.
+</p>
+</div>
+
+<div class="card">
+<div class="icon">PM</div>
+<h3>Project Management</h3>
+<p>
+Structured business and technology project solutions
+from planning through implementation.
+</p>
+</div>
+
+<div class="card">
+<div class="icon">DX</div>
+<h3>Digital Transformation</h3>
+<p>
+Technology strategies designed to help organizations
+modernize operations and customer experiences.
+</p>
+</div>
+
+</div>
+</div>
+</section>
+
+
+<!-- INDUSTRIES -->
+
+<section id="industries">
+<div class="container">
+
+<div class="section-title">
+<div class="small">Industries</div>
+<h2>Solutions across sectors.</h2>
+<p>
+ABZEMO's platform is designed to adapt to different
+industries and evolving business requirements.
+</p>
+</div>
+
+<div class="grid">
+
+<div class="card">
+<h3>Healthcare</h3>
+<p>Process automation and intelligent workflows for healthcare organizations.</p>
+</div>
+
+<div class="card">
+<h3>Education</h3>
+<p>Technology solutions for schools, universities and education networks.</p>
+</div>
+
+<div class="card">
+<h3>Real Estate</h3>
+<p>AI-powered lead qualification, customer engagement and sales automation.</p>
+</div>
+
+<div class="card">
+<h3>Pharmaceuticals</h3>
+<p>Digital workflows and intelligent business process solutions.</p>
+</div>
+
+<div class="card">
+<h3>Logistics</h3>
+<p>Automation and intelligent coordination for modern logistics operations.</p>
+</div>
+
+<div class="card">
+<h3>Enterprise</h3>
+<p>AI and automation solutions designed around organizational workflows.</p>
+</div>
+
+</div>
+</div>
+</section>
+
+
+<!-- ABZEMO AI -->
+
+<section class="ai-section" id="ai">
+<div class="container">
+
+<div class="section-title">
+<div class="small">ABZEMO AI</div>
+<h2>Intelligence that understands your business.</h2>
+<p>
+ABZEMO AI is our first technology vision:
+multilingual intelligent agents designed to understand,
+communicate, qualify, organize and automate business processes.
+</p>
+</div>
+
+<div class="ai-box">
+
+<div class="ai-info">
+
+<h3>Multilingual AI Agents</h3>
+
+<p>
+Our long-term vision is to build intelligent agents capable
+of communicating naturally with people around the world.
+</p>
+
+<ul class="ai-list">
+<li>Multiple language understanding</li>
+<li>Natural multilingual conversations</li>
+<li>Structured business data in English</li>
+<li>Sales and lead qualification</li>
+<li>Business process automation</li>
+<li>Industry-specific AI agents</li>
+</ul>
+
+</div>
+
+<div class="chat-demo">
+
+<div class="chat-header">
+ABZEMO AI — Multilingual Agent
+</div>
+
+<div class="chat-message user-message">
+مرحباً، أريد شراء عقار في دبي.
+</div>
+
+<div class="chat-message ai-message">
+مرحباً! بالتأكيد. هل تبحث عن عقار للسكن أم للاستثمار؟
+</div>
+
+<div class="chat-message user-message">
+للاستثمار، وميزانيتي حوالي 2 مليون درهم.
+</div>
+
+<div class="chat-message ai-message">
+تم. سأجمع متطلباتك وأرسلها إلى فريق المبيعات المختص.
+</div>
+
+</div>
+
+</div>
+</div>
+</section>
+
+
+<!-- MISSION / VISION -->
+
+<section id="vision" class="section-light">
+<div class="container">
+
+<div class="section-title">
+<div class="small">Our Direction</div>
+<h2>Purpose today. Possibility tomorrow.</h2>
+</div>
+
+<div class="two-column">
+
+<div class="large-card">
+<h3>Our Mission</h3>
+<p>
+To build practical, intelligent and scalable solutions
+that help businesses operate more efficiently, serve
+their customers better and create sustainable value.
+</p>
+</div>
+
+<div class="large-card">
+<h3>Our Vision</h3>
+<p>
+To become a globally connected technology and business
+platform that continuously creates solutions for the
+changing needs of organizations and people.
+</p>
+</div>
+
+</div>
+</div>
+</section>
+
+
+<!-- DIRECTOR NOTE -->
+
+<section>
+<div class="container">
+
+<div class="section-title">
+<div class="small">Director's Note</div>
+<h2>A long-term vision begins with meaningful work today.</h2>
+</div>
+
+<div class="director">
+
+<div class="quote">
+"At ABZEMO, we believe the future belongs to organizations
+that are willing to understand change and build for it."
+</div>
+
+<p>
+Our journey begins with technology and intelligent
+automation, but our ambition extends beyond a single
+product, industry or market. We aim to build ABZEMO as
+a platform for meaningful business solutions — combining
+innovation, execution and a global perspective.
+</p>
+
+<br>
+
+<p>
+We are building what comes next, one practical solution
+at a time.
+</p>
+
+</div>
+</div>
+</section>
+
+
+<!-- CONTACT -->
+
+<section id="contact" class="section-light">
+<div class="container">
+
+<div class="contact-box">
+
+<div>
+<h2>Let's build what's next.</h2>
+<p>
+Have a business challenge, partnership idea or project?
+Let's start a conversation.
+</p>
+</div>
+
+<a href="mailto:info@abzemo.com" class="btn">
+Contact ABZEMO
+</a>
+
+</div>
+
+</div>
+</section>
+
+
+<!-- FOOTER -->
+
+<footer>
+<div class="container">
+
+<div class="footer-grid">
+
+<div>
+<div class="footer-brand">ABZEMO.</div>
+<p>
+Building intelligent business solutions
+for a changing world.
+</p>
+</div>
+
+<div>
+<div class="footer-title">Company</div>
+<div class="footer-links">
+<a href="#about">About</a>
+<a href="#vision">Mission & Vision</a>
+<a href="#industries">Industries</a>
+</div>
+</div>
+
+<div>
+<div class="footer-title">Solutions</div>
+<div class="footer-links">
+<a href="#solutions">Solutions</a>
+<a href="#ai">ABZEMO AI</a>
+<a href="#contact">Contact</a>
+</div>
+</div>
+
+</div>
+
+<div class="copyright">
+© 2026 ABZEMO. All rights reserved.
+</div>
+
+</div>
+</footer>
+
+</body>
+</html>
