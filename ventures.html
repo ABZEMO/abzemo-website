@@ -4,50 +4,397 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>ABZEMO Ventures — Building What's Next.</title>
+  <title>ABZEMO Ventures | Building What’s Next.</title>
   <meta
     name="description"
-    content="ABZEMO Ventures explores businesses and future opportunities across AI, healthcare, trade, education, real estate, logistics, finance and more."
+    content="ABZEMO Ventures explores businesses and opportunities across technology, healthcare, trade, education, real estate, logistics, finance and future industries."
   >
 
   <link rel="stylesheet" href="styles.css">
+
+  <style>
+    /* =========================================================
+       VENTURES PAGE — PAGE-SPECIFIC CONTENT ONLY
+       Header / Mega Menu use the ABZEMO master structure.
+       ========================================================= */
+
+    .ventures-hero {
+      background:
+        radial-gradient(circle at 80% 20%, rgba(38, 132, 255, 0.16), transparent 32%),
+        linear-gradient(135deg, #071a35 0%, #0c2850 100%);
+      color: #fff;
+      padding: 110px 24px 100px;
+    }
+
+    .ventures-hero-inner {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+    }
+
+    .ventures-eyebrow {
+      display: inline-block;
+      margin-bottom: 20px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #8dbdff;
+    }
+
+    .ventures-hero h1 {
+      max-width: 850px;
+      margin: 0;
+      font-size: clamp(46px, 7vw, 82px);
+      line-height: 0.98;
+      letter-spacing: -0.045em;
+      font-weight: 700;
+    }
+
+    .ventures-hero h1 span {
+      display: block;
+      color: #8dbdff;
+    }
+
+    .ventures-hero p {
+      max-width: 720px;
+      margin: 30px 0 0;
+      color: rgba(255,255,255,0.76);
+      font-size: 19px;
+      line-height: 1.75;
+    }
+
+    .ventures-section {
+      padding: 105px 24px;
+      background: #fff;
+    }
+
+    .ventures-section.soft {
+      background: #f5f8fc;
+    }
+
+    .ventures-container {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+    }
+
+    .ventures-section-heading {
+      max-width: 760px;
+      margin-bottom: 55px;
+    }
+
+    .ventures-section-heading .eyebrow {
+      display: block;
+      margin-bottom: 14px;
+      color: #2f78d6;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .ventures-section-heading h2 {
+      margin: 0;
+      color: #0b1f3a;
+      font-size: clamp(34px, 5vw, 56px);
+      line-height: 1.05;
+      letter-spacing: -0.035em;
+    }
+
+    .ventures-section-heading p {
+      margin: 22px 0 0;
+      color: #66758a;
+      font-size: 17px;
+      line-height: 1.75;
+    }
+
+    .ventures-ai {
+      padding: 105px 24px;
+      color: #fff;
+      background:
+        radial-gradient(circle at 82% 18%, rgba(57, 145, 255, 0.18), transparent 30%),
+        linear-gradient(135deg, #071a35 0%, #102b4d 100%);
+    }
+
+    .ventures-ai-inner {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+    }
+
+    .ventures-ai .eyebrow {
+      display: block;
+      margin-bottom: 15px;
+      color: #8dbdff;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .ventures-ai h2 {
+      max-width: 850px;
+      margin: 0;
+      font-size: clamp(34px, 5vw, 58px);
+      line-height: 1.05;
+      letter-spacing: -0.035em;
+    }
+
+    .ventures-ai p {
+      max-width: 760px;
+      margin: 24px 0 0;
+      color: rgba(255,255,255,0.74);
+      font-size: 17px;
+      line-height: 1.8;
+    }
+
+    .ventures-ai-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 55px;
+    }
+
+    .ventures-ai-card {
+      padding: 30px;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 18px;
+      background: rgba(255,255,255,0.045);
+    }
+
+    .ventures-ai-card strong {
+      display: block;
+      margin-bottom: 12px;
+      color: #fff;
+      font-size: 19px;
+    }
+
+    .ventures-ai-card span {
+      color: rgba(255,255,255,0.62);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .ventures-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+
+    .venture-card {
+      position: relative;
+      min-height: 285px;
+      padding: 30px;
+      border: 1px solid #e3e9f1;
+      border-radius: 18px;
+      background: #fff;
+      transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
+      scroll-margin-top: 110px;
+    }
+
+    .venture-card:hover {
+      transform: translateY(-5px);
+      border-color: #c8d8eb;
+      box-shadow: 0 18px 45px rgba(11,31,58,0.08);
+    }
+
+    .venture-number {
+      display: block;
+      margin-bottom: 45px;
+      color: #8ca0b7;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+    }
+
+    .venture-card h3 {
+      margin: 0 0 13px;
+      color: #0b1f3a;
+      font-size: 24px;
+      line-height: 1.15;
+    }
+
+    .venture-card p {
+      margin: 0;
+      color: #68788d;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .venture-status {
+      display: inline-block;
+      margin-top: 22px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #eef5fd;
+      color: #2f78d6;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .approach-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+    }
+
+    .approach-card {
+      padding: 32px;
+      border-radius: 18px;
+      background: #f5f8fc;
+    }
+
+    .approach-card .number {
+      display: block;
+      margin-bottom: 24px;
+      color: #2f78d6;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .approach-card h3 {
+      margin: 0 0 12px;
+      color: #0b1f3a;
+      font-size: 22px;
+    }
+
+    .approach-card p {
+      margin: 0;
+      color: #68788d;
+      font-size: 15px;
+      line-height: 1.75;
+    }
+
+    .looking-ahead {
+      padding: 105px 24px;
+      color: #fff;
+      background: #071a35;
+    }
+
+    .looking-ahead-inner {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .looking-ahead h2 {
+      margin: 0;
+      font-size: clamp(35px, 5vw, 58px);
+      line-height: 1.05;
+      letter-spacing: -0.035em;
+    }
+
+    .looking-ahead p {
+      margin: 22px 0 0;
+      color: rgba(255,255,255,0.68);
+      font-size: 17px;
+      line-height: 1.8;
+    }
+
+    .future-points {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .future-point {
+      padding: 25px;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      background: rgba(255,255,255,0.04);
+    }
+
+    .future-point strong {
+      display: block;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+
+    .future-point span {
+      color: rgba(255,255,255,0.6);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 900px) {
+      .ventures-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .ventures-ai-grid,
+      .approach-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .looking-ahead-inner {
+        grid-template-columns: 1fr;
+        gap: 45px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .ventures-hero,
+      .ventures-section,
+      .ventures-ai,
+      .looking-ahead {
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+
+      .ventures-hero {
+        padding-top: 80px;
+        padding-bottom: 75px;
+      }
+
+      .ventures-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .future-points {
+        grid-template-columns: 1fr;
+      }
+
+      .venture-card {
+        min-height: auto;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-  <!-- =========================
-       HEADER
-  ========================== -->
+  <!-- =======================================================
+       MASTER ABZEMO HEADER — DO NOT CHANGE
+       ======================================================= -->
+
   <header class="site-header">
+    <div class="container navbar">
 
-    <div class="header-inner">
-
-      <a href="./index.html" class="brand">
-        <span class="brand-name">ABZEMO</span>
-        <span class="brand-tagline">Building What's Next.</span>
+      <a href="index.html" class="logo">
+        ABZEMO<span>.</span>
       </a>
 
-      <nav class="top-nav">
-
-        <a href="./index.html">Home</a>
-
-        <a href="./about.html">About</a>
-
-        <a href="./mission.html">Mission</a>
-
-        <a href="./vision.html">Vision</a>
-
-        <a href="./ventures.html" class="active">Ventures</a>
-
-        <a href="./contact.html">Contact</a>
-
+      <nav class="desktop-nav">
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="mission.html">Mission</a></li>
+          <li><a href="vision.html">Vision</a></li>
+          <li><a href="ventures.html">Ventures</a></li>
+          <li><a href="contact.html" class="nav-button">Contact</a></li>
+        </ul>
       </nav>
 
       <button
-        class="menu-toggle"
-        id="menuToggle"
-        type="button"
-        aria-label="Open menu"
+        class="menu-button"
+        onclick="openMegaMenu()"
+        aria-label="Open ABZEMO menu"
       >
         <span></span>
         <span></span>
@@ -55,119 +402,177 @@
       </button>
 
     </div>
-
   </header>
 
+  <!-- =======================================================
+       MASTER ABZEMO MEGA MENU — DO NOT CHANGE
+       ======================================================= -->
 
-  <!-- =========================
-       MEGA MENU
-  ========================== -->
-  <div class="mega-menu" id="megaMenu">
+  <div
+    class="mega-overlay"
+    id="megaOverlay"
+    onclick="closeMegaMenu()"
+  ></div>
 
-    <div class="mega-menu-inner">
+  <aside class="mega-menu" id="megaMenu">
 
-      <div class="mega-menu-header">
-
-        <div>
-
-          <span class="section-label">ABZEMO</span>
-
-          <h2>Explore Our World.</h2>
-
-        </div>
-
-        <button
-          class="menu-close"
-          id="menuClose"
-          type="button"
-          aria-label="Close menu"
-        >
-          ×
-        </button>
-
+    <div class="mega-top">
+      <div class="mega-brand">
+        ABZEMO<span>.</span>
       </div>
 
+      <button
+        class="mega-close"
+        onclick="closeMegaMenu()"
+        aria-label="Close menu"
+      >
+        ×
+      </button>
+    </div>
 
-      <div class="mega-menu-grid">
+    <div class="mega-content">
 
-        <!-- ABZEMO -->
-        <div class="mega-column">
+      <!-- ABZEMO -->
 
-          <div class="mega-title">ABZEMO</div>
-
-          <a href="./index.html">Home</a>
-          <a href="./about.html">About</a>
-          <a href="./mission.html">Mission</a>
-          <a href="./vision.html">Vision</a>
-          <a href="./contact.html">Contact</a>
-
+      <div class="mega-section">
+        <div class="mega-section-title">
+          ABZEMO
         </div>
 
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="mission.html">Mission</a>
+        <a href="vision.html">Vision</a>
+        <a href="contact.html">Contact</a>
+      </div>
 
-        <!-- ABZEMO AI -->
-        <div class="mega-column">
+      <!-- ABZEMO AI -->
 
-          <div class="mega-title">ABZEMO AI</div>
-
-          <a href="./abzemo-ai.html">Overview</a>
-          <a href="./abzemo-ai.html">AI Agents</a>
-          <a href="./abzemo-ai.html">Multilingual Intelligence</a>
-          <a href="./abzemo-ai.html">Sales AI</a>
-          <a href="./abzemo-ai.html">Finance AI</a>
-          <a href="./abzemo-ai.html">ERP AI</a>
-          <a href="./abzemo-ai.html">Real Estate AI</a>
-          <a href="./abzemo-ai.html">Healthcare AI</a>
-          <a href="./abzemo-ai.html">Education AI</a>
-          <a href="./abzemo-ai.html">Enterprise AI</a>
-
+      <div class="mega-section">
+        <div class="mega-section-title">
+          ABZEMO AI
         </div>
 
+        <a href="abzemo-ai.html">Overview</a>
+        <a href="abzemo-ai.html" class="sub-link">AI Agents</a>
+        <a href="abzemo-ai.html" class="sub-link">Multilingual Intelligence</a>
+        <a href="abzemo-ai.html" class="sub-link">Sales AI</a>
+        <a href="abzemo-ai.html" class="sub-link">Finance AI</a>
+        <a href="abzemo-ai.html" class="sub-link">ERP AI</a>
+        <a href="abzemo-ai.html" class="sub-link">Real Estate AI</a>
+        <a href="abzemo-ai.html" class="sub-link">Healthcare AI</a>
+        <a href="abzemo-ai.html" class="sub-link">Education AI</a>
+        <a href="abzemo-ai.html" class="sub-link">Enterprise AI</a>
+      </div>
 
-        <!-- ABZEMO VENTURES -->
-        <div class="mega-column">
+      <!-- ABZEMO VENTURES -->
 
-          <div class="mega-title">ABZEMO VENTURES</div>
-
-          <a href="./ventures.html#medical">ABZEMO Medical</a>
-          <a href="./ventures.html#trade">ABZEMO Trade</a>
-          <a href="./ventures.html#education">ABZEMO Smart Schooling</a>
-          <a href="./ventures.html#fashions">ABZEMO Fashions</a>
-          <a href="./ventures.html#real-estate">ABZEMO Real Estate</a>
-          <a href="./ventures.html#logistics">ABZEMO Logistics</a>
-          <a href="./ventures.html#finance">ABZEMO Finance</a>
-          <a href="./ventures.html#future">Future Ventures</a>
-
+      <div class="mega-section">
+        <div class="mega-section-title">
+          ABZEMO VENTURES
         </div>
 
+        <a href="ventures.html">
+          Ventures Overview
+        </a>
+
+        <a href="ventures.html#medical" class="sub-link">
+          ABZEMO Medical
+        </a>
+
+        <a href="ventures.html#trade" class="sub-link">
+          ABZEMO Trade
+        </a>
+
+        <a href="ventures.html#education" class="sub-link">
+          ABZEMO Smart Schooling
+        </a>
+
+        <a href="ventures.html#fashions" class="sub-link">
+          ABZEMO Fashions
+        </a>
+
+        <a href="ventures.html#real-estate" class="sub-link">
+          ABZEMO Real Estate
+        </a>
+
+        <a href="ventures.html#logistics" class="sub-link">
+          ABZEMO Logistics
+        </a>
+
+        <a href="ventures.html#finance" class="sub-link">
+          ABZEMO Finance
+        </a>
+
+        <a href="ventures.html#future" class="sub-link">
+          Future Ventures
+        </a>
       </div>
 
     </div>
 
-  </div>
+    <div class="mega-footer">
+      <span>Building What’s Next.</span>
+      <span>ABZEMO</span>
+    </div>
+
+  </aside>
 
 
-  <!-- =========================
-       HERO
-  ========================== -->
+  <!-- =======================================================
+       VENTURES HERO
+       ======================================================= -->
+
   <main>
 
-    <section class="page-hero">
+    <section class="ventures-hero">
 
-      <div class="container">
+      <div class="ventures-hero-inner">
 
-        <div class="hero-content">
+        <span class="ventures-eyebrow">
+          ABZEMO Ventures
+        </span>
 
-          <div class="section-label">ABZEMO VENTURES</div>
+        <h1>
+          Building businesses
+          <span>for what comes next.</span>
+        </h1>
 
-          <h1>
-            Building businesses<br>
-            for what comes next.
-          </h1>
+        <p>
+          ABZEMO Ventures represents the broader business ecosystem
+          behind ABZEMO — exploring opportunities across technology,
+          healthcare, trade, education, real estate, logistics,
+          finance and future industries.
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         BIGGER PICTURE
+         ===================================================== -->
+
+    <section class="ventures-section">
+
+      <div class="ventures-container">
+
+        <div class="ventures-section-heading">
+
+          <span class="eyebrow">
+            The Bigger Picture
+          </span>
+
+          <h2>
+            One company. Many possibilities.
+          </h2>
 
           <p>
-            ABZEMO Ventures represents the broader business ecosystem
-            we are building beyond technology — bringing together
-            opportunities across industries, markets and emerging ideas.
+            ABZEMO is designed as a long-term business platform.
+            Each venture can operate around a specific industry,
+            market or opportunity while remaining connected through
+            the wider ABZEMO ecosystem.
           </p>
 
         </div>
@@ -177,46 +582,60 @@
     </section>
 
 
-    <!-- =========================
-         INTRODUCTION
-    ========================== -->
-    <section class="section">
+    <!-- =====================================================
+         ABZEMO AI
+         ===================================================== -->
 
-      <div class="container">
+    <section class="ventures-ai">
 
-        <div class="section-header">
+      <div class="ventures-ai-inner">
 
-          <div class="section-label">The Bigger Picture</div>
+        <span class="eyebrow">
+          Technology Foundation
+        </span>
 
-          <h2>
-            One Company.<br>
-            Many Possibilities.
-          </h2>
+        <h2>
+          ABZEMO AI is building the intelligence layer
+          across the ecosystem.
+        </h2>
 
-        </div>
+        <p>
+          Our first major technology vision is ABZEMO AI:
+          multilingual intelligent agents designed to understand
+          people, businesses and workflows — and turn conversations
+          into structured business action.
+        </p>
 
+        <div class="ventures-ai-grid">
 
-        <div class="content-grid">
+          <div class="ventures-ai-card">
+            <strong>
+              Multilingual Intelligence
+            </strong>
+            <span>
+              Understand customers in their own language while
+              maintaining structured internal business information.
+            </span>
+          </div>
 
-          <div class="content-main">
+          <div class="ventures-ai-card">
+            <strong>
+              Intelligent Agents
+            </strong>
+            <span>
+              AI agents designed for sales, finance, ERP, healthcare,
+              education, real estate and enterprise workflows.
+            </span>
+          </div>
 
-            <p class="lead">
-              ABZEMO is designed to grow beyond a single product,
-              technology or industry.
-            </p>
-
-            <p>
-              Our ventures represent different opportunities through
-              which ABZEMO can create value, solve real-world problems
-              and build long-term businesses.
-            </p>
-
-            <p>
-              Some ventures are part of our current direction.
-              Others represent future opportunities that may be
-              developed as the company grows.
-            </p>
-
+          <div class="ventures-ai-card">
+            <strong>
+              Connected Ecosystem
+            </strong>
+            <span>
+              A common intelligence layer that can support future
+              ABZEMO businesses and ventures.
+            </span>
           </div>
 
         </div>
@@ -226,267 +645,229 @@
     </section>
 
 
-    <!-- =========================
-         CURRENT TECHNOLOGY
-    ========================== -->
-    <section class="section dark-section">
-
-      <div class="container">
-
-        <div class="section-header">
-
-          <div class="section-label">Technology</div>
-
-          <h2>
-            ABZEMO AI
-          </h2>
-
-          <p>
-            Intelligent automation and AI agents are the first major
-            technology direction within the ABZEMO ecosystem.
-          </p>
-
-        </div>
-
-
-        <div class="cards-grid">
-
-          <article class="info-card">
-
-            <div class="card-number">01</div>
-
-            <h3>AI Agents</h3>
-
-            <p>
-              Intelligent agents designed to understand conversations,
-              process information and support real business workflows.
-            </p>
-
-          </article>
-
-
-          <article class="info-card">
-
-            <div class="card-number">02</div>
-
-            <h3>Multilingual Intelligence</h3>
-
-            <p>
-              AI experiences designed to communicate naturally across
-              languages while maintaining structured business data.
-            </p>
-
-          </article>
-
-
-          <article class="info-card">
-
-            <div class="card-number">03</div>
-
-            <h3>Business Automation</h3>
-
-            <p>
-              Automation solutions connecting customer interactions,
-              business processes, data and enterprise systems.
-            </p>
-
-          </article>
-
-
-          <article class="info-card">
-
-            <div class="card-number">04</div>
-
-            <h3>Industry Intelligence</h3>
-
-            <p>
-              AI capabilities designed to adapt to sectors including
-              real estate, healthcare, education, finance and logistics.
-            </p>
-
-          </article>
-
-        </div>
-
-
-        <div class="section-cta">
-
-          <a href="./abzemo-ai.html" class="btn btn-primary">
-            Explore ABZEMO AI
-          </a>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- =========================
+    <!-- =====================================================
          VENTURES
-    ========================== -->
-    <section class="section">
+         ===================================================== -->
 
-      <div class="container">
+    <section class="ventures-section soft">
 
-        <div class="section-header">
+      <div class="ventures-container">
 
-          <div class="section-label">Our Ecosystem</div>
+        <div class="ventures-section-heading">
+
+          <span class="eyebrow">
+            Ventures
+          </span>
 
           <h2>
-            Ventures Across<br>
-            Multiple Possibilities.
+            Exploring opportunities across industries.
           </h2>
 
           <p>
-            These ventures represent areas in which ABZEMO may build,
-            operate, partner or invest as the ecosystem develops.
+            Some ventures represent active areas of development,
+            while others are part of ABZEMO's longer-term roadmap.
+            Future concepts are intentionally presented as future
+            opportunities rather than existing businesses.
           </p>
 
         </div>
 
 
-        <div class="cards-grid">
+        <div class="ventures-grid">
 
           <!-- MEDICAL -->
-          <article class="info-card" id="medical">
 
-            <div class="card-number">01</div>
+          <article class="venture-card" id="medical">
 
-            <h3>ABZEMO Medical</h3>
+            <span class="venture-number">
+              01 / HEALTHCARE
+            </span>
 
-            <span class="card-status">Future Venture</span>
+            <h3>
+              ABZEMO Medical
+            </h3>
 
             <p>
-              Healthcare and medical business opportunities focused
-              on improving access, operations, technology and
-              connected healthcare solutions.
+              Exploring healthcare technology, medical solutions,
+              healthcare automation and international opportunities
+              within the medical ecosystem.
             </p>
+
+            <span class="venture-status">
+              Future Venture
+            </span>
 
           </article>
 
 
           <!-- TRADE -->
-          <article class="info-card" id="trade">
 
-            <div class="card-number">02</div>
+          <article class="venture-card" id="trade">
 
-            <h3>ABZEMO Trade</h3>
+            <span class="venture-number">
+              02 / GLOBAL TRADE
+            </span>
 
-            <span class="card-status">Future Venture</span>
+            <h3>
+              ABZEMO Trade
+            </h3>
 
             <p>
-              International B2B trade and sourcing opportunities
-              connecting suppliers, businesses and markets across
-              countries.
+              Exploring international B2B trade, sourcing,
+              distribution and cross-border business opportunities.
             </p>
+
+            <span class="venture-status">
+              Future Venture
+            </span>
 
           </article>
 
 
-          <!-- SMART SCHOOLING -->
-          <article class="info-card" id="education">
+          <!-- EDUCATION -->
 
-            <div class="card-number">03</div>
+          <article class="venture-card" id="education">
 
-            <h3>ABZEMO Smart Schooling</h3>
+            <span class="venture-number">
+              03 / EDUCATION
+            </span>
 
-            <span class="card-status">Future Venture</span>
+            <h3>
+              ABZEMO Smart Schooling
+            </h3>
 
             <p>
-              Technology-enabled education concepts designed to
-              improve learning, administration and institutional
-              operations.
+              Exploring intelligent education systems, automation,
+              learning technologies and connected school operations.
             </p>
+
+            <span class="venture-status">
+              Future Venture
+            </span>
 
           </article>
 
 
           <!-- FASHIONS -->
-          <article class="info-card" id="fashions">
 
-            <div class="card-number">04</div>
+          <article class="venture-card" id="fashions">
 
-            <h3>ABZEMO Fashions</h3>
+            <span class="venture-number">
+              04 / FASHION
+            </span>
 
-            <span class="card-status">Future Venture</span>
+            <h3>
+              ABZEMO Fashions
+            </h3>
 
             <p>
-              Fashion and lifestyle opportunities with potential
-              applications across local and international markets.
+              Exploring fashion, global sourcing, digital commerce
+              and future opportunities within the fashion ecosystem.
             </p>
+
+            <span class="venture-status">
+              Future Venture
+            </span>
 
           </article>
 
 
           <!-- REAL ESTATE -->
-          <article class="info-card" id="real-estate">
 
-            <div class="card-number">05</div>
+          <article class="venture-card" id="real-estate">
 
-            <h3>ABZEMO Real Estate</h3>
+            <span class="venture-number">
+              05 / REAL ESTATE
+            </span>
 
-            <span class="card-status">Future Venture</span>
+            <h3>
+              ABZEMO Real Estate
+            </h3>
 
             <p>
-              Real estate opportunities supported by technology,
-              intelligent customer experiences and data-driven
-              business processes.
+              Exploring real estate technology, intelligent property
+              sales systems, investment workflows and digital
+              customer experiences.
             </p>
+
+            <span class="venture-status">
+              Future Venture
+            </span>
 
           </article>
 
 
           <!-- LOGISTICS -->
-          <article class="info-card" id="logistics">
 
-            <div class="card-number">06</div>
+          <article class="venture-card" id="logistics">
 
-            <h3>ABZEMO Logistics</h3>
+            <span class="venture-number">
+              06 / LOGISTICS
+            </span>
 
-            <span class="card-status">Future Venture</span>
+            <h3>
+              ABZEMO Logistics
+            </h3>
 
             <p>
-              Logistics and mobility opportunities focused on
-              smarter operations, connected workflows and
-              international movement of goods.
+              Exploring logistics, supply-chain intelligence,
+              automation and connected international business
+              operations.
             </p>
+
+            <span class="venture-status">
+              Future Venture
+            </span>
 
           </article>
 
 
           <!-- FINANCE -->
-          <article class="info-card" id="finance">
 
-            <div class="card-number">07</div>
+          <article class="venture-card" id="finance">
 
-            <h3>ABZEMO Finance</h3>
+            <span class="venture-number">
+              07 / FINANCE
+            </span>
 
-            <span class="card-status">Future Venture</span>
+            <h3>
+              ABZEMO Finance
+            </h3>
 
             <p>
-              Financial technology and business-finance opportunities
-              designed around automation, intelligence and better
-              financial workflows.
+              Exploring intelligent financial workflows, business
+              automation, reconciliation systems and future
+              financial technology opportunities.
             </p>
+
+            <span class="venture-status">
+              Future Venture
+            </span>
 
           </article>
 
 
           <!-- FUTURE -->
-          <article class="info-card" id="future">
 
-            <div class="card-number">08</div>
+          <article class="venture-card" id="future">
 
-            <h3>Future Ventures</h3>
+            <span class="venture-number">
+              08 / FUTURE
+            </span>
 
-            <span class="card-status">Coming Soon</span>
+            <h3>
+              Future Ventures
+            </h3>
 
             <p>
-              New opportunities may emerge as ABZEMO expands into
-              additional industries, technologies and international
-              markets.
+              New industries, technologies and opportunities may
+              become part of the ABZEMO ecosystem as the company
+              evolves.
             </p>
+
+            <span class="venture-status">
+              Coming Soon
+            </span>
 
           </article>
 
@@ -497,128 +878,86 @@
     </section>
 
 
-    <!-- =========================
-         HOW WE BUILD
-    ========================== -->
-    <section class="section soft-section">
+    <!-- =====================================================
+         OUR APPROACH
+         ===================================================== -->
 
-      <div class="container">
+    <section class="ventures-section">
 
-        <div class="section-header">
+      <div class="ventures-container">
 
-          <div class="section-label">Our Approach</div>
+        <div class="ventures-section-heading">
 
-          <h2>
-            Ideas become ventures<br>
-            through disciplined execution.
-          </h2>
-
-        </div>
-
-
-        <div class="cards-grid">
-
-          <article class="info-card">
-
-            <div class="card-number">01</div>
-
-            <h3>Identify</h3>
-
-            <p>
-              We look for meaningful problems, market opportunities
-              and areas where technology or business innovation can
-              create measurable value.
-            </p>
-
-          </article>
-
-
-          <article class="info-card">
-
-            <div class="card-number">02</div>
-
-            <h3>Validate</h3>
-
-            <p>
-              Ideas are tested against real customer needs, market
-              conditions and practical business requirements.
-            </p>
-
-          </article>
-
-
-          <article class="info-card">
-
-            <div class="card-number">03</div>
-
-            <h3>Build</h3>
-
-            <p>
-              Validated opportunities can become products, services,
-              partnerships or dedicated business ventures.
-            </p>
-
-          </article>
-
-
-          <article class="info-card">
-
-            <div class="card-number">04</div>
-
-            <h3>Scale</h3>
-
-            <p>
-              Successful ventures can expand across markets while
-              remaining connected to the wider ABZEMO ecosystem.
-            </p>
-
-          </article>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- =========================
-         GLOBAL VISION
-    ========================== -->
-    <section class="section">
-
-      <div class="container">
-
-        <div class="section-header">
-
-          <div class="section-label">Looking Ahead</div>
+          <span class="eyebrow">
+            Our Approach
+          </span>
 
           <h2>
-            From one market<br>
-            to a connected world.
+            Build carefully. Connect intelligently. Think long term.
           </h2>
+
+          <p>
+            ABZEMO ventures are intended to be developed with a
+            practical approach: validate opportunities, build useful
+            systems, create sustainable operations and connect them
+            where technology can create additional value.
+          </p>
 
         </div>
 
 
-        <div class="content-grid">
+        <div class="approach-grid">
 
-          <div class="content-main">
+          <div class="approach-card">
 
-            <p class="lead">
-              ABZEMO is being built with a global perspective.
-            </p>
+            <span class="number">
+              01
+            </span>
 
-            <p>
-              Our ambition is to develop businesses that can operate
-              across Pakistan, the GCC and international markets while
-              creating connections between technology, people and
-              commercial opportunities.
-            </p>
+            <h3>
+              Explore
+            </h3>
 
             <p>
-              As the ecosystem develops, individual ventures may evolve
-              independently while benefiting from the knowledge,
-              technology and infrastructure developed across ABZEMO.
+              Identify genuine market needs, emerging opportunities
+              and areas where ABZEMO can create meaningful value.
+            </p>
+
+          </div>
+
+
+          <div class="approach-card">
+
+            <span class="number">
+              02
+            </span>
+
+            <h3>
+              Build
+            </h3>
+
+            <p>
+              Develop focused solutions, businesses and technology
+              around validated opportunities.
+            </p>
+
+          </div>
+
+
+          <div class="approach-card">
+
+            <span class="number">
+              03
+            </span>
+
+            <h3>
+              Connect
+            </h3>
+
+            <p>
+              Where appropriate, connect ventures through shared
+              technology, intelligence, partnerships and global
+              business capabilities.
             </p>
 
           </div>
@@ -630,35 +969,96 @@
     </section>
 
 
-    <!-- =========================
+    <!-- =====================================================
+         LOOKING AHEAD
+         ===================================================== -->
+
+    <section class="looking-ahead">
+
+      <div class="looking-ahead-inner">
+
+        <div>
+
+          <h2>
+            Looking ahead.
+          </h2>
+
+          <p>
+            ABZEMO is being built with a long-term perspective.
+            The goal is not simply to launch individual businesses,
+            but to create an ecosystem capable of adapting to new
+            technologies, industries and markets.
+          </p>
+
+        </div>
+
+
+        <div class="future-points">
+
+          <div class="future-point">
+            <strong>Technology</strong>
+            <span>
+              Intelligent systems and automation across the ecosystem.
+            </span>
+          </div>
+
+          <div class="future-point">
+            <strong>Global Markets</strong>
+            <span>
+              Pakistan, GCC and international opportunities.
+            </span>
+          </div>
+
+          <div class="future-point">
+            <strong>Innovation</strong>
+            <span>
+              Continuous exploration of new business possibilities.
+            </span>
+          </div>
+
+          <div class="future-point">
+            <strong>Long-Term Value</strong>
+            <span>
+              Building sustainable businesses designed for the future.
+            </span>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =====================================================
          CTA
-    ========================== -->
-    <section class="cta-section">
+         ===================================================== -->
 
-      <div class="container">
+    <section class="section-cta">
 
-        <div class="cta-inner">
+      <div class="cta-inner">
 
-          <div>
+        <div>
 
-            <div class="section-label">Work With ABZEMO</div>
+          <span class="eyebrow">
+            Build With ABZEMO
+          </span>
 
-            <h2>
-              Let's build what's next.
-            </h2>
+          <h2>
+            Have an opportunity worth exploring?
+          </h2>
 
-            <p>
-              Whether you are exploring a partnership, technology
-              opportunity or a new business idea, start the conversation.
-            </p>
-
-          </div>
-
-          <a href="./contact.html" class="btn btn-light">
-            Start a Conversation
-          </a>
+          <p>
+            Whether you are looking for technology, automation,
+            strategic collaboration or a new business opportunity,
+            start a conversation with ABZEMO.
+          </p>
 
         </div>
+
+        <a href="contact.html" class="btn-light">
+          Start a Conversation
+        </a>
 
       </div>
 
@@ -667,121 +1067,113 @@
   </main>
 
 
-  <!-- =========================
+  <!-- =======================================================
        FOOTER
-  ========================== -->
+       ======================================================= -->
+
   <footer class="site-footer">
 
-    <div class="container">
+    <div class="footer-inner">
 
-      <div class="footer-grid">
-
-        <div class="footer-brand">
-
-          <a href="./index.html" class="brand">
-            <span class="brand-name">ABZEMO</span>
-            <span class="brand-tagline">Building What's Next.</span>
-          </a>
-
-          <p>
-            Building businesses, technologies and possibilities
-            for a connected future.
-          </p>
-
+      <div class="footer-brand">
+        <div class="footer-logo">
+          ABZEMO<span>.</span>
         </div>
 
-
-        <div class="footer-column">
-
-          <h4>ABZEMO</h4>
-
-          <a href="./about.html">About</a>
-          <a href="./mission.html">Mission</a>
-          <a href="./vision.html">Vision</a>
-          <a href="./ventures.html">Ventures</a>
-          <a href="./contact.html">Contact</a>
-
-        </div>
-
-
-        <div class="footer-column">
-
-          <h4>Technology</h4>
-
-          <a href="./abzemo-ai.html">ABZEMO AI</a>
-          <a href="./abzemo-ai.html">AI Agents</a>
-          <a href="./abzemo-ai.html">Multilingual Intelligence</a>
-          <a href="./abzemo-ai.html">Enterprise AI</a>
-
-        </div>
-
-
-        <div class="footer-column">
-
-          <h4>Legal</h4>
-
-          <a href="./privacy.html">Privacy Policy</a>
-          <a href="./terms.html">Terms & Conditions</a>
-          <a href="./director-note.html">Director's Note</a>
-
-        </div>
-
+        <p>
+          Building What’s Next.
+        </p>
       </div>
 
 
-      <div class="footer-bottom">
+      <div class="footer-links">
 
-        <span>
-          © 2026 ABZEMO. All rights reserved.
-        </span>
+        <a href="about.html">
+          About
+        </a>
 
-        <span>
-          Karachi, Pakistan
-        </span>
+        <a href="mission.html">
+          Mission
+        </a>
+
+        <a href="vision.html">
+          Vision
+        </a>
+
+        <a href="ventures.html">
+          Ventures
+        </a>
+
+        <a href="contact.html">
+          Contact
+        </a>
+
+        <a href="privacy.html">
+          Privacy
+        </a>
+
+        <a href="terms.html">
+          Terms
+        </a>
 
       </div>
+
+    </div>
+
+
+    <div class="footer-bottom">
+
+      <span>
+        © 2026 ABZEMO. All rights reserved.
+      </span>
+
+      <span>
+        Karachi, Pakistan
+      </span>
 
     </div>
 
   </footer>
 
 
-  <!-- =========================
-       JAVASCRIPT
-  ========================== -->
+  <!-- =======================================================
+       MASTER MEGA MENU JAVASCRIPT
+       ======================================================= -->
+
   <script>
 
-    const menuToggle = document.getElementById("menuToggle");
-    const menuClose = document.getElementById("menuClose");
     const megaMenu = document.getElementById("megaMenu");
+    const megaOverlay = document.getElementById("megaOverlay");
 
-    menuToggle.addEventListener("click", function () {
+    function openMegaMenu() {
       megaMenu.classList.add("active");
+      megaOverlay.classList.add("active");
       document.body.classList.add("menu-open");
-    });
+    }
 
-    menuClose.addEventListener("click", function () {
+    function closeMegaMenu() {
       megaMenu.classList.remove("active");
+      megaOverlay.classList.remove("active");
       document.body.classList.remove("menu-open");
+    }
+
+    document.addEventListener("keydown", function(event) {
+      if (event.key === "Escape") {
+        closeMegaMenu();
+      }
     });
 
-    document.querySelectorAll(".mega-menu a").forEach(function (link) {
-
-      link.addEventListener("click", function () {
-
-        megaMenu.classList.remove("active");
-        document.body.classList.remove("menu-open");
-
+    document.querySelectorAll(".mega-section a").forEach(function(link) {
+      link.addEventListener("click", function() {
+        closeMegaMenu();
       });
-
     });
 
   </script>
 
 
-  <!-- =========================
-       ABZEMO AI
-  ========================== -->
+  <!-- ABZEMO AI GLOBAL WIDGET -->
+
   <script src="abzemo-ai.js"></script>
 
 </body>
