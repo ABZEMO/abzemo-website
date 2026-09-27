@@ -1,578 +1,1223 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Solutions | ABZEMO</title>
+  <title>Solutions | ABZEMO</title>
 
-    <meta
-        name="description"
-        content="Explore ABZEMO's business, technology, AI automation and digital transformation solutions."
-    >
+  <meta
+    name="description"
+    content="ABZEMO solutions across AI automation, intelligent agents, business process automation, digital transformation, and connected business systems."
+  >
 
-    <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+    :root {
+      --blue: #1264d8;
+      --blue-dark: #084a9e;
+      --navy: #071a35;
+      --text: #24344d;
+      --muted: #6f7f95;
+      --light: #f5f8fc;
+      --white: #fff;
+      --line: #dce5f0;
+      --shadow: 0 22px 65px rgba(7,26,53,.10);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background: var(--white);
+      line-height: 1.6;
+    }
+
+    body.menu-open { overflow: hidden; }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button { font: inherit; }
+
+    .container {
+      width: min(1180px, calc(100% - 48px));
+      margin-inline: auto;
+    }
+
+    /* HEADER */
+
+    .site-header {
+      position: fixed;
+      inset: 0 0 auto;
+      z-index: 1000;
+      min-height: 78px;
+      background: rgba(255,255,255,.94);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(220,229,240,.85);
+    }
+
+    .navbar {
+      min-height: 78px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      color: var(--navy);
+      font-size: 30px;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: -1.8px;
+    }
+
+    .brand span { color: var(--blue); }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--navy);
+      font-size: 14px;
+      font-weight: 700;
+      transition: color .2s ease;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--blue);
+    }
+
+    .nav-button {
+      padding: 11px 18px;
+      color: #fff !important;
+      background: var(--navy);
+      border-radius: 9px;
+    }
+
+    .nav-button:hover { background: var(--blue); }
+
+    .menu-button {
+      width: 46px;
+      height: 46px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+      cursor: pointer;
+      box-shadow: 0 6px 22px rgba(7,26,53,.06);
+    }
+
+    .menu-button span {
+      width: 20px;
+      height: 2px;
+      border-radius: 2px;
+      background: var(--navy);
+    }
+
+    /* MENU */
+
+    .mega-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1090;
+      background: rgba(7,26,53,.42);
+      backdrop-filter: blur(5px);
+      opacity: 0;
+      visibility: hidden;
+      transition: .3s ease;
+    }
+
+    .mega-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .mega-menu {
+      position: fixed;
+      inset: 0 auto 0 0;
+      z-index: 1100;
+      width: min(460px, 88vw);
+      overflow-y: auto;
+      background: #fff;
+      transform: translateX(-105%);
+      transition: transform .38s cubic-bezier(.77,0,.18,1);
+      box-shadow: 20px 0 70px rgba(7,26,53,.2);
+    }
+
+    .mega-menu.active { transform: translateX(0); }
+
+    .mega-top {
+      min-height: 82px;
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: rgba(255,255,255,.96);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .mega-brand {
+      color: var(--navy);
+      font-size: 27px;
+      font-weight: 900;
+      letter-spacing: -1px;
+    }
+
+    .mega-brand span { color: var(--blue); }
+
+    .mega-close {
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: #fff;
+      color: var(--navy);
+      font-size: 27px;
+      cursor: pointer;
+    }
+
+    .mega-content { padding: 30px 28px 42px; }
+
+    .mega-section { margin-bottom: 32px; }
+
+    .mega-section:last-child { margin-bottom: 0; }
+
+    .mega-section-title {
+      margin-bottom: 12px;
+      color: var(--blue);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .mega-section a {
+      display: block;
+      padding: 7px 0;
+      color: var(--navy);
+      font-size: 15px;
+      font-weight: 700;
+      transition: .2s ease;
+    }
+
+    .mega-section a:hover {
+      color: var(--blue);
+      transform: translateX(4px);
+    }
+
+    .mega-section .sub-link {
+      padding-left: 10px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    /* HERO */
+
+    .page-hero {
+      min-height: 72vh;
+      padding-top: 78px;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 82% 40%, rgba(18,100,216,.13), transparent 30%),
+        linear-gradient(135deg, #fff 0%, #f5f8fc 100%);
+    }
+
+    .page-hero::after {
+      content: "";
+      position: absolute;
+      width: 430px;
+      height: 430px;
+      right: -150px;
+      bottom: -190px;
+      border: 1px solid rgba(18,100,216,.14);
+      border-radius: 50%;
+      box-shadow:
+        0 0 0 55px rgba(18,100,216,.035),
+        0 0 0 110px rgba(18,100,216,.025);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      padding: 100px 0;
+    }
+
+    .hero-label,
+    .section-label {
+      margin-bottom: 15px;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .page-hero h1 {
+      max-width: 900px;
+      margin: 0 0 25px;
+      color: var(--navy);
+      font-size: clamp(52px, 7vw, 88px);
+      line-height: .98;
+      letter-spacing: -4px;
+    }
+
+    .page-hero p {
+      max-width: 760px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 19px;
+      line-height: 1.8;
+    }
+
+    /* SECTIONS */
+
+    .section {
+      padding: 115px 0;
+    }
+
+    .section-light {
+      background: var(--light);
+    }
+
+    .section-header {
+      max-width: 800px;
+      margin-bottom: 52px;
+    }
+
+    .section h2 {
+      margin: 0 0 20px;
+      color: var(--navy);
+      font-size: clamp(38px, 5vw, 66px);
+      line-height: 1.02;
+      letter-spacing: -3px;
+    }
+
+    .section-header p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.8;
+    }
+
+    /* SOLUTION CARDS */
+
+    .solution-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .solution-card {
+      min-height: 360px;
+      padding: 32px;
+      border: 1px solid var(--line);
+      background: #fff;
+      transition: .25s ease;
+    }
+
+    .solution-card:hover {
+      border-color: rgba(18,100,216,.4);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow);
+    }
+
+    .solution-number {
+      display: block;
+      margin-bottom: 32px;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 1.5px;
+    }
+
+    .solution-card h3 {
+      margin: 0 0 14px;
+      color: var(--navy);
+      font-size: 23px;
+      line-height: 1.2;
+    }
+
+    .solution-card p {
+      margin: 0 0 25px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .solution-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .solution-list li {
+      position: relative;
+      padding: 8px 0 8px 17px;
+      border-top: 1px solid var(--line);
+      color: var(--text);
+      font-size: 13px;
+    }
+
+    .solution-list li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 15px;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--blue);
+    }
+
+    /* PROCESS */
+
+    .process-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    .process-card {
+      min-height: 220px;
+      padding: 30px;
+      border-top: 3px solid var(--blue);
+      background: var(--light);
+    }
+
+    .process-number {
+      display: block;
+      margin-bottom: 28px;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 1.5px;
+    }
+
+    .process-card h3 {
+      margin: 0 0 12px;
+      color: var(--navy);
+      font-size: 19px;
+    }
+
+    .process-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.75;
+    }
+
+    /* AI SECTION */
+
+    .ai-section {
+      background: var(--navy);
+    }
+
+    .ai-section h2 {
+      color: #fff;
+    }
+
+    .ai-section .section-label {
+      color: #6ea6ff;
+    }
+
+    .ai-section .section-header p {
+      color: rgba(255,255,255,.68);
+    }
+
+    .ai-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .ai-card {
+      min-height: 280px;
+      padding: 35px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.045);
+    }
+
+    .ai-card h3 {
+      margin: 0 0 14px;
+      color: #fff;
+      font-size: 24px;
+    }
+
+    .ai-card p {
+      margin: 0;
+      color: rgba(255,255,255,.64);
+      font-size: 15px;
+      line-height: 1.8;
+    }
+
+    .ai-card ul {
+      margin: 22px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .ai-card li {
+      padding: 8px 0;
+      border-top: 1px solid rgba(255,255,255,.1);
+      color: rgba(255,255,255,.7);
+      font-size: 13px;
+    }
+
+    /* CTA */
+
+    .cta-section {
+      padding: 105px 0;
+      background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+    }
+
+    .cta-section .section-label {
+      color: #9fc4ff;
+    }
+
+    .cta-section h2 {
+      color: #fff;
+    }
+
+    .cta-section p {
+      max-width: 680px;
+      color: rgba(255,255,255,.76);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 13px 22px;
+      border-radius: 9px;
+      font-size: 14px;
+      font-weight: 800;
+      transition: .25s ease;
+    }
+
+    .btn-primary {
+      color: var(--blue);
+      background: #fff;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      background: #f5f8fc;
+    }
+
+    /* FOOTER */
+
+    .site-footer {
+      padding: 65px 0 25px;
+      color: #fff;
+      background: #041225;
+    }
+
+    .footer-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 50px;
+      padding-bottom: 45px;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+
+    .footer-brand {
+      max-width: 420px;
+    }
+
+    .footer-logo {
+      margin-bottom: 15px;
+      color: #fff;
+      font-size: 29px;
+      font-weight: 900;
+    }
+
+    .footer-logo span {
+      color: #5c9cff;
+    }
+
+    .footer-brand p {
+      margin: 0;
+      color: rgba(255,255,255,.55);
+      line-height: 1.8;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 70px;
+    }
+
+    .footer-column h4 {
+      margin: 0 0 16px;
+      color: rgba(255,255,255,.75);
+      font-size: 12px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .footer-column a {
+      display: block;
+      margin-bottom: 9px;
+      color: rgba(255,255,255,.55);
+      font-size: 13px;
+    }
+
+    .footer-column a:hover {
+      color: #fff;
+    }
+
+    .footer-bottom {
+      padding-top: 22px;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      color: rgba(255,255,255,.38);
+      font-size: 11px;
+    }
+
+    /* RESPONSIVE */
+
+    @media (max-width: 980px) {
+      .nav-links {
+        display: none;
+      }
+
+      .solution-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .process-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .ai-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-top {
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        width: min(100% - 32px, 1180px);
+      }
+
+      .navbar {
+        min-height: 70px;
+      }
+
+      .page-hero {
+        min-height: auto;
+        padding-top: 70px;
+      }
+
+      .hero-content {
+        padding: 80px 0;
+      }
+
+      .page-hero h1 {
+        font-size: clamp(48px, 14vw, 70px);
+        letter-spacing: -3px;
+      }
+
+      .page-hero p {
+        font-size: 16px;
+      }
+
+      .section {
+        padding: 80px 0;
+      }
+
+      .section h2 {
+        letter-spacing: -2px;
+      }
+
+      .solution-grid,
+      .process-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-links {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+      }
+
+      .footer-bottom {
+        flex-direction: column;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<header class="site-header">
+  <!-- HEADER -->
+
+  <header class="site-header">
     <div class="container navbar">
 
-        <a href="index.html" class="logo">
-            ABZEMO<span>.</span>
-        </a>
+      <a href="index.html" class="brand" aria-label="ABZEMO Home">
+        ABZEM<span>O</span>
+      </a>
 
-        <nav>
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="mission.html">Mission</a></li>
-                <li><a href="vision.html">Vision</a></li>
-                <li><a href="#ventures">Ventures</a></li>
-                <li><a href="contact.html" class="nav-button">Contact</a></li>
-            </ul>
-        </nav>
+      <nav aria-label="Primary navigation">
+        <ul class="nav-links">
+          <li><a href="about.html">About</a></li>
+          <li><a href="solutions.html" class="active">Solutions</a></li>
+          <li><a href="abzemo-ai.html">ABZEMO AI</a></li>
+          <li><a href="contact.html" class="nav-button">Contact</a></li>
+        </ul>
+      </nav>
 
-        <button class="menu-toggle" aria-label="Open menu">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-
-    </div>
-</header>
-
-
-<!-- SIDE MENU -->
-
-<div class="mega-menu">
-
-    <div class="mega-menu-inner">
-
-        <div class="mega-column">
-
-            <p class="menu-label">ABZEMO</p>
-
-            <a href="index.html">Home</a>
-            <a href="about.html">About</a>
-            <a href="mission.html">Mission</a>
-            <a href="vision.html">Vision</a>
-            <a href="contact.html">Contact</a>
-
-        </div>
-
-
-        <div class="mega-column">
-
-            <p class="menu-label">ABZEMO AI</p>
-
-            <a href="abzemo-ai.html">Overview</a>
-            <a href="abzemo-ai.html">AI Agents</a>
-            <a href="abzemo-ai.html">Multilingual Intelligence</a>
-            <a href="abzemo-ai.html">Sales AI</a>
-            <a href="abzemo-ai.html">Finance AI</a>
-            <a href="abzemo-ai.html">ERP AI</a>
-            <a href="abzemo-ai.html">Real Estate AI</a>
-            <a href="abzemo-ai.html">Healthcare AI</a>
-            <a href="abzemo-ai.html">Education AI</a>
-            <a href="abzemo-ai.html">Enterprise AI</a>
-
-        </div>
-
-
-        <div class="mega-column">
-
-            <p class="menu-label">ABZEMO VENTURES</p>
-
-            <a href="#ventures">ABZEMO Medical</a>
-            <a href="#ventures">ABZEMO Trade</a>
-            <a href="#ventures">ABZEMO Smart Schooling</a>
-            <a href="#ventures">ABZEMO Fashions</a>
-            <a href="#ventures">ABZEMO Real Estate</a>
-            <a href="#ventures">ABZEMO Logistics</a>
-            <a href="#ventures">ABZEMO Finance</a>
-            <a href="#ventures">Future Ventures</a>
-
-        </div>
+      <button
+        class="menu-button"
+        id="menuButton"
+        type="button"
+        aria-label="Open navigation menu"
+        aria-controls="megaMenu"
+        aria-expanded="false"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
 
     </div>
+  </header>
 
-</div>
+  <!-- MENU -->
 
+  <div class="mega-overlay" id="megaOverlay"></div>
 
-<main>
+  <aside class="mega-menu" id="megaMenu" aria-label="ABZEMO navigation">
+
+    <div class="mega-top">
+      <div class="mega-brand">ABZEM<span>O</span></div>
+
+      <button
+        class="mega-close"
+        id="megaClose"
+        type="button"
+        aria-label="Close navigation menu"
+      >
+        ×
+      </button>
+    </div>
+
+    <div class="mega-content">
+
+      <div class="mega-section">
+        <div class="mega-section-title">ABZEMO</div>
+        <a href="index.html">Home</a>
+        <a href="about.html">About ABZEMO</a>
+        <a href="mission.html">Mission</a>
+        <a href="vision.html">Vision</a>
+        <a href="director-note.html">Director's Note</a>
+      </div>
+
+      <div class="mega-section">
+        <div class="mega-section-title">Capabilities</div>
+        <a href="industries.html">Industries</a>
+        <a href="solutions.html">Solutions</a>
+        <a href="abzemo-ai.html">ABZEMO AI</a>
+      </div>
+
+      <div class="mega-section">
+        <div class="mega-section-title">Ventures</div>
+        <a href="ventures.html">All Ventures</a>
+        <a class="sub-link" href="ventures.html#ai">ABZEMO AI</a>
+        <a class="sub-link" href="ventures.html#medical">ABZEMO Medical</a>
+        <a class="sub-link" href="ventures.html#trade">ABZEMO Trade</a>
+        <a class="sub-link" href="ventures.html#education">ABZEMO Smart Schooling</a>
+        <a class="sub-link" href="ventures.html#fashions">ABZEMO Fashions</a>
+        <a class="sub-link" href="ventures.html#realestate">ABZEMO Real Estate</a>
+        <a class="sub-link" href="ventures.html#logistics">ABZEMO Logistics</a>
+        <a class="sub-link" href="ventures.html#finance">ABZEMO Finance</a>
+      </div>
+
+      <div class="mega-section">
+        <div class="mega-section-title">Connect</div>
+        <a href="contact.html">Contact ABZEMO</a>
+      </div>
+
+      <div class="mega-section">
+        <div class="mega-section-title">Legal</div>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="terms.html">Terms & Conditions</a>
+      </div>
+
+    </div>
+  </aside>
+
+  <main>
 
     <!-- HERO -->
 
     <section class="page-hero">
+      <div class="container">
 
-        <div class="container">
+        <div class="hero-content">
 
-            <p class="eyebrow">ABZEMO SOLUTIONS</p>
+          <div class="hero-label">
+            Solutions
+          </div>
 
-            <h1>
-                Technology with a purpose.
-            </h1>
+          <h1>
+            Practical technology for real business problems.
+          </h1>
 
-            <p class="hero-text">
-                ABZEMO develops practical business and technology solutions
-                designed to improve processes, connect information and help
-                organizations operate more intelligently.
+          <p>
+            ABZEMO builds digital, automated, and intelligent
+            solutions designed to improve how organizations work,
+            serve customers, and grow.
+          </p>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SOLUTION AREAS -->
+
+    <section class="section">
+      <div class="container">
+
+        <div class="section-header">
+
+          <div class="section-label">
+            What We Build
+          </div>
+
+          <h2>
+            From automation<br>
+            to intelligent systems.
+          </h2>
+
+          <p>
+            Our solutions combine technology, business understanding,
+            automation, and artificial intelligence to address
+            specific operational requirements.
+          </p>
+
+        </div>
+
+        <div class="solution-grid">
+
+          <article class="solution-card">
+            <span class="solution-number">01 — AI & AGENTS</span>
+
+            <h3>AI Agents</h3>
+
+            <p>
+              Intelligent agents designed to understand requests,
+              work through defined processes, and take appropriate
+              actions.
             </p>
 
-        </div>
+            <ul class="solution-list">
+              <li>Multilingual AI agents</li>
+              <li>Sales and support agents</li>
+              <li>Agentic workflows</li>
+              <li>Human handoff</li>
+            </ul>
+          </article>
 
-    </section>
+          <article class="solution-card">
+            <span class="solution-number">02 — AUTOMATION</span>
 
+            <h3>Business Automation</h3>
 
-    <!-- CORE SOLUTIONS -->
+            <p>
+              Reduce repetitive manual work by connecting business
+              processes, information, and actions into structured
+              workflows.
+            </p>
 
-    <section class="section">
+            <ul class="solution-list">
+              <li>Workflow automation</li>
+              <li>Lead processing</li>
+              <li>Notifications and follow-ups</li>
+              <li>Process orchestration</li>
+            </ul>
+          </article>
 
-        <div class="container">
+          <article class="solution-card">
+            <span class="solution-number">03 — DIGITAL</span>
 
-            <div class="section-header">
+            <h3>Digital Solutions</h3>
 
-                <div class="section-label">
-                    OUR CAPABILITIES
-                </div>
+            <p>
+              Modern web and business systems designed around
+              practical organizational requirements.
+            </p>
 
-                <h2>
-                    Solutions built around<br>
-                    real business needs.
-                </h2>
+            <ul class="solution-list">
+              <li>Business websites</li>
+              <li>Web applications</li>
+              <li>Customer-facing systems</li>
+              <li>Digital workflows</li>
+            </ul>
+          </article>
 
-            </div>
+          <article class="solution-card">
+            <span class="solution-number">04 — DATA</span>
 
+            <h3>Data & Intelligence</h3>
 
-            <div class="card-grid">
+            <p>
+              Structured information systems that help organizations
+              organize data and make it useful within their workflows.
+            </p>
 
-                <article class="card">
+            <ul class="solution-list">
+              <li>Data organization</li>
+              <li>Business information flows</li>
+              <li>Reporting workflows</li>
+              <li>Decision support</li>
+            </ul>
+          </article>
 
-                    <div class="card-icon">AI</div>
+          <article class="solution-card">
+            <span class="solution-number">05 — INTEGRATION</span>
 
-                    <h3>
-                        AI & Automation
-                    </h3>
+            <h3>System Integration</h3>
 
-                    <p>
-                        Intelligent automation and AI-powered workflows
-                        designed to reduce repetitive work, improve
-                        response times and create smarter operations.
-                    </p>
+            <p>
+              Connect existing business tools and systems so
+              information can move between the right processes
+              without unnecessary manual work.
+            </p>
 
-                    <a href="abzemo-ai.html" class="btn btn-primary">
-                        Explore ABZEMO AI
-                    </a>
+            <ul class="solution-list">
+              <li>API integrations</li>
+              <li>Business system connections</li>
+              <li>CRM workflows</li>
+              <li>Data synchronization</li>
+            </ul>
+          </article>
 
-                </article>
+          <article class="solution-card">
+            <span class="solution-number">06 — TRANSFORMATION</span>
 
+            <h3>Digital Transformation</h3>
 
-                <article class="card">
+            <p>
+              Technology-led improvement of business operations,
+              workflows, customer experiences, and internal systems.
+            </p>
 
-                    <div class="card-icon">PM</div>
-
-                    <h3>
-                        Project Management
-                    </h3>
-
-                    <p>
-                        Structured planning, coordination and execution
-                        for technology, business and transformation
-                        initiatives.
-                    </p>
-
-                </article>
-
-
-                <article class="card">
-
-                    <div class="card-icon">DX</div>
-
-                    <h3>
-                        Digital Transformation
-                    </h3>
-
-                    <p>
-                        Helping organizations modernize processes,
-                        systems and customer experiences through
-                        practical digital solutions.
-                    </p>
-
-                </article>
-
-
-                <article class="card">
-
-                    <div class="card-icon">BA</div>
-
-                    <h3>
-                        Business Automation
-                    </h3>
-
-                    <p>
-                        Connecting business processes and workflows
-                        to reduce manual effort and create more
-                        consistent operations.
-                    </p>
-
-                </article>
-
-
-                <article class="card">
-
-                    <div class="card-icon">DA</div>
-
-                    <h3>
-                        Intelligent Data Workflows
-                    </h3>
-
-                    <p>
-                        Organizing information and creating intelligent
-                        workflows that help teams access, process and
-                        use business data more effectively.
-                    </p>
-
-                </article>
-
-
-                <article class="card">
-
-                    <div class="card-icon">ST</div>
-
-                    <h3>
-                        Technology Strategy
-                    </h3>
-
-                    <p>
-                        Helping organizations identify technology
-                        opportunities, prioritize initiatives and
-                        develop practical implementation directions.
-                    </p>
-
-                </article>
-
-            </div>
+            <ul class="solution-list">
+              <li>Process modernization</li>
+              <li>Workflow redesign</li>
+              <li>Technology adoption</li>
+              <li>Operational improvement</li>
+            </ul>
+          </article>
 
         </div>
 
+      </div>
     </section>
 
+    <!-- DELIVERY APPROACH -->
 
-    <!-- INTELLIGENT AUTOMATION -->
+    <section class="section section-light">
+      <div class="container">
 
-    <section class="section section-dark">
+        <div class="section-header">
 
-        <div class="container">
+          <div class="section-label">
+            Our Approach
+          </div>
 
-            <div class="two-column">
+          <h2>
+            Understand first.<br>
+            Build with purpose.
+          </h2>
 
-                <div>
-
-                    <div class="section-label">
-                        INTELLIGENT AUTOMATION
-                    </div>
-
-                    <h2>
-                        From chatbots to<br>
-                        intelligent agents.
-                    </h2>
-
-                    <p>
-                        ABZEMO's AI direction focuses on moving beyond
-                        basic question-and-answer chatbots toward
-                        intelligent agents that can understand
-                        conversations, collect information, perform
-                        defined tasks and connect with business workflows.
-                    </p>
-
-                    <p>
-                        These agents can be designed for sales,
-                        customer support, finance, ERP workflows,
-                        education, healthcare, real estate and
-                        other business environments.
-                    </p>
-
-                    <a href="abzemo-ai.html" class="btn btn-primary">
-                        Discover ABZEMO AI
-                    </a>
-
-                </div>
-
-
-                <div class="ai-demo">
-
-                    <div class="chat-message user">
-                        I want to buy a property in Dubai.
-                    </div>
-
-                    <div class="chat-message agent">
-                        Certainly. Are you looking for a property
-                        for personal use or investment?
-                    </div>
-
-                    <div class="chat-message user">
-                        Investment. My budget is AED 1 million.
-                    </div>
-
-                    <div class="chat-message agent">
-                        Thank you. I can help collect your requirements
-                        and prepare the information for the appropriate
-                        sales team.
-                    </div>
-
-                </div>
-
-            </div>
+          <p>
+            We focus on the actual business requirement before
+            selecting technology or designing an automation workflow.
+          </p>
 
         </div>
 
-    </section>
+        <div class="process-grid">
 
+          <article class="process-card">
+            <span class="process-number">01</span>
 
-    <!-- HOW WE WORK -->
+            <h3>Understand</h3>
 
-    <section class="section">
+            <p>
+              Identify the business problem, workflow, users,
+              constraints, and desired outcome.
+            </p>
+          </article>
 
-        <div class="container">
+          <article class="process-card">
+            <span class="process-number">02</span>
 
-            <div class="section-header">
+            <h3>Design</h3>
 
-                <div class="section-label">
-                    OUR APPROACH
-                </div>
+            <p>
+              Define the appropriate system, automation, AI,
+              integration, or digital approach.
+            </p>
+          </article>
 
-                <h2>
-                    Understand first.<br>
-                    Build with purpose.
-                </h2>
+          <article class="process-card">
+            <span class="process-number">03</span>
 
-            </div>
+            <h3>Build</h3>
 
+            <p>
+              Develop and test the solution around the defined
+              requirements and real-world workflow.
+            </p>
+          </article>
 
-            <div class="card-grid">
+          <article class="process-card">
+            <span class="process-number">04</span>
 
-                <article class="card">
+            <h3>Evolve</h3>
 
-                    <div class="card-icon">01</div>
-
-                    <h3>Understand</h3>
-
-                    <p>
-                        Understand the organization's objectives,
-                        challenges, workflows and users.
-                    </p>
-
-                </article>
-
-
-                <article class="card">
-
-                    <div class="card-icon">02</div>
-
-                    <h3>Design</h3>
-
-                    <p>
-                        Design a practical solution around the
-                        actual business requirement rather than
-                        forcing technology onto the problem.
-                    </p>
-
-                </article>
-
-
-                <article class="card">
-
-                    <div class="card-icon">03</div>
-
-                    <h3>Implement</h3>
-
-                    <p>
-                        Develop, integrate and deploy the required
-                        workflows, systems or intelligent automation.
-                    </p>
-
-                </article>
-
-
-                <article class="card">
-
-                    <div class="card-icon">04</div>
-
-                    <h3>Improve</h3>
-
-                    <p>
-                        Monitor the solution and identify opportunities
-                        for continuous improvement as requirements evolve.
-                    </p>
-
-                </article>
-
-            </div>
+            <p>
+              Improve the solution as requirements, technology,
+              and business operations evolve.
+            </p>
+          </article>
 
         </div>
 
+      </div>
     </section>
 
+    <!-- ABZEMO AI -->
 
-    <!-- BUSINESS VALUE -->
+    <section class="section ai-section">
+      <div class="container">
 
-    <section class="section">
+        <div class="section-header">
 
-        <div class="container two-column">
+          <div class="section-label">
+            ABZEMO AI
+          </div>
 
-            <div>
+          <h2>
+            Intelligence that can work with the business.
+          </h2>
 
-                <div class="section-label">
-                    BUSINESS VALUE
-                </div>
-
-                <h2>
-                    Technology should create
-                    meaningful value.
-                </h2>
-
-                <p>
-                    ABZEMO believes technology is most useful when it
-                    solves a real problem, improves an existing process
-                    or creates a meaningful new capability.
-                </p>
-
-                <p>
-                    Our solutions are therefore designed around business
-                    outcomes, operational requirements and long-term
-                    usability.
-                </p>
-
-            </div>
-
-
-            <div>
-
-                <ul class="feature-list">
-
-                    <li>
-                        Reduce repetitive manual work
-                    </li>
-
-                    <li>
-                        Improve response and workflow speed
-                    </li>
-
-                    <li>
-                        Connect people, information and systems
-                    </li>
-
-                    <li>
-                        Improve customer and user experiences
-                    </li>
-
-                    <li>
-                        Create scalable digital workflows
-                    </li>
-
-                    <li>
-                        Prepare organizations for emerging technology
-                    </li>
-
-                </ul>
-
-            </div>
+          <p>
+            ABZEMO AI is the first major operating technology
+            division of ABZEMO, focused on AI automation,
+            business solutions, AI agents, and agentic systems.
+          </p>
 
         </div>
 
-    </section>
+        <div class="ai-grid">
 
+          <article class="ai-card">
+
+            <h3>AI Automation</h3>
+
+            <p>
+              AI-powered workflows designed to handle structured
+              business processes and reduce repetitive work.
+            </p>
+
+            <ul>
+              <li>Process automation</li>
+              <li>Intelligent workflow routing</li>
+              <li>Business task automation</li>
+              <li>Human escalation</li>
+            </ul>
+
+          </article>
+
+          <article class="ai-card">
+
+            <h3>Agentic AI</h3>
+
+            <p>
+              AI systems designed around defined goals, tools,
+              decision paths, and business actions rather than
+              simple question-and-answer interactions.
+            </p>
+
+            <ul>
+              <li>AI sales agents</li>
+              <li>Multilingual interaction</li>
+              <li>Decision loops</li>
+              <li>Action-oriented workflows</li>
+            </ul>
+
+          </article>
+
+        </div>
+
+      </div>
+    </section>
 
     <!-- CTA -->
 
-    <section class="section cta-section">
+    <section class="cta-section">
+      <div class="container">
 
-        <div class="container cta-content">
+        <div class="section-header">
 
-            <p class="eyebrow">
-                START A CONVERSATION
-            </p>
+          <div class="section-label">
+            Build With ABZEMO
+          </div>
 
-            <h2>
-                Have a business challenge?
-            </h2>
+          <h2>
+            Have a problem worth solving?
+          </h2>
 
-            <p>
-                Let's explore whether technology, automation or an
-                intelligent workflow can help solve it.
-            </p>
-
-            <a href="contact.html" class="btn btn-primary">
-                Talk to ABZEMO
-            </a>
+          <p>
+            Tell us what you want to improve, automate, connect,
+            or build. We can explore the right solution together.
+          </p>
 
         </div>
 
+        <a href="contact.html" class="btn btn-primary">
+          Talk to ABZEMO
+        </a>
+
+      </div>
     </section>
 
-</main>
+  </main>
 
+  <!-- FOOTER -->
 
-<footer class="site-footer">
+  <footer class="site-footer">
+    <div class="container">
 
-    <div class="container footer-content">
+      <div class="footer-top">
 
-        <div>
+        <div class="footer-brand">
 
-            <div class="logo">
-                ABZEMO
-            </div>
+          <div class="footer-logo">
+            ABZEM<span>O</span>
+          </div>
 
-            <p>
-                Building What’s Next.
-            </p>
+          <p>
+            Building What's Next. Across technology, business,
+            healthcare, education, trade and future ventures.
+          </p>
 
         </div>
-
 
         <div class="footer-links">
 
+          <div class="footer-column">
+            <h4>Company</h4>
             <a href="about.html">About</a>
             <a href="mission.html">Mission</a>
             <a href="vision.html">Vision</a>
+            <a href="director-note.html">Director's Note</a>
+          </div>
+
+          <div class="footer-column">
+            <h4>Explore</h4>
+            <a href="ventures.html">Ventures</a>
+            <a href="industries.html">Industries</a>
+            <a href="solutions.html">Solutions</a>
             <a href="abzemo-ai.html">ABZEMO AI</a>
+          </div>
+
+          <div class="footer-column">
+            <h4>Connect</h4>
             <a href="contact.html">Contact</a>
+            <a href="privacy.html">Privacy</a>
+            <a href="terms.html">Terms</a>
+          </div>
 
         </div>
 
-    </div>
+      </div>
 
-
-    <div class="container footer-bottom">
-
-        <p>
-            © 2026 ABZEMO. All rights reserved.
-        </p>
+      <div class="footer-bottom">
+        <span>© 2026 ABZEMO. All rights reserved.</span>
+        <span>Building What's Next.</span>
+      </div>
 
     </div>
+  </footer>
 
-</footer>
+  <script>
+    const menuButton = document.getElementById("menuButton");
+    const megaMenu = document.getElementById("megaMenu");
+    const megaOverlay = document.getElementById("megaOverlay");
+    const megaClose = document.getElementById("megaClose");
 
+    function openMegaMenu() {
+      megaMenu.classList.add("active");
+      megaOverlay.classList.add("active");
+      document.body.classList.add("menu-open");
+      menuButton.setAttribute("aria-expanded", "true");
+    }
 
-<script>
+    function closeMegaMenu() {
+      megaMenu.classList.remove("active");
+      megaOverlay.classList.remove("active");
+      document.body.classList.remove("menu-open");
+      menuButton.setAttribute("aria-expanded", "false");
+    }
 
-const menuToggle = document.querySelector(".menu-toggle");
-const megaMenu = document.querySelector(".mega-menu");
+    menuButton.addEventListener("click", openMegaMenu);
+    megaClose.addEventListener("click", closeMegaMenu);
+    megaOverlay.addEventListener("click", closeMegaMenu);
 
-if (menuToggle && megaMenu) {
-
-    menuToggle.addEventListener("click", () => {
-
-        megaMenu.classList.toggle("active");
-        menuToggle.classList.toggle("active");
-
+    document.addEventListener("keydown", function(event) {
+      if (event.key === "Escape") {
+        closeMegaMenu();
+      }
     });
 
-}
+    megaMenu.querySelectorAll("a").forEach(function(link) {
+      link.addEventListener("click", closeMegaMenu);
+    });
+  </script>
 
-</script>
+  <script src="abzemo-ai.js"></script>
 
 </body>
 </html>
