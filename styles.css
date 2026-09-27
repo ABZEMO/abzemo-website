@@ -1275,7 +1275,7 @@ ol {
   display: flex;
   align-items: center;
   justify-self: start;
-  gap: 14px;
+  gap: 6px;
 }
 
 .menu-button {
