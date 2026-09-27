@@ -12,11 +12,514 @@
   >
 
   <link rel="stylesheet" href="styles.css">
+
+  <style>
+    :root {
+      --blue: #1264d8;
+      --blue-dark: #084a9e;
+      --navy: #071a35;
+      --text: #24344d;
+      --muted: #6f7f95;
+      --light: #f5f8fc;
+      --white: #ffffff;
+      --line: #dce5f0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background: var(--white);
+      line-height: 1.7;
+    }
+
+    body.menu-open {
+      overflow: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .container {
+      width: min(1180px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    /* HEADER */
+
+    .site-header {
+      position: fixed;
+      inset: 0 0 auto 0;
+      z-index: 1000;
+      height: 78px;
+      background: rgba(255,255,255,.94);
+      border-bottom: 1px solid rgba(220,229,240,.8);
+      backdrop-filter: blur(18px);
+    }
+
+    .navbar {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -.04em;
+      color: var(--navy);
+    }
+
+    .logo span {
+      color: var(--blue);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      transition: color .2s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--blue);
+    }
+
+    .menu-toggle {
+      width: 46px;
+      height: 46px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--white);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+    }
+
+    .menu-toggle span {
+      width: 18px;
+      height: 2px;
+      background: var(--navy);
+      border-radius: 2px;
+    }
+
+    /* MEGA MENU */
+
+    .mega-menu {
+      position: fixed;
+      top: 0;
+      left: -460px;
+      width: min(460px, 90vw);
+      height: 100vh;
+      z-index: 1200;
+      background: var(--white);
+      box-shadow: 20px 0 60px rgba(7,26,53,.15);
+      transition: left .3s ease;
+      overflow-y: auto;
+    }
+
+    .mega-menu.active {
+      left: 0;
+    }
+
+    .mega-menu-inner {
+      padding: 34px;
+      position: relative;
+    }
+
+    .menu-close {
+      position: absolute;
+      top: 22px;
+      right: 22px;
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--white);
+      font-size: 28px;
+      line-height: 1;
+      cursor: pointer;
+      color: var(--navy);
+    }
+
+    .mega-menu-brand {
+      margin: 25px 0 40px;
+    }
+
+    .mega-menu-brand span {
+      display: block;
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--navy);
+    }
+
+    .mega-menu-brand small {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .mega-menu-section {
+      margin-bottom: 28px;
+    }
+
+    .mega-menu-label {
+      margin-bottom: 10px;
+      color: var(--blue);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    .mega-menu-section a {
+      display: block;
+      padding: 5px 0;
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    .mega-menu-section a:hover {
+      color: var(--blue);
+    }
+
+    .menu-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1100;
+      background: rgba(7,26,53,.42);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .3s ease;
+    }
+
+    .menu-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* HERO */
+
+    .page-hero {
+      padding: 170px 0 110px;
+      background:
+        radial-gradient(circle at 80% 20%, rgba(18,100,216,.13), transparent 32%),
+        linear-gradient(180deg, #ffffff 0%, #f5f8fc 100%);
+    }
+
+    .hero-label,
+    .section-label {
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+
+    .page-hero h1 {
+      max-width: 900px;
+      font-size: clamp(48px, 7vw, 82px);
+      line-height: .98;
+      letter-spacing: -.055em;
+      color: var(--navy);
+      margin-bottom: 30px;
+    }
+
+    .page-hero p {
+      max-width: 760px;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    /* SECTIONS */
+
+    .section {
+      padding: 105px 0;
+    }
+
+    .section-light {
+      background: var(--light);
+    }
+
+    .two-column {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 70px;
+      align-items: start;
+    }
+
+    .section h2 {
+      color: var(--navy);
+      font-size: clamp(38px, 5vw, 58px);
+      line-height: 1.04;
+      letter-spacing: -.045em;
+      margin-bottom: 24px;
+    }
+
+    .section p {
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    .section-header {
+      max-width: 780px;
+      margin-bottom: 50px;
+    }
+
+    .section-header p {
+      max-width: 680px;
+    }
+
+    /* CARDS */
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 35px;
+    }
+
+    .card {
+      padding: 30px;
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 18px 45px rgba(7,26,53,.08);
+    }
+
+    .card-icon {
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 22px;
+      border-radius: 12px;
+      background: #eaf2ff;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .card h3 {
+      color: var(--navy);
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      font-size: 14px;
+      margin-bottom: 0;
+    }
+
+    /* AI FEATURE */
+
+    .ai-section {
+      background: var(--navy);
+      color: var(--white);
+    }
+
+    .ai-section h2 {
+      color: var(--white);
+    }
+
+    .ai-section p {
+      color: rgba(255,255,255,.72);
+    }
+
+    .ai-section .hero-label {
+      color: #70a9ff;
+    }
+
+    .ai-demo {
+      padding: 30px;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 22px;
+      background: rgba(255,255,255,.055);
+    }
+
+    .ai-message {
+      padding: 15px 18px;
+      margin-bottom: 14px;
+      border-radius: 14px;
+      font-size: 14px;
+    }
+
+    .ai-user {
+      background: rgba(255,255,255,.09);
+      color: white;
+    }
+
+    .ai-bot {
+      background: rgba(18,100,216,.35);
+      color: white;
+    }
+
+    .ai-system {
+      background: rgba(255,255,255,.06);
+      border-left: 3px solid #70a9ff;
+      color: rgba(255,255,255,.78);
+    }
+
+    /* CTA */
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 52px;
+      padding: 0 25px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      transition: transform .2s ease, background .2s ease;
+    }
+
+    .btn-primary {
+      color: var(--white);
+      background: var(--blue);
+    }
+
+    .btn-primary:hover {
+      background: var(--blue-dark);
+      transform: translateY(-2px);
+    }
+
+    /* FOOTER */
+
+    .site-footer {
+      padding: 75px 0 25px;
+      background: var(--navy);
+      color: var(--white);
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 60px;
+      padding-bottom: 55px;
+    }
+
+    .footer-brand .logo {
+      color: var(--white);
+    }
+
+    .footer-brand p {
+      color: rgba(255,255,255,.6);
+      margin-top: 10px;
+    }
+
+    .footer-column h4 {
+      margin-bottom: 18px;
+      font-size: 14px;
+    }
+
+    .footer-column ul {
+      list-style: none;
+    }
+
+    .footer-column li {
+      margin-bottom: 8px;
+    }
+
+    .footer-column a {
+      color: rgba(255,255,255,.6);
+      font-size: 14px;
+    }
+
+    .footer-column a:hover {
+      color: white;
+    }
+
+    .footer-bottom {
+      padding-top: 22px;
+      border-top: 1px solid rgba(255,255,255,.1);
+      color: rgba(255,255,255,.45);
+      font-size: 12px;
+    }
+
+    /* RESPONSIVE */
+
+    @media (max-width: 900px) {
+      .nav-links {
+        display: none;
+      }
+
+      .two-column {
+        grid-template-columns: 1fr;
+        gap: 35px;
+      }
+
+      .card-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        width: min(100% - 28px, 1180px);
+      }
+
+      .page-hero {
+        padding: 145px 0 80px;
+      }
+
+      .page-hero h1 {
+        font-size: 48px;
+      }
+
+      .section {
+        padding: 75px 0;
+      }
+
+      .card-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 35px;
+      }
+
+      .mega-menu-inner {
+        padding: 28px 22px;
+      }
+    }
+  </style>
 </head>
 
 <body>
-
-  <!-- ================= HEADER ================= -->
 
   <header class="site-header">
     <div class="container navbar">
@@ -27,11 +530,9 @@
 
       <nav>
         <ul class="nav-links">
-          <li><a href="index.html">Home</a></li>
           <li><a href="about.html">About</a></li>
-          <li><a href="mission.html">Mission</a></li>
-          <li><a href="vision.html">Vision</a></li>
-          <li><a href="index.html#ventures">Ventures</a></li>
+          <li><a href="solutions.html">Solutions</a></li>
+          <li><a href="abzemo-ai.html">ABZEMO AI</a></li>
           <li><a href="contact.html">Contact</a></li>
         </ul>
       </nav>
@@ -49,9 +550,6 @@
 
     </div>
   </header>
-
-
-  <!-- ================= SIDE MENU ================= -->
 
   <div class="mega-menu" id="megaMenu">
 
@@ -71,81 +569,59 @@
         <small>Building What’s Next.</small>
       </div>
 
-
-      <!-- ABZEMO -->
-
       <div class="mega-menu-section">
-
-        <div class="mega-menu-label">
-          ABZEMO
-        </div>
-
+        <div class="mega-menu-label">ABZEMO</div>
         <a href="index.html">Home</a>
-        <a href="about.html">About</a>
+        <a href="about.html">About ABZEMO</a>
         <a href="mission.html">Mission</a>
         <a href="vision.html">Vision</a>
+        <a href="director-note.html">Director’s Note</a>
+        <a href="industries.html">Industries</a>
+        <a href="solutions.html">Solutions</a>
         <a href="contact.html">Contact</a>
-
       </div>
 
-
-      <!-- ABZEMO AI -->
-
       <div class="mega-menu-section">
-
-        <div class="mega-menu-label">
-          ABZEMO AI
-        </div>
-
+        <div class="mega-menu-label">ABZEMO AI</div>
         <a href="abzemo-ai.html">Overview</a>
-        <a href="abzemo-ai.html">AI Agents</a>
-        <a href="abzemo-ai.html">Multilingual Intelligence</a>
-        <a href="abzemo-ai.html">Sales AI</a>
-        <a href="abzemo-ai.html">Finance AI</a>
-        <a href="abzemo-ai.html">ERP AI</a>
-        <a href="abzemo-ai.html">Real Estate AI</a>
-        <a href="abzemo-ai.html">Healthcare AI</a>
-        <a href="abzemo-ai.html">Education AI</a>
-        <a href="abzemo-ai.html">Enterprise AI</a>
-
+        <a href="abzemo-ai.html#agents">AI Agents</a>
+        <a href="abzemo-ai.html#multilingual">Multilingual Intelligence</a>
+        <a href="abzemo-ai.html#sales">Sales AI</a>
+        <a href="abzemo-ai.html#finance">Finance AI</a>
+        <a href="abzemo-ai.html#erp">ERP AI</a>
+        <a href="abzemo-ai.html#realestate">Real Estate AI</a>
+        <a href="abzemo-ai.html#healthcare">Healthcare AI</a>
+        <a href="abzemo-ai.html#education">Education AI</a>
+        <a href="abzemo-ai.html#enterprise">Enterprise AI</a>
       </div>
 
-
-      <!-- ABZEMO VENTURES -->
+      <div class="mega-menu-section">
+        <div class="mega-menu-label">ABZEMO VENTURES</div>
+        <a href="ventures.html#ai">ABZEMO AI</a>
+        <a href="ventures.html#medical">ABZEMO Medical</a>
+        <a href="ventures.html#trade">ABZEMO Trade</a>
+        <a href="ventures.html#education">ABZEMO Smart Schooling</a>
+        <a href="ventures.html#fashions">ABZEMO Fashions</a>
+        <a href="ventures.html#realestate">ABZEMO Real Estate</a>
+        <a href="ventures.html#logistics">ABZEMO Logistics</a>
+        <a href="ventures.html#finance">ABZEMO Finance</a>
+        <a href="ventures.html#future">Future Ventures</a>
+      </div>
 
       <div class="mega-menu-section">
-
-        <div class="mega-menu-label">
-          ABZEMO VENTURES
-        </div>
-
-        <a href="index.html#ventures">ABZEMO Medical</a>
-        <a href="index.html#ventures">ABZEMO Trade</a>
-        <a href="index.html#ventures">ABZEMO Smart Schooling</a>
-        <a href="index.html#ventures">ABZEMO Fashions</a>
-        <a href="index.html#ventures">ABZEMO Real Estate</a>
-        <a href="index.html#ventures">ABZEMO Logistics</a>
-        <a href="index.html#ventures">ABZEMO Finance</a>
-        <a href="index.html#ventures">Future Ventures</a>
-
+        <div class="mega-menu-label">LEGAL</div>
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms</a>
       </div>
 
     </div>
-
   </div>
 
   <div class="menu-overlay" id="menuOverlay"></div>
 
-
-  <!-- ================= MAIN ================= -->
-
   <main>
 
-
-    <!-- ================= AI HERO ================= -->
-
     <section class="page-hero">
-
       <div class="container">
 
         <div class="hero-label">
@@ -153,7 +629,7 @@
         </div>
 
         <h1>
-          Intelligent agents<br>
+          Intelligent agents
           for the next generation of business.
         </h1>
 
@@ -165,34 +641,25 @@
         </p>
 
       </div>
-
     </section>
 
-
-    <!-- ================= BEYOND CHATBOTS ================= -->
-
     <section class="section">
-
       <div class="container">
 
         <div class="two-column">
 
           <div>
-
             <div class="section-label">
               BEYOND CHATBOTS
             </div>
 
             <h2>
-              From conversation<br>
+              From conversation
               to intelligent action.
             </h2>
-
           </div>
 
-
           <div>
-
             <p>
               Traditional chatbots are often limited to answering
               predefined questions. ABZEMO AI is being designed around
@@ -206,37 +673,28 @@
               It is to build useful digital workers that can operate
               alongside people and business systems.
             </p>
-
           </div>
 
         </div>
 
       </div>
-
     </section>
 
-
-    <!-- ================= MULTILINGUAL ================= -->
-
-    <section class="section section-light">
-
+    <section class="section section-light" id="multilingual">
       <div class="container">
 
         <div class="two-column">
 
           <div>
-
             <div class="section-label">
               MULTILINGUAL INTELLIGENCE
             </div>
 
             <h2>
-              Speak naturally.<br>
+              Speak naturally.
               Work globally.
             </h2>
-
           </div>
-
 
           <div>
 
@@ -257,56 +715,30 @@
             <div class="card-grid">
 
               <div class="card">
-
-                <div class="card-icon">
-                  01
-                </div>
-
-                <h3>
-                  Customer Language
-                </h3>
-
+                <div class="card-icon">01</div>
+                <h3>Customer Language</h3>
                 <p>
                   Communicate naturally with customers in the
                   language they are comfortable using.
                 </p>
-
               </div>
 
-
               <div class="card">
-
-                <div class="card-icon">
-                  02
-                </div>
-
-                <h3>
-                  AI Understanding
-                </h3>
-
+                <div class="card-icon">02</div>
+                <h3>AI Understanding</h3>
                 <p>
                   Interpret intent, context, requirements and
                   conversational meaning.
                 </p>
-
               </div>
 
-
               <div class="card">
-
-                <div class="card-icon">
-                  03
-                </div>
-
-                <h3>
-                  Structured Backend
-                </h3>
-
+                <div class="card-icon">03</div>
+                <h3>Structured Backend</h3>
                 <p>
                   Convert conversations into organized business
                   information for systems and teams.
                 </p>
-
               </div>
 
             </div>
@@ -316,14 +748,9 @@
         </div>
 
       </div>
-
     </section>
 
-
-    <!-- ================= AI AGENTS ================= -->
-
-    <section class="section">
-
+    <section class="section" id="agents">
       <div class="container">
 
         <div class="section-header">
@@ -333,7 +760,7 @@
           </div>
 
           <h2>
-            One intelligence layer.<br>
+            One intelligence layer.
             Multiple business roles.
           </h2>
 
@@ -345,163 +772,86 @@
 
         </div>
 
-
         <div class="card-grid">
 
-          <div class="card">
-
-            <div class="card-icon">
-              01
-            </div>
-
-            <h3>
-              Sales Agent
-            </h3>
-
+          <div class="card" id="sales">
+            <div class="card-icon">01</div>
+            <h3>Sales Agent</h3>
             <p>
               Engage prospects, understand requirements, qualify
               leads and transfer valuable information to sales teams.
             </p>
-
           </div>
 
-
-          <div class="card">
-
-            <div class="card-icon">
-              02
-            </div>
-
-            <h3>
-              Finance Agent
-            </h3>
-
+          <div class="card" id="finance">
+            <div class="card-icon">02</div>
+            <h3>Finance Agent</h3>
             <p>
               Assist with financial workflows, records, reconciliation
               processes and business information.
             </p>
-
           </div>
 
-
-          <div class="card">
-
-            <div class="card-icon">
-              03
-            </div>
-
-            <h3>
-              ERP Agent
-            </h3>
-
+          <div class="card" id="erp">
+            <div class="card-icon">03</div>
+            <h3>ERP Agent</h3>
             <p>
               Interact with business systems and help employees
               access and process operational information.
             </p>
-
           </div>
 
-
-          <div class="card">
-
-            <div class="card-icon">
-              04
-            </div>
-
-            <h3>
-              Real Estate Agent
-            </h3>
-
+          <div class="card" id="realestate">
+            <div class="card-icon">04</div>
+            <h3>Real Estate Agent</h3>
             <p>
               Understand property requirements, qualify prospects
               and support real-estate sales workflows.
             </p>
-
           </div>
 
-
-          <div class="card">
-
-            <div class="card-icon">
-              05
-            </div>
-
-            <h3>
-              Healthcare Agent
-            </h3>
-
+          <div class="card" id="healthcare">
+            <div class="card-icon">05</div>
+            <h3>Healthcare Agent</h3>
             <p>
               Support administrative and operational workflows
               within healthcare environments.
             </p>
-
           </div>
 
-
-          <div class="card">
-
-            <div class="card-icon">
-              06
-            </div>
-
-            <h3>
-              Education Agent
-            </h3>
-
+          <div class="card" id="education">
+            <div class="card-icon">06</div>
+            <h3>Education Agent</h3>
             <p>
               Support schools and educational organizations with
               student, administrative and operational workflows.
             </p>
-
           </div>
 
-
-          <div class="card">
-
-            <div class="card-icon">
-              07
-            </div>
-
-            <h3>
-              Enterprise Agent
-            </h3>
-
+          <div class="card" id="enterprise">
+            <div class="card-icon">07</div>
+            <h3>Enterprise Agent</h3>
             <p>
               Connect employees, information, workflows and
               business systems through intelligent interfaces.
             </p>
-
           </div>
 
-
           <div class="card">
-
-            <div class="card-icon">
-              08
-            </div>
-
-            <h3>
-              Industry Agents
-            </h3>
-
+            <div class="card-icon">08</div>
+            <h3>Industry Agents</h3>
             <p>
               Adapt the intelligence layer to specialized
               requirements across different industries and markets.
             </p>
-
           </div>
 
         </div>
 
       </div>
-
     </section>
 
-
-    <!-- ================= REAL ESTATE EXAMPLE ================= -->
-
-    <section class="section ai-section">
-
+    <section class="section ai-section" id="realestate-demo">
       <div class="container">
 
         <div class="two-column">
@@ -513,7 +863,7 @@
             </div>
 
             <h2>
-              A multilingual<br>
+              A multilingual
               real-estate experience.
             </h2>
 
@@ -530,7 +880,6 @@
             </p>
 
           </div>
-
 
           <div class="ai-demo">
 
@@ -566,14 +915,9 @@
         </div>
 
       </div>
-
     </section>
 
-
-    <!-- ================= ARCHITECTURE ================= -->
-
     <section class="section section-light">
-
       <div class="container">
 
         <div class="section-header">
@@ -593,91 +937,50 @@
 
         </div>
 
-
         <div class="card-grid">
 
           <div class="card">
-
-            <div class="card-icon">
-              01
-            </div>
-
-            <h3>
-              Conversation
-            </h3>
-
+            <div class="card-icon">01</div>
+            <h3>Conversation</h3>
             <p>
               A customer communicates through a website, messaging
               platform or another digital channel.
             </p>
-
           </div>
 
-
           <div class="card">
-
-            <div class="card-icon">
-              02
-            </div>
-
-            <h3>
-              Intelligence
-            </h3>
-
+            <div class="card-icon">02</div>
+            <h3>Intelligence</h3>
             <p>
               AI understands language, intent, context and
               requirements.
             </p>
-
           </div>
 
-
           <div class="card">
-
-            <div class="card-icon">
-              03
-            </div>
-
-            <h3>
-              Structured Data
-            </h3>
-
+            <div class="card-icon">03</div>
+            <h3>Structured Data</h3>
             <p>
               Important information becomes organized business data
               that can be processed consistently.
             </p>
-
           </div>
 
-
           <div class="card">
-
-            <div class="card-icon">
-              04
-            </div>
-
-            <h3>
-              Action
-            </h3>
-
+            <div class="card-icon">04</div>
+            <h3>Action</h3>
             <p>
               The appropriate workflow, system or human team
               receives the required action.
             </p>
-
           </div>
 
         </div>
 
       </div>
-
     </section>
 
-
-    <!-- ================= CONNECTED ECOSYSTEM ================= -->
-
     <section class="section">
-
       <div class="container">
 
         <div class="section-header">
@@ -687,7 +990,7 @@
           </div>
 
           <h2>
-            A connected ecosystem<br>
+            A connected ecosystem
             of intelligent agents.
           </h2>
 
@@ -706,14 +1009,9 @@
         </div>
 
       </div>
-
     </section>
 
-
-    <!-- ================= CTA ================= -->
-
     <section class="section section-light">
-
       <div class="container">
 
         <div class="section-header">
@@ -723,7 +1021,7 @@
           </div>
 
           <h2>
-            The next interface for<br>
+            The next interface for
             business is intelligent.
           </h2>
 
@@ -740,13 +1038,9 @@
         </a>
 
       </div>
-
     </section>
 
   </main>
-
-
-  <!-- ================= FOOTER ================= -->
 
   <footer class="site-footer">
 
@@ -766,92 +1060,43 @@
 
         </div>
 
-
         <div class="footer-column">
 
-          <h4>
-            Company
-          </h4>
+          <h4>Company</h4>
 
           <ul>
-
-            <li>
-              <a href="about.html">
-                About
-              </a>
-            </li>
-
-            <li>
-              <a href="mission.html">
-                Mission
-              </a>
-            </li>
-
-            <li>
-              <a href="vision.html">
-                Vision
-              </a>
-            </li>
-
-            <li>
-              <a href="contact.html">
-                Contact
-              </a>
-            </li>
-
+            <li><a href="about.html">About</a></li>
+            <li><a href="mission.html">Mission</a></li>
+            <li><a href="vision.html">Vision</a></li>
+            <li><a href="contact.html">Contact</a></li>
           </ul>
 
         </div>
 
-
         <div class="footer-column">
 
-          <h4>
-            Explore
-          </h4>
+          <h4>Explore</h4>
 
           <ul>
-
-            <li>
-              <a href="abzemo-ai.html">
-                ABZEMO AI
-              </a>
-            </li>
-
-            <li>
-              <a href="index.html#ventures">
-                Ventures
-              </a>
-            </li>
-
-            <li>
-              <a href="index.html">
-                Home
-              </a>
-            </li>
-
+            <li><a href="abzemo-ai.html">ABZEMO AI</a></li>
+            <li><a href="ventures.html">Ventures</a></li>
+            <li><a href="solutions.html">Solutions</a></li>
+            <li><a href="index.html">Home</a></li>
           </ul>
 
         </div>
 
       </div>
 
-
       <div class="footer-bottom">
-
         © 2026 ABZEMO. All rights reserved.
-
       </div>
 
     </div>
 
   </footer>
 
-
-  <!-- ================= MENU SCRIPT ================= -->
-
   <script>
-
     const menuToggle = document.getElementById("menuToggle");
     const menuClose = document.getElementById("menuClose");
     const megaMenu = document.getElementById("megaMenu");
@@ -884,8 +1129,9 @@
     document.querySelectorAll(".mega-menu a").forEach(function(link) {
       link.addEventListener("click", closeMenu);
     });
-
   </script>
+
+  <script src="abzemo-ai.js"></script>
 
 </body>
 </html>
