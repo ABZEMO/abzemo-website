@@ -1362,6 +1362,7 @@ ol {
 }
 
 .brand-name {
+  margin-left: -10px;
   color: var(--navy) !important;
   font-weight: 900;
   white-space: nowrap;
