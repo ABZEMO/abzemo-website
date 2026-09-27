@@ -1251,3 +1251,63 @@ ol {
     animation-iteration-count: 1 !important;
   }
 }
+/* =========================================================
+   ABZEMO MASTER HEADER — LOCKED
+   Hamburger LEFT | Navigation CENTER | Brand RIGHT
+   ========================================================= */
+
+.navbar {
+  min-height: 78px;
+  display: grid !important;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 24px;
+}
+
+.menu-button {
+  justify-self: start;
+}
+
+.nav-links {
+  justify-content: center;
+  align-items: center;
+  gap: 28px;
+}
+
+.brand {
+  justify-self: end;
+}
+
+/* Contact — locked navy button */
+.nav-links a[href="contact.html"] {
+  color: #ffffff !important;
+  background: #071a35 !important;
+  padding: 11px 20px !important;
+  border-radius: 8px;
+  font-weight: 700;
+}
+
+.nav-links a[href="contact.html"]:hover {
+  color: #ffffff !important;
+  background: #084a9e !important;
+}
+
+/* Keep normal navigation links clean */
+.nav-links a:not([href="contact.html"]) {
+  background: transparent;
+}
+
+/* Mobile */
+@media (max-width: 900px) {
+  .navbar {
+    grid-template-columns: auto 1fr auto;
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  .brand {
+    justify-self: end;
+  }
+}
