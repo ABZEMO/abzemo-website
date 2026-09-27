@@ -1,7 +1,7 @@
 /* =========================================================
    ABZEMO AI — GLOBAL WEBSITE AI WIDGET
-   Version: 1.0
-   Purpose: Global Sales Intelligence / Multilingual AI
+   Version: 2.0
+   Purpose: Global Multilingual AI / Sales Intelligence
    ========================================================= */
 
 (function () {
@@ -10,19 +10,14 @@
   /* =========================================================
      1. SECURE BACKEND ENDPOINT
      ---------------------------------------------------------
-     IMPORTANT:
-     Never put an OpenAI API key in this file.
-     The website should communicate with your secure backend.
+     NEVER place an OpenAI API key in this file.
+     Connect this frontend only to a secure backend endpoint.
      ========================================================= */
 
   const ABZEMO_AI_ENDPOINT = "YOUR_SECURE_BACKEND_ENDPOINT";
 
-
   /* =========================================================
      2. PREVENT DUPLICATION
-     ---------------------------------------------------------
-     If the widget already exists on a page, this script
-     will use the existing widget instead of creating another.
      ========================================================= */
 
   if (window.__ABZEMO_AI_WIDGET_LOADED__) {
@@ -31,9 +26,8 @@
 
   window.__ABZEMO_AI_WIDGET_LOADED__ = true;
 
-
   /* =========================================================
-     3. AI WIDGET CSS
+     3. GLOBAL WIDGET STYLES
      ========================================================= */
 
   if (!document.getElementById("abzemo-ai-global-styles")) {
@@ -43,58 +37,50 @@
     style.id = "abzemo-ai-global-styles";
 
     style.textContent = `
-
-      /* ================================
-         LAUNCHER
-         ================================ */
-
       .abzemo-ai-launcher {
         position: fixed;
         right: 28px;
         bottom: 28px;
-        width: 62px;
-        height: 62px;
+        min-width: 148px;
+        height: 54px;
+        padding: 0 20px;
         border: 0;
-        border-radius: 50%;
+        border-radius: 999px;
         background: linear-gradient(135deg, #1264d8, #168cff);
         color: #ffffff;
-        font-size: 23px;
-        font-weight: 700;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 14px;
+        font-weight: 800;
+        letter-spacing: .1px;
         cursor: pointer;
         z-index: 9998;
         box-shadow: 0 14px 38px rgba(18,100,216,.32);
         transition:
           transform .25s ease,
-          box-shadow .25s ease,
-          opacity .25s ease;
+          box-shadow .25s ease;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-family: Arial, Helvetica, sans-serif;
+        gap: 8px;
       }
 
       .abzemo-ai-launcher:hover {
-        transform: translateY(-3px) scale(1.03);
+        transform: translateY(-3px);
         box-shadow: 0 18px 45px rgba(18,100,216,.42);
       }
 
       .abzemo-ai-launcher:active {
-        transform: scale(.96);
+        transform: scale(.97);
       }
-
-
-      /* ================================
-         CHAT WINDOW
-         ================================ */
 
       .abzemo-ai-chat {
         position: fixed;
         right: 28px;
-        bottom: 105px;
+        bottom: 96px;
         width: 390px;
         max-width: calc(100vw - 32px);
         height: 570px;
-        max-height: calc(100vh - 130px);
+        max-height: calc(100vh - 120px);
         background: #ffffff;
         border: 1px solid rgba(7,26,53,.12);
         border-radius: 22px;
@@ -103,10 +89,7 @@
         display: none;
         flex-direction: column;
         box-shadow: 0 25px 75px rgba(7,26,53,.25);
-        font-family:
-          Arial,
-          Helvetica,
-          sans-serif;
+        font-family: Arial, Helvetica, sans-serif;
       }
 
       .abzemo-ai-chat.active {
@@ -126,20 +109,10 @@
         }
       }
 
-
-      /* ================================
-         HEADER
-         ================================ */
-
       .abzemo-ai-header {
         min-height: 74px;
         padding: 14px 16px;
-        background:
-          linear-gradient(
-            135deg,
-            #071a35 0%,
-            #0c2850 100%
-          );
+        background: linear-gradient(135deg, #071a35 0%, #0c2850 100%);
         color: #ffffff;
         display: flex;
         align-items: center;
@@ -159,12 +132,7 @@
         width: 40px;
         height: 40px;
         border-radius: 12px;
-        background:
-          linear-gradient(
-            135deg,
-            #1264d8,
-            #168cff
-          );
+        background: linear-gradient(135deg, #1264d8, #168cff);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -212,11 +180,6 @@
         background: rgba(255,255,255,.16);
       }
 
-
-      /* ================================
-         MESSAGE AREA
-         ================================ */
-
       .abzemo-ai-messages {
         flex: 1;
         padding: 20px;
@@ -238,11 +201,6 @@
         border-radius: 10px;
       }
 
-
-      /* ================================
-         MESSAGE ROW
-         ================================ */
-
       .abzemo-ai-message {
         display: flex;
         width: 100%;
@@ -257,11 +215,6 @@
         justify-content: flex-end;
       }
 
-
-      /* ================================
-         MESSAGE BUBBLE
-         ================================ */
-
       .abzemo-ai-bubble {
         max-width: 82%;
         padding: 11px 14px;
@@ -270,10 +223,7 @@
         line-height: 1.55;
         word-break: break-word;
         overflow-wrap: anywhere;
-
-        /* Important alignment fix */
         white-space: normal;
-
         text-align: left;
       }
 
@@ -286,21 +236,11 @@
       }
 
       .abzemo-ai-message.user .abzemo-ai-bubble {
-        background:
-          linear-gradient(
-            135deg,
-            #1264d8,
-            #168cff
-          );
+        background: linear-gradient(135deg, #1264d8, #168cff);
         color: #ffffff;
         border-top-right-radius: 6px;
         box-shadow: 0 7px 18px rgba(18,100,216,.18);
       }
-
-
-      /* ================================
-         TYPING INDICATOR
-         ================================ */
 
       .abzemo-ai-typing {
         display: none;
@@ -349,11 +289,6 @@
         }
       }
 
-
-      /* ================================
-         INPUT AREA
-         ================================ */
-
       .abzemo-ai-input-area {
         padding: 12px 14px 13px;
         background: #ffffff;
@@ -378,10 +313,7 @@
         padding: 11px 12px;
         background: #f8fafc;
         color: #17243a;
-        font-family:
-          Arial,
-          Helvetica,
-          sans-serif;
+        font-family: Arial, Helvetica, sans-serif;
         font-size: 13px;
         line-height: 1.45;
         outline: none;
@@ -403,12 +335,7 @@
         height: 42px;
         border: 0;
         border-radius: 12px;
-        background:
-          linear-gradient(
-            135deg,
-            #1264d8,
-            #168cff
-          );
+        background: linear-gradient(135deg, #1264d8, #168cff);
         color: #ffffff;
         cursor: pointer;
         font-size: 18px;
@@ -440,25 +367,21 @@
         letter-spacing: .25px;
       }
 
-
-      /* ================================
-         MOBILE
-         ================================ */
-
       @media (max-width: 600px) {
 
         .abzemo-ai-launcher {
           right: 18px;
           bottom: 18px;
-          width: 58px;
-          height: 58px;
+          min-width: 132px;
+          height: 50px;
+          padding: 0 17px;
         }
 
         .abzemo-ai-chat {
           right: 12px;
-          bottom: 88px;
+          bottom: 80px;
           width: calc(100vw - 24px);
-          height: min(570px, calc(100vh - 110px));
+          height: min(570px, calc(100vh - 100px));
           border-radius: 18px;
         }
 
@@ -474,13 +397,7 @@
         .abzemo-ai-header {
           min-height: 68px;
         }
-
       }
-
-
-      /* ================================
-         REDUCED MOTION
-         ================================ */
 
       @media (prefers-reduced-motion: reduce) {
 
@@ -491,28 +408,20 @@
         .abzemo-ai-typing span {
           animation: none;
         }
-
       }
-
     `;
 
     document.head.appendChild(style);
   }
 
-
   /* =========================================================
-     4. CREATE WIDGET IF IT DOES NOT ALREADY EXIST
+     4. CREATE WIDGET
      ========================================================= */
 
   function createWidget() {
 
     let launcher = document.getElementById("abzemoAiLauncher");
     let chat = document.getElementById("abzemoAiChat");
-
-    /*
-      If current index.html already contains the widget,
-      do not create another one.
-    */
 
     if (!launcher && !chat) {
 
@@ -521,14 +430,27 @@
       launcher.className = "abzemo-ai-launcher";
       launcher.id = "abzemoAiLauncher";
       launcher.type = "button";
-      launcher.setAttribute("aria-label", "Open ABZEMO AI");
-      launcher.setAttribute("title", "Talk to ABZEMO AI");
-      launcher.textContent = "✦";
+
+      launcher.setAttribute(
+        "aria-label",
+        "Open ABZEMO AI"
+      );
+
+      launcher.setAttribute(
+        "title",
+        "Talk to ABZEMO AI"
+      );
+
+      launcher.innerHTML = `
+        <span aria-hidden="true">✦</span>
+        <span>ABZEMO AI</span>
+      `;
 
       chat = document.createElement("div");
 
       chat.className = "abzemo-ai-chat";
       chat.id = "abzemoAiChat";
+
       chat.setAttribute(
         "aria-label",
         "ABZEMO AI Global Sales Agent"
@@ -551,7 +473,7 @@
               </div>
 
               <div class="abzemo-ai-status">
-                Global Sales Intelligence
+                Multilingual Business Intelligence
               </div>
 
             </div>
@@ -569,7 +491,6 @@
 
         </div>
 
-
         <div
           class="abzemo-ai-messages"
           id="abzemoAiMessages"
@@ -581,12 +502,11 @@
               Welcome to ABZEMO.<br><br>
               I’m the ABZEMO AI Global Sales Agent.
               Tell me about your business or the solution
-              you are looking for, and I’ll help you identify
+              you are looking for, and I’ll help identify
               the right next step.
             </div>
 
           </div>
-
 
           <div
             class="abzemo-ai-typing"
@@ -594,17 +514,14 @@
           >
 
             <div class="abzemo-ai-bubble">
-
               <span></span>
               <span></span>
               <span></span>
-
             </div>
 
           </div>
 
         </div>
-
 
         <div class="abzemo-ai-input-area">
 
@@ -634,7 +551,6 @@
           </div>
 
         </div>
-
       `;
 
       document.body.appendChild(launcher);
@@ -652,7 +568,6 @@
     };
   }
 
-
   /* =========================================================
      5. INITIALIZE
      ========================================================= */
@@ -669,7 +584,6 @@
     const messages = elements.messages;
     const typing = elements.typing;
 
-
     if (
       !launcher ||
       !chat ||
@@ -682,9 +596,8 @@
       return;
     }
 
-
     /* =======================================================
-       6. OPEN CHAT
+       6. OPEN
        ======================================================= */
 
     function openAbzemoAI() {
@@ -697,9 +610,8 @@
       }, 80);
     }
 
-
     /* =======================================================
-       7. CLOSE CHAT
+       7. CLOSE
        ======================================================= */
 
     function closeAbzemoAI() {
@@ -708,7 +620,6 @@
 
       launcher.focus();
     }
-
 
     /* =======================================================
        8. SCROLL
@@ -719,15 +630,11 @@
       messages.scrollTop = messages.scrollHeight;
     }
 
-
     /* =======================================================
        9. ADD MESSAGE
        ======================================================= */
 
-    function addAbzemoMessage(
-      text,
-      type
-    ) {
+    function addAbzemoMessage(text, type) {
 
       const message = document.createElement("div");
 
@@ -742,10 +649,8 @@
         "abzemo-ai-bubble";
 
       /*
-        textContent is intentionally used here.
-
-        This prevents unexpected HTML rendering
-        from visitor input.
+        textContent prevents visitor input
+        from being interpreted as HTML.
       */
 
       bubble.textContent = text;
@@ -760,7 +665,6 @@
       scrollToBottom();
     }
 
-
     /* =======================================================
        10. TYPING
        ======================================================= */
@@ -772,12 +676,10 @@
       scrollToBottom();
     }
 
-
     function hideAbzemoTyping() {
 
       typing.classList.remove("active");
     }
-
 
     /* =======================================================
        11. SEND MESSAGE
@@ -792,34 +694,18 @@
         return;
       }
 
-
-      /*
-        Add visitor message.
-      */
-
       addAbzemoMessage(
         message,
         "user"
       );
 
-
-      /*
-        Clear input.
-      */
-
       input.value = "";
 
       autoResizeInput();
 
-
-      /*
-        Disable send while processing.
-      */
-
       send.disabled = true;
 
       showAbzemoTyping();
-
 
       /* =====================================================
          BACKEND NOT CONNECTED
@@ -848,7 +734,6 @@
 
         return;
       }
-
 
       /* =====================================================
          SECURE BACKEND REQUEST
@@ -888,7 +773,6 @@
             }
           );
 
-
         if (!response.ok) {
 
           throw new Error(
@@ -896,13 +780,10 @@
           );
         }
 
-
         const data =
           await response.json();
 
-
         hideAbzemoTyping();
-
 
         /*
           Expected backend response:
@@ -929,7 +810,6 @@
             "I’m sorry, but I could not process that request right now. Please try again.",
             "bot"
           );
-
         }
 
       } catch (error) {
@@ -953,13 +833,11 @@
         input.focus();
 
         scrollToBottom();
-
       }
     }
 
-
     /* =======================================================
-       12. AUTO RESIZE INPUT
+       12. AUTO RESIZE
        ======================================================= */
 
     function autoResizeInput() {
@@ -976,9 +854,8 @@
         newHeight + "px";
     }
 
-
     /* =======================================================
-       13. EVENT LISTENERS
+       13. EVENTS
        ======================================================= */
 
     launcher.addEventListener(
@@ -986,24 +863,20 @@
       openAbzemoAI
     );
 
-
     close.addEventListener(
       "click",
       closeAbzemoAI
     );
-
 
     send.addEventListener(
       "click",
       sendAbzemoMessage
     );
 
-
     input.addEventListener(
       "input",
       autoResizeInput
     );
-
 
     input.addEventListener(
       "keydown",
@@ -1022,12 +895,9 @@
           event.preventDefault();
 
           sendAbzemoMessage();
-
         }
-
       }
     );
-
 
     document.addEventListener(
       "keydown",
@@ -1039,23 +909,15 @@
         ) {
 
           closeAbzemoAI();
-
         }
-
       }
     );
-
-
-    /*
-      Initial textarea sizing.
-    */
 
     autoResizeInput();
   }
 
-
   /* =========================================================
-     14. START AFTER DOM IS READY
+     14. START AFTER DOM READY
      ========================================================= */
 
   if (
@@ -1070,7 +932,6 @@
   } else {
 
     initializeAbzemoAI();
-
   }
 
 })();
