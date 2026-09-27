@@ -1,412 +1,973 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Terms & Conditions | ABZEMO</title>
+  <title>Terms & Conditions | ABZEMO</title>
 
-    <meta name="description" content="Terms and Conditions governing the use of the ABZEMO website.">
+  <meta
+    name="description"
+    content="Terms and Conditions for the ABZEMO website."
+  >
 
-    <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+    :root {
+      --blue: #1264d8;
+      --blue-dark: #084a9e;
+      --navy: #071a35;
+      --text: #24344d;
+      --muted: #6f7f95;
+      --light: #f5f8fc;
+      --white: #fff;
+      --line: #dce5f0;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background: var(--white);
+      line-height: 1.7;
+    }
+
+    body.menu-open { overflow: hidden; }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button { font: inherit; }
+
+    .container {
+      width: min(1180px, calc(100% - 48px));
+      margin-inline: auto;
+    }
+
+    /* HEADER */
+
+    .site-header {
+      position: fixed;
+      inset: 0 0 auto;
+      z-index: 1000;
+      min-height: 78px;
+      background: rgba(255,255,255,.94);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(220,229,240,.85);
+    }
+
+    .navbar {
+      min-height: 78px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      color: var(--navy);
+      font-size: 30px;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: -1.8px;
+    }
+
+    .brand span { color: var(--blue); }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--navy);
+      font-size: 14px;
+      font-weight: 700;
+      transition: color .2s ease;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--blue);
+    }
+
+    .nav-button {
+      padding: 11px 18px;
+      color: #fff !important;
+      background: var(--navy);
+      border-radius: 9px;
+    }
+
+    .nav-button:hover { background: var(--blue); }
+
+    .menu-button {
+      width: 46px;
+      height: 46px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+      cursor: pointer;
+    }
+
+    .menu-button span {
+      width: 20px;
+      height: 2px;
+      border-radius: 2px;
+      background: var(--navy);
+    }
+
+    /* MENU */
+
+    .mega-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1090;
+      background: rgba(7,26,53,.42);
+      backdrop-filter: blur(5px);
+      opacity: 0;
+      visibility: hidden;
+      transition: .3s ease;
+    }
+
+    .mega-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .mega-menu {
+      position: fixed;
+      inset: 0 auto 0 0;
+      z-index: 1100;
+      width: min(460px, 88vw);
+      overflow-y: auto;
+      background: #fff;
+      transform: translateX(-105%);
+      transition: transform .38s cubic-bezier(.77,0,.18,1);
+      box-shadow: 20px 0 70px rgba(7,26,53,.2);
+    }
+
+    .mega-menu.active { transform: translateX(0); }
+
+    .mega-top {
+      min-height: 82px;
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: rgba(255,255,255,.96);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .mega-brand {
+      color: var(--navy);
+      font-size: 27px;
+      font-weight: 900;
+      letter-spacing: -1px;
+    }
+
+    .mega-brand span { color: var(--blue); }
+
+    .mega-close {
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: #fff;
+      color: var(--navy);
+      font-size: 27px;
+      cursor: pointer;
+    }
+
+    .mega-content { padding: 30px 28px 42px; }
+
+    .mega-section { margin-bottom: 32px; }
+
+    .mega-section:last-child { margin-bottom: 0; }
+
+    .mega-section-title {
+      margin-bottom: 12px;
+      color: var(--blue);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .mega-section a {
+      display: block;
+      padding: 7px 0;
+      color: var(--navy);
+      font-size: 15px;
+      font-weight: 700;
+      transition: .2s ease;
+    }
+
+    .mega-section a:hover {
+      color: var(--blue);
+      transform: translateX(4px);
+    }
+
+    .mega-section .sub-link {
+      padding-left: 10px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    /* HERO */
+
+    .page-hero {
+      min-height: 62vh;
+      padding-top: 78px;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 82% 40%, rgba(18,100,216,.13), transparent 30%),
+        linear-gradient(135deg, #fff 0%, #f5f8fc 100%);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 850px;
+      padding: 100px 0;
+    }
+
+    .hero-label,
+    .section-label {
+      margin-bottom: 15px;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .page-hero h1 {
+      margin: 0 0 22px;
+      color: var(--navy);
+      font-size: clamp(52px, 7vw, 84px);
+      line-height: .98;
+      letter-spacing: -4px;
+    }
+
+    .page-hero p {
+      max-width: 720px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.8;
+    }
+
+    /* TERMS */
+
+    .terms-section {
+      padding: 105px 0;
+    }
+
+    .terms-layout {
+      display: grid;
+      grid-template-columns: 270px 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+
+    .terms-nav {
+      position: sticky;
+      top: 110px;
+      padding: 25px;
+      border: 1px solid var(--line);
+      background: var(--light);
+    }
+
+    .terms-nav-title {
+      margin-bottom: 14px;
+      color: var(--navy);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .terms-nav a {
+      display: block;
+      padding: 7px 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .terms-nav a:hover {
+      color: var(--blue);
+    }
+
+    .terms-content {
+      max-width: 800px;
+    }
+
+    .updated {
+      margin-bottom: 45px;
+      padding: 16px 20px;
+      border-left: 3px solid var(--blue);
+      background: var(--light);
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .terms-content section {
+      padding: 0 0 42px;
+      margin-bottom: 42px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .terms-content section:last-child {
+      margin-bottom: 0;
+      border-bottom: 0;
+    }
+
+    .terms-content h2 {
+      margin: 0 0 16px;
+      color: var(--navy);
+      font-size: 28px;
+      line-height: 1.2;
+    }
+
+    .terms-content p {
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.9;
+    }
+
+    .terms-content ul {
+      margin: 0 0 16px;
+      padding-left: 22px;
+      color: var(--muted);
+    }
+
+    .terms-content li {
+      margin-bottom: 8px;
+      font-size: 15px;
+    }
+
+    .terms-content a {
+      color: var(--blue);
+      font-weight: 700;
+    }
+
+    /* CTA */
+
+    .cta-section {
+      padding: 105px 0;
+      background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+    }
+
+    .cta-section .section-label {
+      color: #9fc4ff;
+    }
+
+    .cta-section h2 {
+      max-width: 760px;
+      margin: 0 0 20px;
+      color: #fff;
+      font-size: clamp(38px, 5vw, 60px);
+      line-height: 1.02;
+      letter-spacing: -3px;
+    }
+
+    .cta-section p {
+      max-width: 680px;
+      margin: 0 0 30px;
+      color: rgba(255,255,255,.76);
+      font-size: 17px;
+      line-height: 1.8;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 13px 22px;
+      border-radius: 9px;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .btn-primary {
+      color: var(--blue);
+      background: #fff;
+    }
+
+    /* FOOTER */
+
+    .site-footer {
+      padding: 65px 0 25px;
+      color: #fff;
+      background: #041225;
+    }
+
+    .footer-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 50px;
+      padding-bottom: 45px;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+
+    .footer-brand {
+      max-width: 420px;
+    }
+
+    .footer-logo {
+      margin-bottom: 15px;
+      color: #fff;
+      font-size: 29px;
+      font-weight: 900;
+    }
+
+    .footer-logo span { color: #5c9cff; }
+
+    .footer-brand p {
+      margin: 0;
+      color: rgba(255,255,255,.55);
+      line-height: 1.8;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 70px;
+    }
+
+    .footer-column h4 {
+      margin: 0 0 16px;
+      color: rgba(255,255,255,.75);
+      font-size: 12px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .footer-column a {
+      display: block;
+      margin-bottom: 9px;
+      color: rgba(255,255,255,.55);
+      font-size: 13px;
+    }
+
+    .footer-column a:hover { color: #fff; }
+
+    .footer-bottom {
+      padding-top: 22px;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      color: rgba(255,255,255,.38);
+      font-size: 11px;
+    }
+
+    @media (max-width: 980px) {
+      .nav-links { display: none; }
+
+      .terms-layout {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+
+      .terms-nav {
+        position: static;
+      }
+
+      .footer-top {
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        width: min(100% - 32px, 1180px);
+      }
+
+      .navbar { min-height: 70px; }
+
+      .page-hero {
+        padding-top: 70px;
+      }
+
+      .hero-content {
+        padding: 80px 0;
+      }
+
+      .page-hero h1 {
+        font-size: clamp(48px, 14vw, 70px);
+        letter-spacing: -3px;
+      }
+
+      .terms-section {
+        padding: 75px 0;
+      }
+
+      .footer-links {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+      }
+
+      .footer-bottom {
+        flex-direction: column;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<header class="site-header">
-  <div class="container navbar">
+  <header class="site-header">
+    <div class="container navbar">
 
-    <a href="index.html" class="logo">
-      ABZEMO<span>.</span>
-    </a>
+      <a href="index.html" class="brand" aria-label="ABZEMO Home">
+        ABZEM<span>O</span>
+      </a>
 
-    <nav>
-      <ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="mission.html">Mission</a></li>
-        <li><a href="vision.html">Vision</a></li>
-        <li><a href="#ventures">Ventures</a></li>
-        <li><a href="contact.html" class="nav-button">Contact</a></li>
-      </ul>
-    </nav>
+      <nav aria-label="Primary navigation">
+        <ul class="nav-links">
+          <li><a href="about.html">About</a></li>
+          <li><a href="solutions.html">Solutions</a></li>
+          <li><a href="abzemo-ai.html">ABZEMO AI</a></li>
+          <li><a href="contact.html" class="nav-button">Contact</a></li>
+        </ul>
+      </nav>
 
-    <button class="menu-toggle" type="button" aria-label="Open navigation">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
+      <button
+        class="menu-button"
+        id="menuButton"
+        type="button"
+        aria-label="Open navigation menu"
+        aria-controls="megaMenu"
+        aria-expanded="false"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
 
-  </div>
-</header>
+    </div>
+  </header>
 
+  <div class="mega-overlay" id="megaOverlay"></div>
 
-<!-- SIDE MEGA MENU -->
+  <aside class="mega-menu" id="megaMenu" aria-label="ABZEMO navigation">
 
-<div class="mega-menu">
+    <div class="mega-top">
+      <div class="mega-brand">ABZEM<span>O</span></div>
 
-  <div class="mega-menu-inner">
-
-    <div class="mega-menu-header">
-      <div class="mega-menu-brand">ABZEMO</div>
-
-      <button class="menu-close" type="button" aria-label="Close navigation">
+      <button
+        class="mega-close"
+        id="megaClose"
+        type="button"
+        aria-label="Close navigation menu"
+      >
         ×
       </button>
     </div>
 
+    <div class="mega-content">
 
-    <div class="mega-menu-grid">
+      <div class="mega-section">
+        <div class="mega-section-title">ABZEMO</div>
+        <a href="index.html">Home</a>
+        <a href="about.html">About ABZEMO</a>
+        <a href="mission.html">Mission</a>
+        <a href="vision.html">Vision</a>
+        <a href="director-note.html">Director's Note</a>
+      </div>
 
-      <!-- ABZEMO -->
+      <div class="mega-section">
+        <div class="mega-section-title">Capabilities</div>
+        <a href="industries.html">Industries</a>
+        <a href="solutions.html">Solutions</a>
+        <a href="abzemo-ai.html">ABZEMO AI</a>
+      </div>
 
-      <div class="mega-menu-column">
+      <div class="mega-section">
+        <div class="mega-section-title">Ventures</div>
+        <a href="ventures.html">All Ventures</a>
+        <a class="sub-link" href="ventures.html#ai">ABZEMO AI</a>
+        <a class="sub-link" href="ventures.html#medical">ABZEMO Medical</a>
+        <a class="sub-link" href="ventures.html#trade">ABZEMO Trade</a>
+        <a class="sub-link" href="ventures.html#education">ABZEMO Smart Schooling</a>
+        <a class="sub-link" href="ventures.html#fashions">ABZEMO Fashions</a>
+        <a class="sub-link" href="ventures.html#realestate">ABZEMO Real Estate</a>
+        <a class="sub-link" href="ventures.html#logistics">ABZEMO Logistics</a>
+        <a class="sub-link" href="ventures.html#finance">ABZEMO Finance</a>
+      </div>
 
-        <div class="mega-menu-label">
+      <div class="mega-section">
+        <div class="mega-section-title">Connect</div>
+        <a href="contact.html">Contact ABZEMO</a>
+      </div>
+
+      <div class="mega-section">
+        <div class="mega-section-title">Legal</div>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="terms.html">Terms & Conditions</a>
+      </div>
+
+    </div>
+  </aside>
+
+  <main>
+
+    <section class="page-hero">
+      <div class="container">
+
+        <div class="hero-content">
+
+          <div class="hero-label">
+            Legal
+          </div>
+
+          <h1>
+            Terms & Conditions
+          </h1>
+
+          <p>
+            These terms describe the general conditions that apply
+            when you access and use the ABZEMO website.
+          </p>
+
+        </div>
+
+      </div>
+    </section>
+
+    <section class="terms-section">
+      <div class="container">
+
+        <div class="terms-layout">
+
+          <aside class="terms-nav">
+            <div class="terms-nav-title">On This Page</div>
+
+            <a href="#acceptance">Acceptance</a>
+            <a href="#website-use">Website Use</a>
+            <a href="#information">Information</a>
+            <a href="#intellectual-property">Intellectual Property</a>
+            <a href="#third-party">Third-Party Services</a>
+            <a href="#disclaimer">Disclaimer</a>
+            <a href="#limitation">Limitation of Liability</a>
+            <a href="#changes">Changes</a>
+            <a href="#contact">Contact</a>
+          </aside>
+
+          <div class="terms-content">
+
+            <div class="updated">
+              Last updated: September 2026
+            </div>
+
+            <section id="acceptance">
+              <h2>1. Acceptance of These Terms</h2>
+
+              <p>
+                By accessing or using the ABZEMO website, you
+                acknowledge that you have read, understood, and
+                agree to be bound by these Terms & Conditions.
+              </p>
+
+              <p>
+                If you do not agree with these terms, please do not
+                use the website.
+              </p>
+            </section>
+
+            <section id="website-use">
+              <h2>2. Website Use</h2>
+
+              <p>
+                The ABZEMO website is provided for general
+                informational and business purposes.
+              </p>
+
+              <p>
+                You agree to use the website only for lawful
+                purposes and in a manner that does not interfere
+                with its operation or the experience of other users.
+              </p>
+
+              <ul>
+                <li>Do not use the website for unlawful purposes.</li>
+                <li>Do not attempt to gain unauthorized access to systems or data.</li>
+                <li>Do not interfere with the security or operation of the website.</li>
+                <li>Do not knowingly introduce malicious code or harmful material.</li>
+              </ul>
+            </section>
+
+            <section id="information">
+              <h2>3. Website Information</h2>
+
+              <p>
+                ABZEMO aims to provide useful and accurate
+                information on this website. However, website
+                content may change over time and may not always
+                represent the latest information about a particular
+                initiative, solution, venture, or service.
+              </p>
+
+              <p>
+                Information presented on the website should not be
+                treated as a guarantee, commitment, or contractual
+                offer unless expressly stated otherwise.
+              </p>
+            </section>
+
+            <section id="intellectual-property">
+              <h2>4. Intellectual Property</h2>
+
+              <p>
+                Unless otherwise stated, content published on the
+                ABZEMO website, including text, branding, graphics,
+                designs, logos, and other materials, is owned by or
+                used by ABZEMO with appropriate rights.
+              </p>
+
+              <p>
+                You may not reproduce, modify, distribute, publish,
+                or commercially exploit website content without
+                appropriate authorization.
+              </p>
+            </section>
+
+            <section id="third-party">
+              <h2>5. Third-Party Services and Links</h2>
+
+              <p>
+                The website may reference or link to third-party
+                websites, platforms, tools, or services.
+              </p>
+
+              <p>
+                ABZEMO does not control third-party services and is
+                not responsible for their content, availability,
+                policies, security, or practices.
+              </p>
+
+              <p>
+                Your use of a third-party service may be subject to
+                that provider's own terms and policies.
+              </p>
+            </section>
+
+            <section id="disclaimer">
+              <h2>6. Disclaimer</h2>
+
+              <p>
+                The website and its content are provided on an
+                informational basis. To the extent permitted by
+                applicable law, ABZEMO does not make warranties that
+                the website will always be available, error-free,
+                complete, or suitable for every particular purpose.
+              </p>
+            </section>
+
+            <section id="limitation">
+              <h2>7. Limitation of Liability</h2>
+
+              <p>
+                To the extent permitted by applicable law, ABZEMO
+                shall not be responsible for losses or damages
+                arising from your use of, or inability to use, the
+                website or information presented through it.
+              </p>
+
+              <p>
+                Nothing in these terms is intended to exclude or
+                limit any liability that cannot lawfully be excluded
+                or limited.
+              </p>
+            </section>
+
+            <section id="changes">
+              <h2>8. Changes to These Terms</h2>
+
+              <p>
+                ABZEMO may update these Terms & Conditions from time
+                to time to reflect changes to the website, services,
+                legal requirements, or business operations.
+              </p>
+
+              <p>
+                The updated version will be published on this page
+                with a revised update date.
+              </p>
+            </section>
+
+            <section id="contact">
+              <h2>9. Contact</h2>
+
+              <p>
+                If you have questions regarding these Terms &
+                Conditions, you can contact ABZEMO through the
+                website's contact page.
+              </p>
+
+              <p>
+                <a href="contact.html">Contact ABZEMO →</a>
+              </p>
+
+              <p>
+                You may also review our
+                <a href="privacy.html">Privacy Policy</a>
+                for information about website privacy and data
+                practices.
+              </p>
+            </section>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <section class="cta-section">
+      <div class="container">
+
+        <div class="section-label">
           ABZEMO
         </div>
 
-        <a href="index.html">Home</a>
-        <a href="about.html">About</a>
-        <a href="mission.html">Mission</a>
-        <a href="vision.html">Vision</a>
-        <a href="contact.html">Contact</a>
+        <h2>
+          Building What's Next.
+        </h2>
+
+        <p>
+          Explore ABZEMO, our solutions, and the technology
+          foundation behind our future ventures.
+        </p>
+
+        <a href="contact.html" class="btn btn-primary">
+          Contact ABZEMO
+        </a>
 
       </div>
-
-
-      <!-- ABZEMO AI -->
-
-      <div class="mega-menu-column">
-
-        <div class="mega-menu-label">
-          ABZEMO AI
-        </div>
-
-        <a href="abzemo-ai.html">Overview</a>
-        <a href="abzemo-ai.html">AI Agents</a>
-        <a href="abzemo-ai.html">Multilingual Intelligence</a>
-        <a href="abzemo-ai.html">Sales AI</a>
-        <a href="abzemo-ai.html">Finance AI</a>
-        <a href="abzemo-ai.html">ERP AI</a>
-        <a href="abzemo-ai.html">Real Estate AI</a>
-        <a href="abzemo-ai.html">Healthcare AI</a>
-        <a href="abzemo-ai.html">Education AI</a>
-        <a href="abzemo-ai.html">Enterprise AI</a>
-
-      </div>
-
-
-      <!-- VENTURES -->
-
-      <div class="mega-menu-column">
-
-        <div class="mega-menu-label">
-          ABZEMO VENTURES
-        </div>
-
-        <a href="#ventures">ABZEMO Medical</a>
-        <a href="#ventures">ABZEMO Trade</a>
-        <a href="#ventures">ABZEMO Smart Schooling</a>
-        <a href="#ventures">ABZEMO Fashions</a>
-        <a href="#ventures">ABZEMO Real Estate</a>
-        <a href="#ventures">ABZEMO Logistics</a>
-        <a href="#ventures">ABZEMO Finance</a>
-        <a href="#ventures">Future Ventures</a>
-
-      </div>
-
-    </div>
-
-  </div>
-
-</div>
-
-
-<main>
-
-    <!-- HERO -->
-
-    <section class="page-hero">
-
-        <div class="container">
-
-            <p class="eyebrow">LEGAL</p>
-
-            <h1>
-                Terms & Conditions
-            </h1>
-
-            <p class="hero-text">
-                These terms describe the general conditions for using the
-                ABZEMO website.
-            </p>
-
-        </div>
-
     </section>
 
+  </main>
 
-    <!-- TERMS -->
+  <footer class="site-footer">
+    <div class="container">
 
-    <section class="section">
+      <div class="footer-top">
 
-        <div class="container legal-content">
+        <div class="footer-brand">
 
-            <p>
-                <strong>Last updated: September 2026</strong>
-            </p>
+          <div class="footer-logo">
+            ABZEM<span>O</span>
+          </div>
 
-
-            <h2>1. Acceptance of Terms</h2>
-
-            <p>
-                By accessing or using the ABZEMO website, you acknowledge
-                that you have read, understood, and agree to these Terms
-                & Conditions.
-            </p>
-
-            <p>
-                If you do not agree with these terms, please do not use
-                the website.
-            </p>
-
-
-            <h2>2. About the Website</h2>
-
-            <p>
-                The ABZEMO website provides general information about
-                ABZEMO, its technology vision, solutions, industries,
-                services, and future initiatives.
-            </p>
-
-            <p>
-                Website content may change as ABZEMO develops new products,
-                services, technologies, and business activities.
-            </p>
-
-
-            <h2>3. Informational Content</h2>
-
-            <p>
-                Information published on this website is provided for
-                general informational and business discussion purposes.
-            </p>
-
-            <p>
-                Descriptions of future products, AI capabilities,
-                technologies, or initiatives may represent development
-                plans, concepts, or long-term vision and should not
-                automatically be interpreted as currently available
-                commercial products.
-            </p>
-
-
-            <h2>4. AI Demonstrations</h2>
-
-            <p>
-                Any AI conversations, examples, workflows, property
-                information, demonstrations, or scenarios displayed on
-                this website are illustrative unless explicitly stated
-                otherwise.
-            </p>
-
-            <p>
-                Demonstrations should not be interpreted as guarantees
-                of specific AI performance, property availability,
-                financial outcomes, or business results.
-            </p>
-
-
-            <h2>5. Intellectual Property</h2>
-
-            <p>
-                Unless otherwise stated, the ABZEMO name, branding, logo,
-                website content, text, graphics, design elements, and
-                original materials are owned by or used by ABZEMO with
-                appropriate rights.
-            </p>
-
-            <p>
-                You may not reproduce, distribute, modify, publish, or
-                commercially exploit website content without appropriate
-                authorization.
-            </p>
-
-
-            <h2>6. Acceptable Use</h2>
-
-            <p>
-                You agree not to use the website:
-            </p>
-
-            <ul>
-                <li>For unlawful or fraudulent purposes.</li>
-                <li>To interfere with website operation or security.</li>
-                <li>To attempt unauthorized access to systems or data.</li>
-                <li>To misuse ABZEMO's name, content, or technology.</li>
-                <li>To submit malicious or harmful material.</li>
-            </ul>
-
-
-            <h2>7. Third-Party Services and Links</h2>
-
-            <p>
-                The website may eventually contain links to or integrations
-                with third-party websites, platforms, software, or services.
-            </p>
-
-            <p>
-                ABZEMO is not responsible for the content, availability,
-                security, or policies of independent third-party services.
-            </p>
-
-
-            <h2>8. No Guarantee</h2>
-
-            <p>
-                ABZEMO aims to provide accurate and useful information,
-                but does not guarantee that every website page or piece of
-                information will always be complete, current, or error-free.
-            </p>
-
-            <p>
-                Technology, services, pricing, availability, and business
-                plans may change without prior notice.
-            </p>
-
-
-            <h2>9. Limitation of Liability</h2>
-
-            <p>
-                To the extent permitted by applicable law, ABZEMO shall
-                not be responsible for indirect, incidental, consequential,
-                or other losses arising from the use of, or inability to
-                use, the website or information contained on it.
-            </p>
-
-
-            <h2>10. Business Discussions</h2>
-
-            <p>
-                Sending an inquiry through the website or contacting ABZEMO
-                does not automatically create a business relationship,
-                partnership, agency relationship, contract, or commitment.
-            </p>
-
-            <p>
-                Any commercial engagement will be subject to separately
-                agreed terms and applicable documentation.
-            </p>
-
-
-            <h2>11. Changes to These Terms</h2>
-
-            <p>
-                ABZEMO may update these Terms & Conditions as the website,
-                services, business activities, or legal requirements evolve.
-            </p>
-
-            <p>
-                Updated terms will be published on this page.
-            </p>
-
-
-            <h2>12. Governing Law</h2>
-
-            <p>
-                These terms are intended to be interpreted subject to the
-                applicable laws and regulations of the relevant jurisdiction.
-                Specific commercial agreements may contain their own
-                governing-law and dispute-resolution provisions.
-            </p>
-
-
-            <h2>13. Contact</h2>
-
-            <p>
-                For questions regarding these Terms & Conditions, please
-                contact:
-            </p>
-
-            <p>
-                <strong>ABZEMO</strong><br>
-                Karachi, Pakistan<br>
-                <a href="mailto:info@abzemo.com">info@abzemo.com</a>
-            </p>
+          <p>
+            Building What's Next. Across technology, business,
+            healthcare, education, trade and future ventures.
+          </p>
 
         </div>
-
-    </section>
-
-</main>
-
-
-<footer class="site-footer">
-
-    <div class="container footer-content">
-
-        <div>
-
-            <div class="logo">ABZEMO</div>
-
-            <p>Building What’s Next.</p>
-
-        </div>
-
 
         <div class="footer-links">
 
+          <div class="footer-column">
+            <h4>Company</h4>
             <a href="about.html">About</a>
             <a href="mission.html">Mission</a>
             <a href="vision.html">Vision</a>
+            <a href="director-note.html">Director's Note</a>
+          </div>
+
+          <div class="footer-column">
+            <h4>Explore</h4>
+            <a href="ventures.html">Ventures</a>
+            <a href="industries.html">Industries</a>
+            <a href="solutions.html">Solutions</a>
             <a href="abzemo-ai.html">ABZEMO AI</a>
+          </div>
+
+          <div class="footer-column">
+            <h4>Connect</h4>
             <a href="contact.html">Contact</a>
             <a href="privacy.html">Privacy</a>
             <a href="terms.html">Terms</a>
+          </div>
 
         </div>
 
+      </div>
+
+      <div class="footer-bottom">
+        <span>© 2026 ABZEMO. All rights reserved.</span>
+        <span>Building What's Next.</span>
+      </div>
+
     </div>
+  </footer>
 
+  <script>
+    const menuButton = document.getElementById("menuButton");
+    const megaMenu = document.getElementById("megaMenu");
+    const megaOverlay = document.getElementById("megaOverlay");
+    const megaClose = document.getElementById("megaClose");
 
-    <div class="container footer-bottom">
+    function openMegaMenu() {
+      megaMenu.classList.add("active");
+      megaOverlay.classList.add("active");
+      document.body.classList.add("menu-open");
+      menuButton.setAttribute("aria-expanded", "true");
+    }
 
-        <p>© 2026 ABZEMO. All rights reserved.</p>
+    function closeMegaMenu() {
+      megaMenu.classList.remove("active");
+      megaOverlay.classList.remove("active");
+      document.body.classList.remove("menu-open");
+      menuButton.setAttribute("aria-expanded", "false");
+    }
 
-    </div>
+    menuButton.addEventListener("click", openMegaMenu);
+    megaClose.addEventListener("click", closeMegaMenu);
+    megaOverlay.addEventListener("click", closeMegaMenu);
 
-</footer>
-
-
-<script>
-
-const menuToggle = document.querySelector(".menu-toggle");
-const menuClose = document.querySelector(".menu-close");
-const megaMenu = document.querySelector(".mega-menu");
-
-if (menuToggle && megaMenu) {
-    menuToggle.addEventListener("click", () => {
-        megaMenu.classList.add("active");
-        document.body.classList.add("menu-open");
+    document.addEventListener("keydown", function(event) {
+      if (event.key === "Escape") {
+        closeMegaMenu();
+      }
     });
-}
 
-if (menuClose && megaMenu) {
-    menuClose.addEventListener("click", () => {
-        megaMenu.classList.remove("active");
-        document.body.classList.remove("menu-open");
+    megaMenu.querySelectorAll("a").forEach(function(link) {
+      link.addEventListener("click", closeMegaMenu);
     });
-}
+  </script>
 
-document.querySelectorAll(".mega-menu a").forEach(link => {
-    link.addEventListener("click", () => {
-        megaMenu.classList.remove("active");
-        document.body.classList.remove("menu-open");
-    });
-});
-
-</script>
+  <script src="abzemo-ai.js"></script>
 
 </body>
 </html>
