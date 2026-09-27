@@ -1,372 +1,1082 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Director's Note | ABZEMO</title>
+  <title>Director's Note | ABZEMO</title>
 
-    <meta name="description" content="A message from the Director of ABZEMO about building meaningful technology, long-term thinking, and the company's journey.">
+  <meta
+    name="description"
+    content="A message from the Director of ABZEMO about building meaningful technology, long-term thinking, and the company's journey."
+  >
 
-    <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+    :root {
+      --blue: #1264d8;
+      --blue-dark: #084a9e;
+      --navy: #071a35;
+      --text: #24344d;
+      --muted: #6f7f95;
+      --light: #f5f8fc;
+      --white: #fff;
+      --line: #dce5f0;
+      --shadow: 0 22px 65px rgba(7,26,53,.10);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background: var(--white);
+      line-height: 1.6;
+    }
+
+    body.menu-open { overflow: hidden; }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button { font: inherit; }
+
+    .container {
+      width: min(1180px, calc(100% - 48px));
+      margin-inline: auto;
+    }
+
+    /* HEADER */
+
+    .site-header {
+      position: fixed;
+      inset: 0 0 auto;
+      z-index: 1000;
+      min-height: 78px;
+      background: rgba(255,255,255,.94);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(220,229,240,.85);
+    }
+
+    .navbar {
+      min-height: 78px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      color: var(--navy);
+      font-size: 30px;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: -1.8px;
+    }
+
+    .brand span { color: var(--blue); }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--navy);
+      font-size: 14px;
+      font-weight: 700;
+      transition: color .2s ease;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--blue);
+    }
+
+    .nav-button {
+      padding: 11px 18px;
+      color: #fff !important;
+      background: var(--navy);
+      border-radius: 9px;
+    }
+
+    .nav-button:hover { background: var(--blue); }
+
+    .menu-button {
+      width: 46px;
+      height: 46px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+      cursor: pointer;
+      box-shadow: 0 6px 22px rgba(7,26,53,.06);
+    }
+
+    .menu-button span {
+      width: 20px;
+      height: 2px;
+      border-radius: 2px;
+      background: var(--navy);
+    }
+
+    /* MENU */
+
+    .mega-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1090;
+      background: rgba(7,26,53,.42);
+      backdrop-filter: blur(5px);
+      opacity: 0;
+      visibility: hidden;
+      transition: .3s ease;
+    }
+
+    .mega-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .mega-menu {
+      position: fixed;
+      inset: 0 auto 0 0;
+      z-index: 1100;
+      width: min(460px, 88vw);
+      overflow-y: auto;
+      background: #fff;
+      transform: translateX(-105%);
+      transition: transform .38s cubic-bezier(.77,0,.18,1);
+      box-shadow: 20px 0 70px rgba(7,26,53,.2);
+    }
+
+    .mega-menu.active { transform: translateX(0); }
+
+    .mega-top {
+      min-height: 82px;
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: rgba(255,255,255,.96);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .mega-brand {
+      color: var(--navy);
+      font-size: 27px;
+      font-weight: 900;
+      letter-spacing: -1px;
+    }
+
+    .mega-brand span { color: var(--blue); }
+
+    .mega-close {
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: #fff;
+      color: var(--navy);
+      font-size: 27px;
+      cursor: pointer;
+    }
+
+    .mega-content { padding: 30px 28px 42px; }
+
+    .mega-section { margin-bottom: 32px; }
+
+    .mega-section:last-child { margin-bottom: 0; }
+
+    .mega-section-title {
+      margin-bottom: 12px;
+      color: var(--blue);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .mega-section a {
+      display: block;
+      padding: 7px 0;
+      color: var(--navy);
+      font-size: 15px;
+      font-weight: 700;
+      transition: .2s ease;
+    }
+
+    .mega-section a:hover {
+      color: var(--blue);
+      transform: translateX(4px);
+    }
+
+    .mega-section .sub-link {
+      padding-left: 10px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    /* HERO */
+
+    .page-hero {
+      min-height: 70vh;
+      padding-top: 78px;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 82% 40%, rgba(18,100,216,.13), transparent 30%),
+        linear-gradient(135deg, #fff 0%, #f5f8fc 100%);
+    }
+
+    .page-hero::after {
+      content: "";
+      position: absolute;
+      width: 430px;
+      height: 430px;
+      right: -150px;
+      bottom: -190px;
+      border: 1px solid rgba(18,100,216,.14);
+      border-radius: 50%;
+      box-shadow:
+        0 0 0 55px rgba(18,100,216,.035),
+        0 0 0 110px rgba(18,100,216,.025);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      padding: 100px 0;
+    }
+
+    .hero-label,
+    .section-label {
+      margin-bottom: 15px;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .page-hero h1 {
+      max-width: 900px;
+      margin: 0 0 25px;
+      color: var(--navy);
+      font-size: clamp(52px, 7vw, 88px);
+      line-height: .98;
+      letter-spacing: -4px;
+    }
+
+    .page-hero p {
+      max-width: 760px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 19px;
+      line-height: 1.8;
+    }
+
+    /* MESSAGE */
+
+    .section {
+      padding: 115px 0;
+    }
+
+    .message-grid {
+      display: grid;
+      grid-template-columns: .72fr 1.28fr;
+      gap: 90px;
+      align-items: start;
+    }
+
+    .section h2 {
+      margin: 0;
+      color: var(--navy);
+      font-size: clamp(38px, 5vw, 62px);
+      line-height: 1.02;
+      letter-spacing: -3px;
+    }
+
+    .director-message p {
+      margin: 0 0 22px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.9;
+    }
+
+    .director-message blockquote {
+      margin: 40px 0;
+      padding: 28px 30px;
+      border-left: 4px solid var(--blue);
+      background: var(--light);
+      color: var(--navy);
+      font-size: 24px;
+      font-weight: 800;
+      line-height: 1.45;
+    }
+
+    .director-message strong {
+      color: var(--navy);
+    }
+
+    /* PRINCIPLES */
+
+    .section-dark {
+      color: #fff;
+      background: var(--navy);
+    }
+
+    .section-dark .section-label {
+      color: #6ea6ff;
+    }
+
+    .section-dark h2 {
+      color: #fff;
+      margin-bottom: 18px;
+    }
+
+    .section-heading {
+      max-width: 760px;
+      margin-bottom: 52px;
+    }
+
+    .section-heading > p:last-child {
+      margin: 0;
+      color: rgba(255,255,255,.62);
+      font-size: 17px;
+      line-height: 1.8;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .card {
+      min-height: 230px;
+      padding: 30px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.045);
+      transition: .25s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      background: rgba(255,255,255,.07);
+      border-color: rgba(110,166,255,.35);
+    }
+
+    .card h3 {
+      margin: 0 0 13px;
+      color: #fff;
+      font-size: 20px;
+    }
+
+    .card p {
+      margin: 0;
+      color: rgba(255,255,255,.62);
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    /* JOURNEY */
+
+    .journey-section {
+      background: var(--light);
+    }
+
+    .journey-grid {
+      display: grid;
+      grid-template-columns: .9fr 1.1fr;
+      gap: 90px;
+      align-items: start;
+    }
+
+    .journey-copy p {
+      margin: 0 0 20px;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.85;
+    }
+
+    /* CTA */
+
+    .cta-section {
+      padding: 105px 0;
+      background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+    }
+
+    .cta-section .section-label {
+      color: #9fc4ff;
+    }
+
+    .cta-section h2 {
+      max-width: 750px;
+      color: #fff;
+      margin-bottom: 20px;
+    }
+
+    .cta-section p {
+      max-width: 680px;
+      margin: 0 0 30px;
+      color: rgba(255,255,255,.76);
+      font-size: 17px;
+      line-height: 1.8;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 13px 22px;
+      border-radius: 9px;
+      font-size: 14px;
+      font-weight: 800;
+      transition: .25s ease;
+    }
+
+    .btn-primary {
+      color: var(--blue);
+      background: #fff;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      background: #f5f8fc;
+    }
+
+    /* FOOTER */
+
+    .site-footer {
+      padding: 65px 0 25px;
+      color: #fff;
+      background: #041225;
+    }
+
+    .footer-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 50px;
+      padding-bottom: 45px;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+
+    .footer-brand {
+      max-width: 420px;
+    }
+
+    .footer-logo {
+      margin-bottom: 15px;
+      color: #fff;
+      font-size: 29px;
+      font-weight: 900;
+    }
+
+    .footer-logo span {
+      color: #5c9cff;
+    }
+
+    .footer-brand p {
+      margin: 0;
+      color: rgba(255,255,255,.55);
+      line-height: 1.8;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 70px;
+    }
+
+    .footer-column h4 {
+      margin: 0 0 16px;
+      color: rgba(255,255,255,.75);
+      font-size: 12px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .footer-column a {
+      display: block;
+      margin-bottom: 9px;
+      color: rgba(255,255,255,.55);
+      font-size: 13px;
+    }
+
+    .footer-column a:hover {
+      color: #fff;
+    }
+
+    .footer-bottom {
+      padding-top: 22px;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      color: rgba(255,255,255,.38);
+      font-size: 11px;
+    }
+
+    /* RESPONSIVE */
+
+    @media (max-width: 980px) {
+      .nav-links {
+        display: none;
+      }
+
+      .message-grid,
+      .journey-grid {
+        grid-template-columns: 1fr;
+        gap: 45px;
+      }
+
+      .card-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .footer-top {
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        width: min(100% - 32px, 1180px);
+      }
+
+      .navbar {
+        min-height: 70px;
+      }
+
+      .page-hero {
+        min-height: auto;
+        padding-top: 70px;
+      }
+
+      .hero-content {
+        padding: 80px 0;
+      }
+
+      .page-hero h1 {
+        font-size: clamp(48px, 14vw, 70px);
+        letter-spacing: -3px;
+      }
+
+      .page-hero p {
+        font-size: 16px;
+      }
+
+      .section {
+        padding: 80px 0;
+      }
+
+      .section h2 {
+        letter-spacing: -2px;
+      }
+
+      .card-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .director-message blockquote {
+        font-size: 20px;
+      }
+
+      .footer-links {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+      }
+
+      .footer-bottom {
+        flex-direction: column;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<header class="site-header">
-  <div class="container navbar">
+  <!-- HEADER -->
 
-    <a href="index.html" class="logo">
-      ABZEMO<span>.</span>
-    </a>
+  <header class="site-header">
+    <div class="container navbar">
 
-    <nav>
-      <ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="solutions.html">Solutions</a></li>
-        <li><a href="industries.html">Industries</a></li>
-        <li><a href="abzemo-ai.html">ABZEMO AI</a></li>
-        <li><a href="mission.html">Mission</a></li>
-        <li><a href="vision.html">Vision</a></li>
-        <li><a href="director-note.html">Director's Note</a></li>
-        <li>
-          <a href="contact.html" class="nav-button">Contact</a>
-        </li>
-      </ul>
-    </nav>
+      <a href="index.html" class="brand" aria-label="ABZEMO Home">
+        ABZEM<span>O</span>
+      </a>
 
-  </div>
-</header>
+      <nav aria-label="Primary navigation">
+        <ul class="nav-links">
+          <li><a href="about.html">About</a></li>
+          <li><a href="solutions.html">Solutions</a></li>
+          <li><a href="abzemo-ai.html">ABZEMO AI</a></li>
+          <li><a href="contact.html" class="nav-button">Contact</a></li>
+        </ul>
+      </nav>
 
+      <button
+        class="menu-button"
+        id="menuButton"
+        type="button"
+        aria-label="Open navigation menu"
+        aria-controls="megaMenu"
+        aria-expanded="false"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
 
-<main>
+    </div>
+  </header>
+
+  <!-- MENU -->
+
+  <div class="mega-overlay" id="megaOverlay"></div>
+
+  <aside class="mega-menu" id="megaMenu" aria-label="ABZEMO navigation">
+
+    <div class="mega-top">
+      <div class="mega-brand">ABZEM<span>O</span></div>
+
+      <button
+        class="mega-close"
+        id="megaClose"
+        type="button"
+        aria-label="Close navigation menu"
+      >
+        ×
+      </button>
+    </div>
+
+    <div class="mega-content">
+
+      <div class="mega-section">
+        <div class="mega-section-title">ABZEMO</div>
+        <a href="index.html">Home</a>
+        <a href="about.html">About ABZEMO</a>
+        <a href="mission.html">Mission</a>
+        <a href="vision.html">Vision</a>
+        <a href="director-note.html">Director's Note</a>
+      </div>
+
+      <div class="mega-section">
+        <div class="mega-section-title">Capabilities</div>
+        <a href="industries.html">Industries</a>
+        <a href="solutions.html">Solutions</a>
+        <a href="abzemo-ai.html">ABZEMO AI</a>
+      </div>
+
+      <div class="mega-section">
+        <div class="mega-section-title">Ventures</div>
+        <a href="ventures.html">All Ventures</a>
+        <a class="sub-link" href="ventures.html#ai">ABZEMO AI</a>
+        <a class="sub-link" href="ventures.html#medical">ABZEMO Medical</a>
+        <a class="sub-link" href="ventures.html#trade">ABZEMO Trade</a>
+        <a class="sub-link" href="ventures.html#education">ABZEMO Smart Schooling</a>
+        <a class="sub-link" href="ventures.html#fashions">ABZEMO Fashions</a>
+        <a class="sub-link" href="ventures.html#realestate">ABZEMO Real Estate</a>
+        <a class="sub-link" href="ventures.html#logistics">ABZEMO Logistics</a>
+        <a class="sub-link" href="ventures.html#finance">ABZEMO Finance</a>
+      </div>
+
+      <div class="mega-section">
+        <div class="mega-section-title">Connect</div>
+        <a href="contact.html">Contact ABZEMO</a>
+      </div>
+
+      <div class="mega-section">
+        <div class="mega-section-title">Legal</div>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="terms.html">Terms & Conditions</a>
+      </div>
+
+    </div>
+  </aside>
+
+  <main>
 
     <!-- HERO -->
 
     <section class="page-hero">
+      <div class="container">
 
-        <div class="container">
+        <div class="hero-content">
 
-            <p class="eyebrow">DIRECTOR'S NOTE</p>
+          <div class="hero-label">
+            Director's Note
+          </div>
 
-            <h1>
-                Building with purpose. Thinking beyond today.
-            </h1>
+          <h1>
+            Building with purpose. Thinking beyond today.
+          </h1>
 
-            <p class="hero-text">
-                ABZEMO was created with a simple belief: meaningful businesses
-                are built by understanding the future while solving the
-                problems of today.
-            </p>
+          <p>
+            ABZEMO was created with a simple belief: meaningful
+            businesses are built by understanding the future while
+            solving the problems of today.
+          </p>
 
         </div>
 
+      </div>
     </section>
-
 
     <!-- DIRECTOR MESSAGE -->
 
     <section class="section">
+      <div class="container message-grid">
 
-        <div class="container two-column">
+        <div>
+          <div class="section-label">
+            A Message From The Director
+          </div>
 
-            <div>
+          <h2>
+            Why ABZEMO exists.
+          </h2>
+        </div>
 
-                <p class="eyebrow">A MESSAGE FROM THE DIRECTOR</p>
+        <div class="director-message">
 
-                <h2>
-                    Why ABZEMO exists.
-                </h2>
+          <p>
+            The world around us is changing faster than ever.
+            Artificial intelligence, automation, digital systems,
+            and global connectivity are transforming the way
+            businesses operate and people interact.
+          </p>
 
-            </div>
+          <p>
+            I believe the greatest opportunity is not simply to
+            adopt new technology, but to understand how technology
+            can solve meaningful problems.
+          </p>
 
-            <div class="director-message">
+          <p>
+            ABZEMO is being built around that idea.
+          </p>
 
-                <p>
-                    The world around us is changing faster than ever.
-                    Artificial intelligence, automation, digital systems,
-                    and global connectivity are transforming the way
-                    businesses operate and people interact.
-                </p>
+          <p>
+            We want to create a company that can identify
+            opportunities, develop practical solutions, and
+            continuously evolve as the world changes.
+          </p>
 
-                <p>
-                    I believe the greatest opportunity is not simply to
-                    adopt new technology, but to understand how technology
-                    can solve meaningful problems.
-                </p>
+          <p>
+            Our journey begins with artificial intelligence and
+            automation through ABZEMO AI. But the vision of ABZEMO
+            is much broader than any single technology or industry.
+          </p>
 
-                <p>
-                    ABZEMO is being built around that idea.
-                </p>
+          <p>
+            We want to build capabilities that can serve businesses
+            across different sectors and markets, while remaining
+            grounded in responsibility, trust, and real value.
+          </p>
 
-                <p>
-                    We want to create a company that can identify
-                    opportunities, develop practical solutions, and
-                    continuously evolve as the world changes.
-                </p>
+          <p>
+            We are not trying to build everything at once.
+            We are building the foundation carefully, one step at
+            a time.
+          </p>
 
-                <p>
-                    Our journey begins with artificial intelligence and
-                    automation through ABZEMO AI. But the vision of ABZEMO
-                    is much broader than any single technology or industry.
-                </p>
+          <p>
+            Every solution we create should answer an important
+            question:
+          </p>
 
-                <p>
-                    We want to build capabilities that can serve businesses
-                    across different sectors and markets, while remaining
-                    grounded in responsibility, trust, and real value.
-                </p>
+          <blockquote>
+            “Does this make something meaningfully better?”
+          </blockquote>
 
-                <p>
-                    We are not trying to build everything at once.
-                    We are building the foundation carefully, one step at
-                    a time.
-                </p>
+          <p>
+            If the answer is yes, then it is worth building.
+          </p>
 
-                <p>
-                    Every solution we create should answer an important
-                    question:
-                </p>
+          <p>
+            This is the mindset with which I want ABZEMO to grow —
+            ambitious enough to think globally, disciplined enough
+            to build responsibly, and practical enough to create
+            solutions that people and businesses can actually use.
+          </p>
 
-                <blockquote>
-                    “Does this make something meaningfully better?”
-                </blockquote>
+          <p>
+            The journey is only beginning.
+          </p>
 
-                <p>
-                    If the answer is yes, then it is worth building.
-                </p>
+          <p>
+            <strong>Building What’s Next.</strong>
+          </p>
 
-                <p>
-                    This is the mindset with which I want ABZEMO to grow —
-                    ambitious enough to think globally, disciplined enough
-                    to build responsibly, and practical enough to create
-                    solutions that people and businesses can actually use.
-                </p>
-
-                <p>
-                    The journey is only beginning.
-                </p>
-
-                <p>
-                    <strong>Building What’s Next.</strong>
-                </p>
-
-                <p>
-                    — Director, ABZEMO
-                </p>
-
-            </div>
+          <p>
+            — Director, ABZEMO
+          </p>
 
         </div>
 
+      </div>
     </section>
-
 
     <!-- PRINCIPLES -->
 
     <section class="section section-dark">
+      <div class="container">
 
-        <div class="container">
+        <div class="section-heading">
 
-            <div class="section-heading">
+          <div class="section-label">
+            Our Approach
+          </div>
 
-                <p class="eyebrow">OUR APPROACH</p>
+          <h2>
+            Ambition with responsibility.
+          </h2>
 
-                <h2>
-                    Ambition with responsibility.
-                </h2>
-
-                <p>
-                    Growth matters, but the way we build matters just as much.
-                </p>
-
-            </div>
-
-
-            <div class="card-grid">
-
-                <article class="card">
-
-                    <h3>Think Long-Term</h3>
-
-                    <p>
-                        We build foundations that can support future
-                        opportunities rather than focusing only on immediate
-                        results.
-                    </p>
-
-                </article>
-
-
-                <article class="card">
-
-                    <h3>Stay Practical</h3>
-
-                    <p>
-                        Ideas become valuable when they can solve real
-                        problems and create useful outcomes.
-                    </p>
-
-                </article>
-
-
-                <article class="card">
-
-                    <h3>Keep Learning</h3>
-
-                    <p>
-                        Technology changes continuously, so our thinking must
-                        remain open, curious, and adaptable.
-                    </p>
-
-                </article>
-
-
-                <article class="card">
-
-                    <h3>Build Trust</h3>
-
-                    <p>
-                        Long-term relationships are built through
-                        transparency, reliability, and responsible execution.
-                    </p>
-
-                </article>
-
-
-                <article class="card">
-
-                    <h3>Think Globally</h3>
-
-                    <p>
-                        We aim to create solutions that can cross borders,
-                        languages, industries, and markets.
-                    </p>
-
-                </article>
-
-
-                <article class="card">
-
-                    <h3>Create Real Value</h3>
-
-                    <p>
-                        Technology should ultimately improve something
-                        meaningful for people, organizations, or society.
-                    </p>
-
-                </article>
-
-            </div>
+          <p>
+            Growth matters, but the way we build matters just as much.
+          </p>
 
         </div>
 
-    </section>
+        <div class="card-grid">
 
+          <article class="card">
+            <h3>Think Long-Term</h3>
+            <p>
+              We build foundations that can support future
+              opportunities rather than focusing only on immediate
+              results.
+            </p>
+          </article>
 
-    <!-- CLOSING -->
+          <article class="card">
+            <h3>Stay Practical</h3>
+            <p>
+              Ideas become valuable when they can solve real
+              problems and create useful outcomes.
+            </p>
+          </article>
 
-    <section class="section ai-section">
+          <article class="card">
+            <h3>Keep Learning</h3>
+            <p>
+              Technology changes continuously, so our thinking must
+              remain open, curious, and adaptable.
+            </p>
+          </article>
 
-        <div class="container two-column">
+          <article class="card">
+            <h3>Build Trust</h3>
+            <p>
+              Long-term relationships are built through
+              transparency, reliability, and responsible execution.
+            </p>
+          </article>
 
-            <div>
+          <article class="card">
+            <h3>Think Globally</h3>
+            <p>
+              We aim to create solutions that can cross borders,
+              languages, industries, and markets.
+            </p>
+          </article>
 
-                <p class="eyebrow">THE JOURNEY AHEAD</p>
-
-                <h2>
-                    From one idea to a global vision.
-                </h2>
-
-            </div>
-
-            <div>
-
-                <p>
-                    ABZEMO is starting with a focused technology vision,
-                    but the long-term journey is open to new possibilities.
-                </p>
-
-                <p>
-                    What begins with AI and automation can grow into a
-                    connected ecosystem of technology, business solutions,
-                    and future ventures.
-                </p>
-
-                <p>
-                    We invite the right people, organizations, and ideas to
-                    become part of that journey.
-                </p>
-
-            </div>
+          <article class="card">
+            <h3>Create Real Value</h3>
+            <p>
+              Technology should ultimately improve something
+              meaningful for people, organizations, or society.
+            </p>
+          </article>
 
         </div>
 
+      </div>
     </section>
 
+    <!-- JOURNEY -->
+
+    <section class="section journey-section">
+      <div class="container journey-grid">
+
+        <div>
+          <div class="section-label">
+            The Journey Ahead
+          </div>
+
+          <h2>
+            From one idea to a global vision.
+          </h2>
+        </div>
+
+        <div class="journey-copy">
+
+          <p>
+            ABZEMO is starting with a focused technology vision,
+            but the long-term journey is open to new possibilities.
+          </p>
+
+          <p>
+            What begins with AI and automation can grow into a
+            connected ecosystem of technology, business solutions,
+            and future ventures.
+          </p>
+
+          <p>
+            We invite the right people, organizations, and ideas to
+            become part of that journey.
+          </p>
+
+        </div>
+
+      </div>
+    </section>
 
     <!-- CTA -->
 
-    <section class="section cta-section">
+    <section class="cta-section">
+      <div class="container">
 
-        <div class="container cta-content">
-
-            <p class="eyebrow">ABZEMO</p>
-
-            <h2>
-                Let's build what comes next.
-            </h2>
-
-            <p>
-                If you have a challenge, an idea, or an opportunity worth
-                exploring, we would like to hear from you.
-            </p>
-
-            <a href="contact.html" class="btn btn-primary">
-                Connect with ABZEMO
-            </a>
-
+        <div class="section-label">
+          ABZEMO
         </div>
 
+        <h2>
+          Let's build what comes next.
+        </h2>
+
+        <p>
+          If you have a challenge, an idea, or an opportunity worth
+          exploring, we would like to hear from you.
+        </p>
+
+        <a href="contact.html" class="btn btn-primary">
+          Connect with ABZEMO
+        </a>
+
+      </div>
     </section>
 
-</main>
+  </main>
 
+  <!-- FOOTER -->
 
-<footer class="site-footer">
+  <footer class="site-footer">
+    <div class="container">
 
-    <div class="container footer-content">
+      <div class="footer-top">
 
-        <div>
+        <div class="footer-brand">
 
-            <div class="logo">ABZEMO</div>
+          <div class="footer-logo">
+            ABZEM<span>O</span>
+          </div>
 
-            <p>Building What’s Next.</p>
+          <p>
+            Building What's Next. Across technology, business,
+            healthcare, education, trade and future ventures.
+          </p>
 
         </div>
-
 
         <div class="footer-links">
 
+          <div class="footer-column">
+            <h4>Company</h4>
             <a href="about.html">About</a>
-            <a href="solutions.html">Solutions</a>
+            <a href="mission.html">Mission</a>
+            <a href="vision.html">Vision</a>
+            <a href="director-note.html">Director's Note</a>
+          </div>
+
+          <div class="footer-column">
+            <h4>Explore</h4>
+            <a href="ventures.html">Ventures</a>
             <a href="industries.html">Industries</a>
+            <a href="solutions.html">Solutions</a>
             <a href="abzemo-ai.html">ABZEMO AI</a>
+          </div>
+
+          <div class="footer-column">
+            <h4>Connect</h4>
             <a href="contact.html">Contact</a>
+            <a href="privacy.html">Privacy</a>
+            <a href="terms.html">Terms</a>
+          </div>
 
         </div>
 
+      </div>
+
+      <div class="footer-bottom">
+        <span>© 2026 ABZEMO. All rights reserved.</span>
+        <span>Building What's Next.</span>
+      </div>
+
     </div>
+  </footer>
 
+  <script>
+    const menuButton = document.getElementById("menuButton");
+    const megaMenu = document.getElementById("megaMenu");
+    const megaOverlay = document.getElementById("megaOverlay");
+    const megaClose = document.getElementById("megaClose");
 
-    <div class="container footer-bottom">
+    function openMegaMenu() {
+      megaMenu.classList.add("active");
+      megaOverlay.classList.add("active");
+      document.body.classList.add("menu-open");
+      menuButton.setAttribute("aria-expanded", "true");
+    }
 
-        <p>© 2026 ABZEMO. All rights reserved.</p>
+    function closeMegaMenu() {
+      megaMenu.classList.remove("active");
+      megaOverlay.classList.remove("active");
+      document.body.classList.remove("menu-open");
+      menuButton.setAttribute("aria-expanded", "false");
+    }
 
-    </div>
+    menuButton.addEventListener("click", openMegaMenu);
+    megaClose.addEventListener("click", closeMegaMenu);
+    megaOverlay.addEventListener("click", closeMegaMenu);
 
-</footer>
+    document.addEventListener("keydown", function(event) {
+      if (event.key === "Escape") {
+        closeMegaMenu();
+      }
+    });
+
+    megaMenu.querySelectorAll("a").forEach(function(link) {
+      link.addEventListener("click", closeMegaMenu);
+    });
+  </script>
+
+  <script src="abzemo-ai.js"></script>
 
 </body>
 </html>
