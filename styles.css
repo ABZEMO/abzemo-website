@@ -114,68 +114,75 @@ ol {
    HEADER
    ========================= */
 
+/* =========================
+   HEADER
+   ========================= */
+
 .site-header {
   position: fixed;
   inset: 0 0 auto 0;
   z-index: 1000;
-
   height: var(--header-height);
-
   background: rgba(255, 255, 255, 0.94);
   border-bottom: 1px solid rgba(220, 229, 240, 0.8);
-
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
 }
 
 .navbar {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: space-between;
-
   height: 100%;
 }
 
-.logo {
-  color: var(--navy);
-
-  font-size: 24px;
-  font-weight: 800;
-  line-height: 1;
-
-  letter-spacing: -0.04em;
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  justify-self: start;
 }
 
-.logo span {
-  color: var(--blue);
+.brand {
+  display: flex;
+  align-items: center;
+  width: 150px;
+  height: 58px;
+  overflow: hidden;
+}
+
+.brand img {
+  display: block;
+  width: 150px;
+  height: auto;
+  max-height: 58px;
+  object-fit: contain;
+  object-position: center;
+}
+
+.navbar nav {
+  justify-self: center;
 }
 
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 30px;
+  justify-content: center;
+  gap: 28px;
 }
 
 .nav-links a {
   position: relative;
-
   color: var(--text);
-
   font-size: 14px;
   font-weight: 600;
-
-  transition:
-    color var(--transition);
+  transition: color var(--transition);
 }
 
 .nav-links a:hover,
 .nav-links a.active {
   color: var(--blue);
 }
-
-/* =========================
-   MENU TOGGLE
-   ========================= */
 
 .menu-toggle {
   width: 46px;
@@ -1253,7 +1260,7 @@ ol {
 }
 /* =========================================================
    ABZEMO MASTER HEADER — LOCKED
-   Hamburger LEFT | Navigation CENTER | Brand RIGHT
+   Hamburger LEFT | Logo LEFT | Navigation CENTER
    ========================================================= */
 
 .navbar {
@@ -1264,18 +1271,44 @@ ol {
   gap: 24px;
 }
 
+.header-left {
+  display: flex;
+  align-items: center;
+  justify-self: start;
+  gap: 14px;
+}
+
 .menu-button {
   justify-self: start;
+  flex-shrink: 0;
+}
+
+.brand {
+  justify-self: start;
+  display: flex;
+  align-items: center;
+  width: 150px;
+  height: 58px;
+  overflow: hidden;
+}
+
+.brand img {
+  display: block;
+  width: 150px;
+  height: auto;
+  max-height: 58px;
+  object-fit: contain;
+  object-position: center;
+}
+
+.navbar nav {
+  justify-self: center;
 }
 
 .nav-links {
   justify-content: center;
   align-items: center;
   gap: 28px;
-}
-
-.brand {
-  justify-self: end;
 }
 
 /* Contact — locked navy button */
@@ -1300,7 +1333,11 @@ ol {
 /* Mobile */
 @media (max-width: 900px) {
   .navbar {
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: 1fr;
+  }
+
+  .header-left {
+    justify-self: start;
   }
 
   .nav-links {
@@ -1308,6 +1345,12 @@ ol {
   }
 
   .brand {
-    justify-self: end;
+    width: 125px;
+    height: 52px;
+  }
+
+  .brand img {
+    width: 125px;
+    max-height: 52px;
   }
 }
