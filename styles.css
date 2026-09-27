@@ -1355,12 +1355,18 @@ ol {
   }
 }
 /* ABZEMO Brand Name */
+.brand {
+  width: auto;
+  overflow: visible;
+  gap: 8px;
+}
+
 .brand-name {
-  color: var(--navy);
+  color: var(--navy) !important;
   font-weight: 700;
   white-space: nowrap;
 }
 
 .brand-name span {
-  color: var(--blue);
+  color: var(--blue) !important;
 }
