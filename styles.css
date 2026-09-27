@@ -1363,8 +1363,8 @@ ol {
 
 .brand-name {
   color: var(--navy) !important;
-  font-weight: 700;
-  white-space: nowrap;
+  font-weight: 800;
+ 
 }
 
 .brand-name span {
