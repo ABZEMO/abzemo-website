@@ -1354,3 +1354,13 @@ ol {
     max-height: 52px;
   }
 }
+/* ABZEMO Brand Name */
+.brand-name {
+  color: var(--navy);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.brand-name span {
+  color: var(--blue);
+}
