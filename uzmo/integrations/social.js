@@ -56,6 +56,54 @@ export async function executeYouTube(input, context, fetchImpl = fetch) {
   return { status: "completed", tool: "youtube", data };
 }
 
+export async function executeGhost(input, context, fetchImpl = fetch) {
+  const token = context.ghostAdminToken;
+  const site = context.ghostSite || input.site;
+  if (!token || !site) {
+    return { status: "authorization_required", tool: "ghost", message: "Connect Ghost and select a publication before publishing." };
+  }
+
+  const siteUrl = validatePublicUrl(site, "Ghost site");
+  const title = String(input.title || "").trim().slice(0, 500);
+  const html = String(input.html || input.content || "");
+  if (!title) throw new Error("Ghost title is required.");
+  if (!html.trim()) throw new Error("Ghost content is required.");
+
+  const status = input.status || "draft";
+  if (!["draft", "published"].includes(status)) {
+    throw new Error("Invalid Ghost post status.");
+  }
+
+  const body = {
+    posts: [{
+      title,
+      html,
+      status,
+      ...(input.slug ? { slug: String(input.slug).slice(0, 200) } : {}),
+      ...(Array.isArray(input.tags) ? { tags: input.tags.map(name => ({ name: String(name).slice(0, 191) })).slice(0, 50) } : {})
+    }]
+  };
+
+  const response = await fetchImpl(
+    siteUrl.replace(/\\/$/, "") + "/ghost/api/admin/posts/",
+    {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + token,
+        "content-type": "application/json",
+        accept: "application/json",
+        "Accept-Version": "v2"
+      },
+      body: JSON.stringify(body)
+    }
+  );
+  const data = await readJson(response);
+  if (!response.ok || !Array.isArray(data?.posts) || !data.posts[0]?.id) {
+    throw new Error("Ghost post creation failed: HTTP " + response.status);
+  }
+  return { status: "completed", tool: "ghost", data: data.posts[0] };
+}
+
 export async function executeInstagram(input, context, fetchImpl = fetch) {
   const token = context.instagramAccessToken;
   const igUserId = context.instagramUserId || input.igUserId;
