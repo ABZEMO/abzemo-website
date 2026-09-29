@@ -16,6 +16,7 @@ import { handleTriggers } from "./triggers.js";
 import { createRuntimeStores } from "../workflows/runtime-stores.js";
 import { executeJob } from "../workflows/executor.js";
 import { handleGoogleOAuth } from "../integrations/google-oauth.js";
+import { guard } from "../auth/runtime-guard.js";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "https://abzemo.com",
@@ -34,6 +35,8 @@ export default {
     }
 
     if (url.pathname === "/api/plan" && request.method === "POST") {
+      const access = await guard(request, env, "execute_safe");
+      if (!access.ok) return withCors(access.response);
       const body = await request.json().catch(() => ({}));
       try {
         return json({ status: "planned", ...buildPlan(body.goal) });
@@ -112,11 +115,15 @@ export default {
     }
 
     if (url.pathname === "/api/model/status" && request.method === "GET") {
+      const access = await guard(request, env, "execute_safe");
+      if (!access.ok) return withCors(access.response);
       const gateway = createModelGateway(env);
       return json({ product: "UZMO", configured: gateway.configured, providers: gateway.providers });
     }
 
     if (url.pathname === "/api/model/complete" && request.method === "POST") {
+      const access = await guard(request, env, "execute_safe");
+      if (!access.ok) return withCors(access.response);
       const body = await request.json().catch(() => ({}));
       if (!Array.isArray(body.messages) || !body.messages.length) {
         return json({ error: "messages is required" }, 400);
