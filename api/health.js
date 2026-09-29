@@ -15,7 +15,9 @@ export default async function handler(req) {
     backend: "online",
     openai_configured: Boolean(process.env.OPENAI_API_KEY),
     model: process.env.OPENAI_MODEL || "gpt-5.6-luna",
-    lead_storage_configured: Boolean(process.env.LEAD_WEBHOOK_URL),
+    lead_storage_configured: Boolean(process.env.LEAD_WEBHOOK_URL || process.env.RESEND_API_KEY),
+    resend_configured: Boolean(process.env.RESEND_API_KEY),
+    lead_notification_recipient: process.env.RESEND_TO_EMAIL || "sales@abzemo.com",
     timestamp: new Date().toISOString()
   }), {
     status: 200,
