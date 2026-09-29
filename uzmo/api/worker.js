@@ -9,6 +9,7 @@ import { handleAgent } from "./agent.js";
 import { handleAutomations } from "./automations.js";
 import { handleStudio } from "./studio.js";
 import { handleJobs } from "./jobs.js";
+import { handleJobRun } from "./job-run.js";
 import { handleTriggers } from "./triggers.js";
 
 const corsHeaders = {
@@ -35,6 +36,10 @@ export default {
     if (url.pathname === "/api/triggers") {
       try { return withCors(await handleTriggers(request)); }
       catch (error) { return json({ error: error.message || "Trigger request failed" }, 500); }
+    }
+    if (url.pathname === "/api/job-run") {
+      try { return withCors(await handleJobRun(request, env)); }
+      catch (error) { return json({ error: error.message || "Job execution failed" }, 500); }
     }
     if (url.pathname === "/api/jobs") {
       try { return withCors(await handleJobs(request)); }
