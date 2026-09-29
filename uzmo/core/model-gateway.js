@@ -46,11 +46,14 @@ function gemini(env, fetchImpl) {
   const key = env.UZMO_GEMINI_API_KEY;
   const model = env.UZMO_GEMINI_MODEL || "gemini-2.5-flash";
   const endpoint = env.UZMO_GEMINI_ENDPOINT || `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
-  return provider("gemini", key, model, async messages => {
+  return provider("gemini", key, model, async (messages, options = {}) => {
     const contents = messages.filter(m => m.role !== "system").map(m => ({ role: m.role === "assistant" ? "model" : "user", parts: [{ text: String(m.content ?? "") }] }));
     const system = messages.filter(m => m.role === "system").map(m => m.content).join("\n");
-    const data = await request(fetchImpl, `${endpoint}?key=${encodeURIComponent(key)}`, null, { ...(system ? { systemInstruction: { parts: [{ text: system }] } } : {}), contents });
-    return normalize("gemini", model, (data?.candidates?.[0]?.content?.parts || []).filter(x => x.text).map(x => x.text).join(""), [], data?.usageMetadata);
+    const tools = options.tools?.length ? [{ functionDeclarations: options.tools.map(tool => ({ name: tool.function?.name || tool.name, description: tool.function?.description || "", parameters: tool.function?.parameters || tool.input_schema || { type: "object", properties: {} } })) }] : undefined;
+    const data = await request(fetchImpl, `${endpoint}?key=${encodeURIComponent(key)}`, null, { ...(system ? { systemInstruction: { parts: [{ text: system }] } } : {}), contents, ...(tools ? { tools } : {}) });
+    const parts = data?.candidates?.[0]?.content?.parts || [];
+    const calls = parts.filter(x => x.functionCall).map((x, i) => ({ id: `gemini-${Date.now()}-${i}`, name: x.functionCall.name, input: x.functionCall.args || {} }));
+    return normalize("gemini", model, parts.filter(x => x.text).map(x => x.text).join(""), calls, data?.usageMetadata);
   });
 }
 function provider(id, key, model, complete) { return { id, model, configured: Boolean(key), complete }; }
