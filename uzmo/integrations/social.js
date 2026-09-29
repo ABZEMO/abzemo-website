@@ -92,6 +92,34 @@ export async function executeInstagram(input, context, fetchImpl = fetch) {
   return { status: "completed", tool: "instagram", data: published };
 }
 
+export async function executeMastodon(input, context, fetchImpl = fetch) {
+  const token = context.mastodonAccessToken;
+  const baseUrl = String(context.mastodonBaseUrl || input.baseUrl || "").trim().replace(/\/$/, "");
+  if (!token || !baseUrl) return { status: "authorization_required", tool: "mastodon", message: "Connect a Mastodon account and instance before publishing." };
+  let parsed;
+  try { parsed = new URL(baseUrl); } catch { throw new Error("Mastodon instance URL is invalid."); }
+  if (parsed.protocol !== "https:") throw new Error("Mastodon instance URL must use HTTPS.");
+  const status = String(input.status || input.text || "").trim();
+  if (!status) throw new Error("Mastodon status text is required.");
+  if (status.length > 5000) throw new Error("Mastodon status exceeds the supported safety limit.");
+  const visibility = String(input.visibility || "public");
+  if (!["public","unlisted","private","direct"].includes(visibility)) throw new Error("Invalid Mastodon visibility.");
+  const form = new URLSearchParams({ status, visibility });
+  if (input.language) form.set("language", String(input.language));
+  if (input.sensitive !== undefined) form.set("sensitive", String(Boolean(input.sensitive)));
+  if (input.spoilerText) form.set("spoiler_text", String(input.spoilerText));
+  if (input.scheduledAt) form.set("scheduled_at", String(input.scheduledAt));
+  if (input.idempotencyKey) form.set("idempotency_key", String(input.idempotencyKey));
+  const response = await fetchImpl(baseUrl + "/api/v1/statuses", {
+    method: "POST",
+    headers: { Authorization: "Bearer " + token, "Content-Type": "application/x-www-form-urlencoded" },
+    body: form.toString()
+  });
+  const data = await readJson(response);
+  if (!response.ok || !data?.id) throw new Error("Mastodon status failed: HTTP " + response.status);
+  return { status: "completed", tool: "mastodon", data };
+}
+
 function validatePublicUrl(value, label) {
   if (typeof value !== "string" || !value.trim()) throw new Error(label + " URL is required.");
   const url = new URL(value.trim());
