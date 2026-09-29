@@ -8,6 +8,7 @@ import { handleIntegrations } from "./integrations.js";
 import { handleAgent } from "./agent.js";
 import { handleAutomations } from "./automations.js";
 import { handleStudio } from "./studio.js";
+import { handleJobs } from "./jobs.js";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -29,6 +30,10 @@ export default {
     if (url.pathname === "/api/agent") {
       try { return withCors(await handleAgent(request, env)); }
       catch (error) { return json({ error: error.message || "Agent request failed" }, 500); }
+    }
+    if (url.pathname === "/api/jobs") {
+      try { return withCors(await handleJobs(request)); }
+      catch (error) { return json({ error: error.message || "Job request failed" }, 500); }
     }
     if (url.pathname === "/api/studio") {
       try { return withCors(await handleStudio(request)); }
