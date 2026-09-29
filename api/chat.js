@@ -551,98 +551,6 @@ async function sendLeadEmail(lead, origin) {
 }
 
 async function persistLeadIfConfigured(lead, origin, language) {
-  if (!lead.handoff_ready) {
-    return {
-      attempted: false,
-      persisted: false,
-      notification_sent: lead.notification_sent === true,
-      crm_persisted: false
-    };
-  }
-
-  let webhookPersisted = false;
-  const webhook = process.env.LEAD_WEBHOOK_URL;
-
-  if (webhook) {
-    try {
-      const response = await fetch(webhook, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(process.env.LEAD_WEBHOOK_SECRET
-            ? { "X-ABZEMO-Lead-Secret": process.env.LEAD_WEBHOOK_SECRET }
-            : {})
-        },
-        body: JSON.stringify({
-          source: "ABZEMO AI Global Sales Agent",
-          session_id: lead.session_id,
-          origin,
-          qualification: lead.qualification,
-          created_at: new Date().toISOString()
-        })
-      });
-
-      webhookPersisted = response.ok;
-    } catch (error) {
-      console.error("Lead persistence error:", error);
-    }
-  }
-
-  const hubspot = await persistLeadToHubSpot(lead, origin, language);
-  const email = await sendLeadEmail(lead, origin);
-
-  return {
-    attempted: Boolean(webhook || process.env.RESEND_API_KEY || process.env.HUBSPOT_ACCESS_TOKEN),
-    persisted: webhookPersisted || hubspot.persisted || email.persisted,
-    crm_persisted: hubspot.persisted,
-    notification_sent: email.notification_sent,
-    hubspot_configured: hubspot.configured === true
-  };
-}
-  if (!lead.handoff_ready) {
-    return {
-      attempted: false,
-      persisted: false,
-      notification_sent: lead.notification_sent === true
-    };
-  }
-
-  let webhookPersisted = false;
-  const webhook = process.env.LEAD_WEBHOOK_URL;
-
-  if (webhook) {
-    try {
-      const response = await fetch(webhook, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(process.env.LEAD_WEBHOOK_SECRET
-            ? { "X-ABZEMO-Lead-Secret": process.env.LEAD_WEBHOOK_SECRET }
-            : {})
-        },
-        body: JSON.stringify({
-          source: "ABZEMO AI Global Sales Agent",
-          session_id: lead.session_id,
-          origin,
-          qualification: lead.qualification,
-          created_at: new Date().toISOString()
-        })
-      });
-
-      webhookPersisted = response.ok;
-    } catch (error) {
-      console.error("Lead persistence error:", error);
-    }
-  }
-
-  const email = await sendLeadEmail(lead, origin);
-
-  return {
-    attempted: Boolean(webhook || process.env.RESEND_API_KEY),
-    persisted: webhookPersisted || email.persisted,
-    notification_sent: email.notification_sent
-  };
-}
 
 export default async function handler(req) {
   const origin = req.headers.get("origin") || "";
@@ -771,7 +679,9 @@ export default async function handler(req) {
       reply: modelResult.reply.trim(),
       lead_status: leadState.status,
       handoff_ready: actualHandoffReady,
-      lead_state: { ...leadState, handoff_ready: actualHandoffReady, notification_sent: persistence.notification_sent === true,\n      crm_persisted: persistence.crm_persisted === true,\n      hubspot_configured: persistence.hubspot_configured === true },
+      lead_state: { ...leadState, handoff_ready: actualHandoffReady, notification_sent: persistence.notification_sent === true,
+        crm_persisted: persistence.crm_persisted === true,
+        hubspot_configured: persistence.hubspot_configured === true },
       qualification: leadState.qualification,
       internal_record_language: "en",
       session_id: sessionId,
