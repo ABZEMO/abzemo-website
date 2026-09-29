@@ -3,6 +3,7 @@ import { createModelGateway } from "../core/model-gateway.js";
 import { handleRuntime } from "./runtime.js";
 import { handleSecurity } from "./security.js";
 import { handleMemory } from "./memory.js";
+import { handleAgent } from "./agent.js";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -20,6 +21,10 @@ export default {
       const body = await request.json().catch(() => ({}));
       try { return json({ status: "planned", ...buildPlan(body.goal) }); }
       catch (error) { return json({ error: error.message || "Unable to build plan" }, 400); }
+    }
+    if (url.pathname === "/api/agent") {
+      try { return withCors(await handleAgent(request, env)); }
+      catch (error) { return json({ error: error.message || "Agent request failed" }, 500); }
     }
     if (url.pathname === "/api/memory") {
       try { return withCors(await handleMemory(request, env)); }
