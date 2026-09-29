@@ -12,7 +12,7 @@ import { handleStudioRun } from "./studio-run.js";
 import { handleScheduler } from "./scheduler.js";
 import { handleJobs } from "./jobs.js";
 import { handleJobRun } from "./job-run.js";
-import { handleTriggers } from "./triggers.js";
+import { handleTriggers } from "./triggers.js";\nimport { createRuntimeStores } from "../workflows/runtime-stores.js";\nimport { executeJob } from "../workflows/executor.js";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -92,7 +92,7 @@ export default {
       try { return json(await createModelGateway(env).complete(body.messages, body.options || {})); }
       catch (error) { return json({ error: error.message || "Model request failed" }, 502); }
     }
-    return json({ error: "Not found" }, 404);\n  },\n  async scheduled(event, env, ctx) {\n    // Cron dispatch is intentionally delegated through the same scheduler API path.\n    await handleScheduler(new Request("https://uzmo.internal/api/scheduler", { method: "POST", body: JSON.stringify({ now: new Date(event.scheduledTime).toISOString() }), headers: { "content-type": "application/json" } }), env);\n  }
+    return json({ error: "Not found" }, 404);\n  },\n  async scheduled(event, env, ctx) {\n    const stores = createRuntimeStores(env);\n    if (!stores.durable) return;\n    const workerId = crypto.randomUUID();\n    const jobs = await stores.jobs.claimDue(workerId, new Date(event.scheduledTime).toISOString(), 20);\n    for (const job of jobs) {\n      ctx.waitUntil(executeJob(job, { workflowStore: stores.workflows, jobStore: stores.jobs, env }));\n    }\n  }
   }
 };
 
