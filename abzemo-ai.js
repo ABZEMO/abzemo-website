@@ -123,6 +123,8 @@
       .abzemo-ai-voice{width:42px;height:42px;border:1px solid rgba(7,26,53,.13);border-radius:12px;background:#fff;color:#1264d8;cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
       .abzemo-ai-voice.active{background:#1264d8;color:#fff;box-shadow:0 0 0 4px rgba(18,100,216,.12)}
       .abzemo-ai-voice:disabled{opacity:.45;cursor:not-allowed}
+      .abzemo-ai-speaker{width:42px;height:42px;border:1px solid rgba(7,26,53,.13);border-radius:12px;background:#fff;color:#1264d8;cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+      .abzemo-ai-speaker.muted{color:#7d899a;background:#f4f6f9}
       .abzemo-ai-voice-status{margin-top:7px;text-align:center;font-size:9px;color:#6d7b90;min-height:12px}
       .abzemo-ai-lead-status{margin:8px 0 0;padding:8px 10px;border-radius:9px;background:#eef5fd;color:#245b9d;font-size:10px;line-height:1.35;display:none}
       .abzemo-ai-lead-status.active{display:block}
@@ -255,6 +257,7 @@
           <div class="abzemo-ai-input-row">
             <textarea id="abzemoAiInput" class="abzemo-ai-input" rows="1" placeholder="Tell us what your business needs..." aria-label="Message ABZEMO AI"></textarea>
             <button id="abzemoAiVoice" class="abzemo-ai-voice" type="button" aria-label="Use voice input" title="Voice input">🎙</button>
+            <button id="abzemoAiSpeaker" class="abzemo-ai-speaker" type="button" aria-label="Mute AI voice" title="Mute AI voice">🔊</button>
             <button id="abzemoAiSend" class="abzemo-ai-send" type="button" aria-label="Send message">➤</button>
           </div>
 
@@ -295,6 +298,7 @@
     const close = el.close;
     const send = el.send;
     const voice = document.getElementById("abzemoAiVoice");
+    const speaker = document.getElementById("abzemoAiSpeaker");
     const input = el.input;
     const messages = el.messages;
     const typing = el.typing;
@@ -397,6 +401,17 @@
       if (voiceStatus) voiceStatus.textContent = text || "";
     }
 
+    const speakerKey = "abzemo_ai_speaker_enabled";
+    let speakerEnabled = localStorage.getItem(speakerKey) !== "false";
+
+    function updateSpeakerButton() {
+      if (!speaker) return;
+      speaker.classList.toggle("muted", !speakerEnabled);
+      speaker.textContent = speakerEnabled ? "🔊" : "🔇";
+      speaker.setAttribute("aria-label", speakerEnabled ? "Mute AI voice" : "Unmute AI voice");
+      speaker.title = speakerEnabled ? "Mute AI voice" : "Unmute AI voice";
+    }
+
     function stopSpeaking() {
       if ("speechSynthesis" in window) {
         window.speechSynthesis.cancel();
@@ -404,7 +419,7 @@
     }
 
     function speakReply(text) {
-      if (!("speechSynthesis" in window) || !text) return;
+      if (!speakerEnabled || !("speechSynthesis" in window) || !text) return;
 
       stopSpeaking();
 
@@ -676,6 +691,15 @@
 
     launcher.addEventListener("click",openAI);
     if (voice) voice.addEventListener("click",toggleVoiceInput);
+    if (speaker) {
+      speaker.addEventListener("click",function () {
+        speakerEnabled = !speakerEnabled;
+        localStorage.setItem(speakerKey, String(speakerEnabled));
+        if (!speakerEnabled) stopSpeaking();
+        updateSpeakerButton();
+      });
+      updateSpeakerButton();
+    }
     setupVoiceInput();
     close.addEventListener("click",closeAI);
     send.addEventListener("click",sendMessage);
