@@ -13,24 +13,12 @@ export function createModelGateway(env) {
           message: "No UZMO model provider is configured. The orchestration contract can still be tested without a provider."
         };
       }
-
       const response = await fetch(endpoint, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${apiKey}`
-        },
-        body: JSON.stringify({
-          model,
-          messages,
-          temperature: options.temperature ?? 0.2
-        })
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${apiKey}` },
+        body: JSON.stringify({ model, messages, temperature: options.temperature ?? 0.2 })
       });
-
-      if (!response.ok) {
-        throw new Error(`Model provider returned HTTP ${response.status}`);
-      }
-
+      if (!response.ok) throw new Error(`Model provider returned HTTP ${response.status}`);
       return await response.json();
     }
   };
