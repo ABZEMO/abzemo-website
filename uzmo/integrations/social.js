@@ -92,6 +92,24 @@ export async function executeInstagram(input, context, fetchImpl = fetch) {
   return { status: "completed", tool: "instagram", data: published };
 }
 
+const X_ROOT = "https://api.x.com/2";
+
+export async function executeX(input, context, fetchImpl = fetch) {
+  const token = context.xAccessToken;
+  if (!token) return { status: "authorization_required", tool: "x", message: "Connect X before publishing." };
+  const text = String(input.text || "").trim();
+  if (!text) throw new Error("X post text is required.");
+  if (text.length > 280) throw new Error("X post text exceeds the 280-character limit.");
+  const response = await fetchImpl(X_ROOT + "/tweets", {
+    method: "POST",
+    headers: { Authorization: "Bearer " + token, "Content-Type": "application/json" },
+    body: JSON.stringify({ text })
+  });
+  const data = await readJson(response);
+  if (!response.ok || !data?.data?.id) throw new Error("X post creation failed: HTTP " + response.status);
+  return { status: "completed", tool: "x", data };
+}
+
 function validatePublicUrl(value, label) {
   if (typeof value !== "string" || !value.trim()) throw new Error(label + " URL is required.");
   const url = new URL(value.trim());
