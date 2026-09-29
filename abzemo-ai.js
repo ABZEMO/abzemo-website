@@ -275,7 +275,8 @@
     let leadState = {
       status: "new",
       qualification: {},
-      handoff_ready: false
+      handoff_ready: false,
+      notification_sent: false
     };
 
     function openAI() {
@@ -491,6 +492,10 @@
             ...leadState.qualification,
             ...data.qualification
           };
+        }
+
+        if (data.notification_sent === true) {
+          leadState.notification_sent = true;
         }
 
         setLeadStatus(
