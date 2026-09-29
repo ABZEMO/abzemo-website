@@ -56,6 +56,57 @@ export async function executeYouTube(input, context, fetchImpl = fetch) {
   return { status: "completed", tool: "youtube", data };
 }
 
+export async function executeDailymotion(input, context, fetchImpl = fetch) {
+  const token = context.dailymotionAccessToken;
+  const profileId = context.dailymotionProfileId || input.profileId;
+  if (!token || !profileId) {
+    return { status: "authorization_required", tool: "dailymotion", message: "Connect Dailymotion before publishing." };
+  }
+
+  const sourceUrl = validatePublicUrl(input.sourceUrl, "Dailymotion source");
+  const title = String(input.title || "").trim().slice(0, 255);
+  const category = String(input.category || "").trim();
+  if (!title) throw new Error("Dailymotion title is required.");
+  if (!category) throw new Error("Dailymotion category is required.");
+
+  const visibility = input.visibility || "public";
+  if (!["public", "private", "password"].includes(visibility)) {
+    throw new Error("Invalid Dailymotion visibility.");
+  }
+  if (visibility === "password" && !String(input.password || "")) {
+    throw new Error("Dailymotion password is required for password visibility.");
+  }
+
+  const body = {
+    title,
+    category,
+    visibility,
+    is_for_kids: Boolean(input.isForKids),
+    source: { file_url: sourceUrl },
+    ...(input.description ? { description: String(input.description).slice(0, 5000) } : {}),
+    ...(Array.isArray(input.tags) ? { tags: input.tags.map(String).slice(0, 50) } : {}),
+    ...(visibility === "password" ? { password: String(input.password).slice(0, 128) } : {})
+  };
+
+  const response = await fetchImpl(
+    "https://api.dailymotion.com/v2/profiles/" + encodeURIComponent(profileId) + "/videos",
+    {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + token,
+        "content-type": "application/json",
+        accept: "application/json"
+      },
+      body: JSON.stringify(body)
+    }
+  );
+  const data = await readJson(response);
+  if (!response.ok || !data?.video_id) {
+    throw new Error("Dailymotion video creation failed: HTTP " + response.status);
+  }
+  return { status: "completed", tool: "dailymotion", data };
+}
+
 export async function executeInstagram(input, context, fetchImpl = fetch) {
   const token = context.instagramAccessToken;
   const igUserId = context.instagramUserId || input.igUserId;
