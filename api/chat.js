@@ -269,13 +269,21 @@ async function hubspotRequest(path, options = {}) {
 }
 
 function hubspotContactProperties(q, language, sessionId, origin) {
-  const properties = {
-    firstname: q.name ? q.name.split(/\\s+/)[0] : undefined,
+  const standard = {
+    firstname: q.name ? q.name.split(/\s+/)[0] : undefined,
     email: q.contact_method === "email" ? q.contact_value : undefined,
     phone: q.contact_method === "phone" || q.contact_method === "whatsapp" ? q.contact_value : undefined,
-    company: q.company || undefined,
-    jobtitle: undefined,
-    website: undefined,
+    company: q.company || undefined
+  };
+
+  if (process.env.HUBSPOT_USE_CUSTOM_PROPERTIES !== "true") {
+    return Object.fromEntries(
+      Object.entries(standard).filter(([, value]) => value !== undefined && value !== null && value !== "")
+    );
+  }
+
+  const properties = {
+    ...standard,
     abzemo_language: language || undefined,
     abzemo_contact_method: q.contact_method || undefined,
     abzemo_consent_to_contact: q.consent_to_contact === true ? "true" : "false",
@@ -372,7 +380,7 @@ async function hubspotCreateNote(contactId, dealId, lead, language, origin) {
     method: "POST",
     body: JSON.stringify({
       properties: {
-        hs_note_body: lines.join("\\n"),
+        hs_note_body: lines.join("\n"),
         hs_timestamp: new Date().toISOString()
       }
     })
