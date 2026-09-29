@@ -115,6 +115,30 @@ function isPrivateIp(host) {
   return host === "::1" || host.startsWith("fc") || host.startsWith("fd") || host.startsWith("fe80:");
 }
 
+const PINTEREST_ROOT = "https://api.pinterest.com/v5";
+
+export async function executePinterest(input, context, fetchImpl = fetch) {
+  const token = context.pinterestAccessToken;
+  const boardId = String(context.pinterestBoardId || input.boardId || "").trim();
+  if (!token || !boardId) return { status: "authorization_required", tool: "pinterest", message: "Connect Pinterest and select a board before publishing." };
+  const mediaUrl = validatePublicUrl(input.mediaUrl, "Pinterest media");
+  const mediaType = String(input.mediaType || "image").toLowerCase();
+  if (!["image", "video"].includes(mediaType)) throw new Error("Pinterest mediaType must be image or video.");
+  const body = {
+    board_id: boardId,
+    ...(input.title ? { title: String(input.title).slice(0, 100) } : {}),
+    ...(input.description ? { description: String(input.description).slice(0, 800) } : {}),
+    ...(input.link ? { link: validatePublicUrl(input.link, "Pinterest link") } : {}),
+    media_source: mediaType === "image" ? { source_type: "image_url", url: mediaUrl } : { source_type: "video_url", url: mediaUrl }
+  };
+  const response = await fetchImpl(PINTEREST_ROOT + "/pins", {
+    method: "POST", headers: { Authorization: "Bearer " + token, "Content-Type": "application/json" }, body: JSON.stringify(body)
+  });
+  const data = await readJson(response);
+  if (!response.ok || !data?.id) throw new Error("Pinterest Pin creation failed: HTTP " + response.status);
+  return { status: "completed", tool: "pinterest", data };
+}
+
 async function readJson(response) {
   const text = await response.text();
   try { return text ? JSON.parse(text) : {}; } catch { return { raw: text.slice(0, 2000) }; }
