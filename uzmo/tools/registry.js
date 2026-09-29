@@ -4,6 +4,7 @@ const TOOLS = [
   { id: "gmail", name: "Gmail", description: "Read and send email through an authorized Google Workspace connection.", capabilities: ["email", "mail"], integration: "google_workspace", requiresApproval: true },
   { id: "google_calendar", name: "Google Calendar", description: "Read and manage calendar events through an authorized Google Workspace connection.", capabilities: ["calendar", "meeting", "schedule"], integration: "google_workspace", requiresApproval: true },
   { id: "youtube", name: "YouTube", description: "Upload videos to an authorized YouTube channel.", capabilities: ["youtube", "video", "upload"], requiresApproval: true },
+  { id: "facebook_reel", name: "Facebook Reels", description: "Publish video Reels to an authorized Facebook Page.", capabilities: ["facebook", "reels", "video", "social", "publish"], requiresApproval: true },
   { id: "instagram", name: "Instagram", description: "Publish image posts to an authorized Instagram Business or Creator account.", capabilities: ["instagram", "social", "post", "publish"], requiresApproval: true },
   { id: "microsoft_365", name: "Microsoft 365", description: "Work with Outlook, Excel, OneDrive and Teams through an authorized connection.", capabilities: ["office", "excel", "word", "outlook", "teams"], integration: "microsoft_365" },
   { id: "webhook", name: "Webhook", description: "Call an HTTP webhook.", capabilities: ["webhook", "trigger", "api"], requiresApproval: true },

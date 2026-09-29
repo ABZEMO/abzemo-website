@@ -92,6 +92,56 @@ export async function executeInstagram(input, context, fetchImpl = fetch) {
   return { status: "completed", tool: "instagram", data: published };
 }
 
+export async function executeFacebookReel(input, context, fetchImpl = fetch) {
+  const token = context.facebookPageAccessToken;
+  const pageId = context.facebookPageId || input.pageId;
+  if (!token || !pageId) {
+    return { status: "authorization_required", tool: "facebook_reel", message: "Connect a Facebook Page before publishing a Reel." };
+  }
+
+  const videoUrl = validatePublicUrl(input.videoUrl, "Facebook Reel video");
+  const version = String(context.facebookGraphVersion || input.apiVersion || "v26.0");
+  const base = META_ROOT + "/" + version + "/" + encodeURIComponent(pageId) + "/video_reels";
+
+  const start = await fetchImpl(base, {
+    method: "POST",
+    headers: { "content-type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({ access_token: token, upload_phase: "start" })
+  });
+  const started = await readJson(start);
+  if (!start.ok || !started?.video_id || !started?.upload_url) {
+    throw new Error("Facebook Reel upload initialization failed: HTTP " + start.status);
+  }
+
+  const upload = await fetchImpl(started.upload_url, {
+    method: "POST",
+    headers: { Authorization: "OAuth " + token, file_url: videoUrl }
+  });
+  const uploaded = await readJson(upload);
+  if (!upload.ok || uploaded?.success !== true) {
+    throw new Error("Facebook Reel video upload failed: HTTP " + upload.status);
+  }
+
+  const finishParams = new URLSearchParams({
+    access_token: token,
+    video_id: started.video_id,
+    upload_phase: "finish",
+    video_state: input.videoState || "PUBLISHED",
+    ...(input.title ? { title: String(input.title).slice(0, 255) } : {}),
+    ...(input.description ? { description: String(input.description).slice(0, 10000) } : {})
+  });
+  if (!["DRAFT", "SCHEDULED", "PUBLISHED"].includes(finishParams.get("video_state"))) {
+    throw new Error("Invalid Facebook Reel videoState.");
+  }
+
+  const finish = await fetchImpl(base + "?" + finishParams.toString(), { method: "POST" });
+  const published = await readJson(finish);
+  if (!finish.ok || published?.success !== true) {
+    throw new Error("Facebook Reel publish failed: HTTP " + finish.status);
+  }
+  return { status: "completed", tool: "facebook_reel", data: { videoId: started.video_id, ...published } };
+}
+
 function validatePublicUrl(value, label) {
   if (typeof value !== "string" || !value.trim()) throw new Error(label + " URL is required.");
   const url = new URL(value.trim());
