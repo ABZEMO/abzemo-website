@@ -4,6 +4,7 @@ import { createGoogleConnectionStore } from "../integrations/google-connections.
 import { executeInstagram, executeYouTube } from "../integrations/social.js";
 import { executeHealthInformation } from "./health.js";
 import { executeEducationDiscovery } from "./education.js";
+import { executeLiveWebSearch } from "../integrations/web-search.js";
 
 const SAFE_METHODS = new Set(["GET", "HEAD", "OPTIONS"]);
 const SOCIAL_SIDE_EFFECTS = new Set(["youtube:upload", "instagram:publish"]);
@@ -48,6 +49,7 @@ export function createToolExecutor({ fetchImpl = fetch } = {}) {
       if (toolId === "instagram" && input.action === "publish") return executeInstagram(input, context, fetchImpl);
       if (toolId === "health_information") return executeHealthInformation(input);
       if (toolId === "education_discovery") return executeEducationDiscovery(input);
+      if (toolId === "web_search") return executeLiveWebSearch(input, context, fetchImpl);
       if (toolId === "webhook") return executeWebhook(fetchImpl, input, context);
       if (["gmail", "google_calendar", "google_drive", "google_sheets"].includes(toolId)) {
         return executeGoogle(toolId, input, context);
