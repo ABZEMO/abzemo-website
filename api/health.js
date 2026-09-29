@@ -1,15 +1,5 @@
-const ALLOWED_ORIGINS = new Set([
-  "https://abzemo.github.io",
-  "https://abzemo.com",
-  "https://www.abzemo.com",
-  ...(process.env.ABZEMO_ALLOWED_ORIGINS || "").split(",").map(x => x.trim()).filter(Boolean)
-]);
-
-export default async function handler(req) {
-  const origin = req.headers.get("origin") || "";
-  const allowed = ALLOWED_ORIGINS.has(origin) ? origin : "https://abzemo.github.io";
-
-  return new Response(JSON.stringify({
+export default async function handler(req, res) {
+  const payload = {
     ok: true,
     service: "ABZEMO AI Global Sales Agent",
     backend: "online",
@@ -22,13 +12,14 @@ export default async function handler(req) {
     hubspot_pipeline: process.env.HUBSPOT_PIPELINE || "default",
     hubspot_deal_stage: process.env.HUBSPOT_DEAL_STAGE || "appointmentscheduled",
     timestamp: new Date().toISOString()
-  }), {
+  };
+
+  if (res && typeof res.status === "function" && typeof res.json === "function") {
+    return res.status(200).json(payload);
+  }
+
+  return new Response(JSON.stringify(payload), {
     status: 200,
-    headers: {
-      "Access-Control-Allow-Origin": allowed,
-      "Access-Control-Allow-Methods": "GET, OPTIONS",
-      "Vary": "Origin",
-      "Content-Type": "application/json; charset=utf-8"
-    }
+    headers: { "Content-Type": "application/json; charset=utf-8" }
   });
 }
