@@ -42,7 +42,7 @@ export default {
       catch (error) { return json({ error: error.message || "Job execution failed" }, 500); }
     }
     if (url.pathname === "/api/jobs") {
-      try { return withCors(await handleJobs(request)); }
+      try { return withCors(await handleJobs(request, env)); }
       catch (error) { return json({ error: error.message || "Job request failed" }, 500); }
     }
     if (url.pathname === "/api/studio") {
