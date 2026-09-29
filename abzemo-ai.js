@@ -182,8 +182,10 @@
     const value = String(text || "").toLowerCase().trim();
     if (!value) return detectedLanguage;
 
-    const romanUrdu = /\b(mein|mujhe|mujhy|mera|meri|mere|ap|aap|aapko|kia|kya|kyun|kyu|hai|hain|ho|hoga|hogi|karna|karo|karen|chahta|chahti|chahiye|laga|lagta|samajh|samajh|batao|bata|kahan|kab|kaise|kaisa|yeh|ye|woh|wo|aur|lekin|phir|sirf|bhi|se|ko|ka|ki|ke|nahi|nahin|nhai|kr|krna|raha|rahi|rha|rhi)\b/;
-    const romanHindi = /\b(mera|meri|mere|mujhe|mujhko|aap|aapko|kya|kyun|hai|hain|ho|hoga|hogi|karna|karo|karen|chahiye|batao|kahan|kab|kaise|kaisa|yeh|ye|woh|aur|lekin|phir|nahi|nahin|raha|rahi)\b/;
+    const romanUrdu = /\b(mujhy|ap|kia|kyu|nhai|kr|krna|hain|aapko|batao|kahan|kaise|samajh|chahta|chahti|lagta|mein|mera|meri|mere)\b/;
+    const romanHindi = /\b(mujhko|kripya|sakta|sakti|sakte|wali|wale|bahut|kaafi|liye|log|aaplog|mujhse|tumse|hamara|hamari|hamare)\b/;
+    const romanUrduMatches = (value.match(romanUrdu) || []).length;
+    const romanHindiMatches = (value.match(romanHindi) || []).length;
     const arabic = /[\\u0600-\\u06ff]/;
     const devanagari = /[\\u0900-\\u097f]/;
     const cyrillic = /[\\u0400-\\u04ff]/;
@@ -195,8 +197,8 @@
     if (cyrillic.test(value)) return "ru";
     if (han.test(value)) return "zh";
     if (hangul.test(value)) return "ko";
-    if (romanUrdu.test(value)) return "ur-roman";
-    if (romanHindi.test(value)) return "hi-roman";
+    if (romanUrduMatches > romanHindiMatches && romanUrduMatches >= 1) return "ur-roman";
+    if (romanHindiMatches > romanUrduMatches && romanHindiMatches >= 1) return "hi-roman";
 
     return detectedLanguage;
   }
