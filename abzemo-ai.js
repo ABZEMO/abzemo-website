@@ -15,7 +15,7 @@
 (function () {
   "use strict";
 
-  const ABZEMO_AI_ENDPOINT = "YOUR_SECURE_BACKEND_ENDPOINT";
+  const ABZEMO_AI_ENDPOINT = "https://abzemo-website.vercel.app/api/chat";
 
   if (window.__ABZEMO_AI_WIDGET_LOADED__) return;
   window.__ABZEMO_AI_WIDGET_LOADED__ = true;
