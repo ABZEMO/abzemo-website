@@ -42,7 +42,12 @@ export function createToolExecutor({ fetchImpl = fetch } = {}) {
       if (SOCIAL_SIDE_EFFECTS.has(socialAction) && !context.approved) {
         return { status: "approval_required", tool: toolId, message: "Human approval is required before publishing social content." };
       }
-      if (toolId === "youtube" && input.action === "upload") {\n        return executeYouTube(input, {\n          ...context,\n          youtubeAccessToken: context.youtubeAccessToken || await loadGoogleAccessToken(context, env)\n        }, fetchImpl);\n      }
+      if (toolId === "youtube" && input.action === "upload") {
+        return executeYouTube(input, {
+          ...context,
+          youtubeAccessToken: context.youtubeAccessToken || await loadGoogleAccessToken(context, context.env || {})
+        }, fetchImpl);
+      }
       if (toolId === "instagram" && input.action === "publish") return executeInstagram(input, context, fetchImpl);
       if (toolId === "webhook") return executeWebhook(fetchImpl, input, context);
       if (["gmail", "google_calendar", "google_drive", "google_sheets"].includes(toolId)) {
@@ -115,7 +120,18 @@ async function executeHttpApi(fetchImpl, input, context) {
   };
 }
 
-async function loadGoogleAccessToken(context, env) {\n  if (!context.userId || !context.orgId) return null;\n  const google = createGoogleWorkspace(env);\n  if (!google.configured) return null;\n  return createGoogleConnectionStore(env).getAccessToken({ userId: context.userId, orgId: context.orgId, google });\n}\n\nasync function executeGoogle(toolId, input, context) {
+async function loadGoogleAccessToken(context, env) {
+  if (!context.userId || !context.orgId) return null;
+  const google = createGoogleWorkspace(env);
+  if (!google.configured) return null;
+  return createGoogleConnectionStore(env).getAccessToken({
+    userId: context.userId,
+    orgId: context.orgId,
+    google
+  });
+}
+
+async function executeGoogle(toolId, input, context) {
   const env = context.env || {};
   const google = createGoogleWorkspace(env);
   let accessToken = context.googleAccessToken;
