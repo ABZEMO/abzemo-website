@@ -7,7 +7,6 @@ const APPROVAL_TERMS = ["send", "publish", "delete", "purchase", "pay", "post", 
 export function buildPlan(rawGoal) {
   const goal = normalizeGoal(rawGoal);
   if (!goal) throw new Error("goal is required");
-
   const agents = selectAgents(goal);
   const tools = selectTools(goal, agents);
   const requiresApproval = APPROVAL_TERMS.some(term => goal.toLowerCase().includes(term));
