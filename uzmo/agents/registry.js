@@ -1,4 +1,5 @@
-const AGENTS = [\n  { id: "universal", name: "Universal Services Agent", capabilities: ["business", "legal", "hr", "sales", "marketing", "procurement", "projects", "education", "health", "science", "engineering", "software", "cybersecurity", "data", "documents", "communication", "social", "creative", "travel", "shopping", "real-estate", "government", "agriculture", "manufacturing", "energy", "language", "personal", "automation"] },\n
+const AGENTS = [\n  { id: "customs_law", name: "Global Customs and Law Agent", capabilities: ["customs", "hs", "hs-code", "pct", "tariff", "import", "export", "trade-law", "law", "legal", "corporate-law", "criminal-law", "industrial-law", "compliance", "jurisdictions"] },
+  { id: "universal", name: "Universal Services Agent", capabilities: ["business", "legal", "hr", "sales", "marketing", "procurement", "projects", "education", "health", "science", "engineering", "software", "cybersecurity", "data", "documents", "communication", "social", "creative", "travel", "shopping", "real-estate", "government", "agriculture", "manufacturing", "energy", "language", "personal", "automation"] },\n
   { id: "executive", name: "Executive Agent", capabilities: ["strategy", "briefing", "decision", "reporting"] },
   { id: "project", name: "Project Agent", capabilities: ["project", "tasks", "risks", "dependencies", "delivery"] },
   { id: "research", name: "Research Agent", capabilities: ["research", "sources", "web", "synthesis"] },
@@ -16,6 +17,7 @@ const AGENTS = [\n  { id: "universal", name: "Universal Services Agent", capabil
 ];
 
 const KEYWORDS = {
+  customs_law: ["customs", "hs code", "hs-code", "pct", "tariff", "import duty", "export", "trade law", "criminal law", "corporate law", "industrial law", "company law", "compliance"],
   executive: ["executive", "management", "ceo", "decision", "briefing"],
   project: ["project", "task", "milestone", "risk", "dependency"],
   research: ["research", "source", "investigate", "compare", "find"],
