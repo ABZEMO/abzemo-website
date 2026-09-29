@@ -2,6 +2,7 @@ import { buildPlan } from "../orchestrator/planner.js";
 import { createModelGateway } from "../core/model-gateway.js";
 import { handleRuntime } from "./runtime.js";
 import { handleSecurity } from "./security.js";
+import { handleMemory } from "./memory.js";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -13,7 +14,6 @@ export default {
   async fetch(request, env) {
     if (request.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
     const url = new URL(request.url);
-
     if (url.pathname === "/health") return json({ ok: true, service: "uzmo-api", version: "0.1.0" });
 
     if (url.pathname === "/api/plan" && request.method === "POST") {
@@ -21,29 +21,28 @@ export default {
       try { return json({ status: "planned", ...buildPlan(body.goal) }); }
       catch (error) { return json({ error: error.message || "Unable to build plan" }, 400); }
     }
-
+    if (url.pathname === "/api/memory") {
+      try { return withCors(await handleMemory(request, env)); }
+      catch (error) { return json({ error: error.message || "Memory request failed" }, 500); }
+    }
     if (url.pathname === "/api/runtime") {
       try { return withCors(await handleRuntime(request)); }
       catch (error) { return json({ error: error.message || "Runtime request failed" }, 500); }
     }
-
     if (url.pathname === "/api/security") {
       try { return withCors(await handleSecurity(request, env)); }
       catch (error) { return json({ error: error.message || "Security request failed" }, 500); }
     }
-
     if (url.pathname === "/api/model/status" && request.method === "GET") {
       const gateway = createModelGateway(env);
-      return json({ product: "UZMO", configured: gateway.configured });
+      return json({ product: "UZMO", configured: gateway.configured, providers: gateway.providers });
     }
-
     if (url.pathname === "/api/model/complete" && request.method === "POST") {
       const body = await request.json().catch(() => ({}));
-      if (!Array.isArray(body.messages) || body.messages.length === 0) return json({ error: "messages is required" }, 400);
+      if (!Array.isArray(body.messages) || !body.messages.length) return json({ error: "messages is required" }, 400);
       try { return json(await createModelGateway(env).complete(body.messages, body.options || {})); }
       catch (error) { return json({ error: error.message || "Model request failed" }, 502); }
     }
-
     return json({ error: "Not found" }, 404);
   }
 };
@@ -53,7 +52,6 @@ function withCors(response) {
   Object.entries(corsHeaders).forEach(([key, value]) => headers.set(key, value));
   return new Response(response.body, { status: response.status, headers });
 }
-
 function json(payload, status = 200) {
   return new Response(JSON.stringify(payload), { status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 }
