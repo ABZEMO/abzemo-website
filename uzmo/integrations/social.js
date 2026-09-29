@@ -119,3 +119,87 @@ async function readJson(response) {
   const text = await response.text();
   try { return text ? JSON.parse(text) : {}; } catch { return { raw: text.slice(0, 2000) }; }
 }
+
+
+const LINKEDIN_ROOT = "https://api.linkedin.com/rest";
+
+export async function executeLinkedIn(input, context, fetchImpl = fetch) {
+  const token = context.linkedinAccessToken;
+  const author = context.linkedinAuthorUrn || input.authorUrn;
+  if (!token || !author) {
+    return { status: "authorization_required", tool: "linkedin", message: "Connect LinkedIn before publishing." };
+  }
+  if (!/^urn:li:(member|organization):[A-Za-z0-9_-]+$/.test(author)) {
+    throw new Error("A valid LinkedIn member or organization author URN is required.");
+  }
+
+  const version = String(context.linkedinVersion || context.env?.LINKEDIN_VERSION || "202603");
+  if (!/^\d{6}$/.test(version)) throw new Error("LinkedIn API version must use YYYYMM format.");
+  const headers = {
+    Authorization: "Bearer " + token,
+    "Linkedin-Version": version,
+    "X-Restli-Protocol-Version": "2.0.0",
+    "Content-Type": "application/json"
+  };
+  const commentary = String(input.commentary || input.text || "").trim();
+  if (!commentary && !input.mediaUrl) throw new Error("LinkedIn commentary or mediaUrl is required.");
+  if (commentary.length > 3000) throw new Error("LinkedIn commentary exceeds the supported safety limit.");
+
+  const content = {};
+  if (input.mediaUrl) {
+    const mediaUrl = validatePublicUrl(input.mediaUrl, "LinkedIn media");
+    const source = await fetchImpl(mediaUrl);
+    if (!source.ok) throw new Error("LinkedIn media source returned HTTP " + source.status + ".");
+    const contentLength = Number(source.headers.get("content-length") || 0);
+    if (contentLength > 100 * 1024 * 1024) throw new Error("LinkedIn media exceeds the 100 MB safety limit.");
+
+    const init = await fetchImpl(LINKEDIN_ROOT + "/images?action=initializeUpload", {
+      method: "POST",
+      headers,
+      body: JSON.stringify({ initializeUploadRequest: { owner: author } })
+    });
+    const initialized = await readJson(init);
+    if (!init.ok || !initialized?.value?.uploadUrl || !initialized?.value?.image) {
+      throw new Error("LinkedIn image upload initialization failed: HTTP " + init.status);
+    }
+
+    const uploaded = await fetchImpl(initialized.value.uploadUrl, {
+      method: "PUT",
+      headers: { "Content-Type": source.headers.get("content-type") || "image/jpeg" },
+      body: await source.arrayBuffer()
+    });
+    if (!uploaded.ok) throw new Error("LinkedIn image upload failed: HTTP " + uploaded.status + ".");
+
+    content.media = {
+      id: initialized.value.image,
+      ...(input.altText ? { altText: String(input.altText).slice(0, 4086) } : {})
+    };
+  }
+
+  const post = {
+    author,
+    commentary,
+    visibility: "PUBLIC",
+    distribution: {
+      feedDistribution: "MAIN_FEED",
+      targetEntities: [],
+      thirdPartyDistributionChannels: []
+    },
+    lifecycleState: "PUBLISHED",
+    isReshareDisabledByAuthor: false,
+    ...(Object.keys(content).length ? { content } : {})
+  };
+
+  const response = await fetchImpl(LINKEDIN_ROOT + "/posts", {
+    method: "POST",
+    headers,
+    body: JSON.stringify(post)
+  });
+  const data = await readJson(response);
+  if (!response.ok) throw new Error("LinkedIn publish failed: HTTP " + response.status);
+  return {
+    status: "completed",
+    tool: "linkedin",
+    data: { ...data, postId: response.headers.get("x-restli-id") || data?.id || null }
+  };
+}
