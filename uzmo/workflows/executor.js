@@ -45,6 +45,7 @@ export async function executeJob(job, { workflowStore, jobStore, env = {} }) {
         ...(job.input?.context || {}),
         userId: job.input?.userId,
         orgId: job.input?.orgId,
+        approved,
         env
       },
       env
