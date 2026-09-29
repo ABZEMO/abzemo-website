@@ -92,7 +92,7 @@ export default {
       try { return json(await createModelGateway(env).complete(body.messages, body.options || {})); }
       catch (error) { return json({ error: error.message || "Model request failed" }, 502); }
     }
-    return json({ error: "Not found" }, 404);
+    return json({ error: "Not found" }, 404);\n  },\n  async scheduled(event, env, ctx) {\n    // Cron dispatch is intentionally delegated through the same scheduler API path.\n    await handleScheduler(new Request("https://uzmo.internal/api/scheduler", { method: "POST", body: JSON.stringify({ now: new Date(event.scheduledTime).toISOString() }), headers: { "content-type": "application/json" } }), env);\n  }
   }
 };
 
