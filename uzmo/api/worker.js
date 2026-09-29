@@ -8,6 +8,7 @@ import { handleIntegrations } from "./integrations.js";
 import { handleAgent } from "./agent.js";
 import { handleAutomations } from "./automations.js";
 import { handleStudio } from "./studio.js";
+import { handleStudioRun } from "./studio-run.js";
 import { handleJobs } from "./jobs.js";
 import { handleJobRun } from "./job-run.js";
 import { handleTriggers } from "./triggers.js";
@@ -44,6 +45,10 @@ export default {
     if (url.pathname === "/api/jobs") {
       try { return withCors(await handleJobs(request, env)); }
       catch (error) { return json({ error: error.message || "Job request failed" }, 500); }
+    }
+    if (url.pathname === "/api/studio/run") {
+      try { return withCors(await handleStudioRun(request, env)); }
+      catch (error) { return json({ error: error.message || "Studio run failed" }, 500); }
     }
     if (url.pathname === "/api/studio") {
       try { return withCors(await handleStudio(request)); }
