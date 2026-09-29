@@ -6,6 +6,7 @@ import { handleMemory } from "./memory.js";
 import { handleKnowledge } from "./knowledge.js";
 import { handleIntegrations } from "./integrations.js";
 import { handleAgent } from "./agent.js";
+import { handleAutomations } from "./automations.js";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -27,6 +28,10 @@ export default {
     if (url.pathname === "/api/agent") {
       try { return withCors(await handleAgent(request, env)); }
       catch (error) { return json({ error: error.message || "Agent request failed" }, 500); }
+    }
+    if (url.pathname === "/api/automations") {
+      try { return withCors(await handleAutomations(request)); }
+      catch (error) { return json({ error: error.message || "Automation request failed" }, 500); }
     }
     if (url.pathname === "/api/integrations" && request.method === "GET") {
       return withCors(await handleIntegrations(request));
