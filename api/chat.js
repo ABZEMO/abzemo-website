@@ -378,22 +378,23 @@ export default async function handler(req) {
 
   const lead = {
     session_id: sessionId,
-    handoff_ready: leadState.handoff_ready,
+    handoff_ready: actualHandoffReady,
     qualification: leadState.qualification
   };
 
   const persistence = await persistLeadIfConfigured(lead, origin);
+  const actualHandoffReady = leadState.handoff_ready && persistence.persisted;
 
   return json(
     {
       reply: modelResult.reply.trim(),
       lead_status: leadState.status,
       handoff_ready: leadState.handoff_ready,
-      lead_state: leadState,
+      lead_state: { ...leadState, handoff_ready: actualHandoffReady },
       qualification: leadState.qualification,
       internal_record_language: "en",
       session_id: sessionId,
-      lead_persistence: persistence.persisted ? "stored" : "not_configured"
+      lead_persistence: persistence.persisted ? "stored" : persistence.attempted ? "failed" : "not_configured"
     },
     200,
     origin
