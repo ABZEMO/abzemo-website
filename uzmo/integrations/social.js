@@ -92,6 +92,25 @@ export async function executeInstagram(input, context, fetchImpl = fetch) {
   return { status: "completed", tool: "instagram", data: published };
 }
 
+const DISCORD_ROOT = "https://discord.com/api/v10";
+
+export async function executeDiscord(input, context, fetchImpl = fetch) {
+  const token = context.discordBotToken;
+  const channelId = context.discordChannelId || input.channelId;
+  if (!token || !channelId) return { status: "authorization_required", tool: "discord", message: "Connect a Discord bot and target channel before publishing." };
+  const content = String(input.content || "").trim();
+  if (!content) throw new Error("Discord message content is required.");
+  if (content.length > 2000) throw new Error("Discord message exceeds the 2000-character limit.");
+  const response = await fetchImpl(DISCORD_ROOT + "/channels/" + encodeURIComponent(channelId) + "/messages", {
+    method: "POST",
+    headers: { Authorization: "Bot " + token, "Content-Type": "application/json" },
+    body: JSON.stringify({ content })
+  });
+  const data = await readJson(response);
+  if (!response.ok || !data?.id) throw new Error("Discord message failed: HTTP " + response.status);
+  return { status: "completed", tool: "discord", data };
+}
+
 function validatePublicUrl(value, label) {
   if (typeof value !== "string" || !value.trim()) throw new Error(label + " URL is required.");
   const url = new URL(value.trim());
