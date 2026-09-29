@@ -56,6 +56,37 @@ export async function executeYouTube(input, context, fetchImpl = fetch) {
   return { status: "completed", tool: "youtube", data };
 }
 
+export async function executeTikTok(input, context, fetchImpl = fetch) {
+  const token = context.tiktokAccessToken;
+  const mode = String(input.mode || "direct");
+  if (!token) return { status: "authorization_required", tool: "tiktok", message: "Connect TikTok before publishing." };
+  if (!["direct", "draft"].includes(mode)) throw new Error("Invalid TikTok publishing mode.");
+  const mediaType = String(input.mediaType || "video");
+  const mediaUrl = validatePublicUrl(input.mediaUrl, "TikTok media");
+  if (!["video", "photo"].includes(mediaType)) throw new Error("TikTok mediaType must be video or photo.");
+  const creator = await fetchImpl("https://open.tiktokapis.com/v2/post/publish/creator_info/query/", {
+    method: "POST", headers: { Authorization: "Bearer " + token, "Content-Type": "application/json" }
+  });
+  const creatorData = await readJson(creator);
+  if (!creator.ok || creatorData?.error?.code && creatorData.error.code !== "ok") throw new Error("TikTok creator info query failed: HTTP " + creator.status);
+  const privacy = input.privacyLevel || creatorData?.data?.privacy_level_options?.[0];
+  if (!privacy || creatorData?.data?.privacy_level_options && !creatorData.data.privacy_level_options.includes(privacy)) throw new Error("Invalid TikTok privacy level.");
+  const postInfo = { title: String(input.caption || input.title || "").slice(0, 2200), privacy_level: privacy, is_aigc: Boolean(input.isAigc) };
+  let body;
+  let endpoint;
+  if (mediaType === "photo") {
+    body = { post_info: postInfo, source_info: { source: "PULL_FROM_URL", photo_images: [mediaUrl] }, post_mode: mode === "direct" ? "DIRECT_POST" : "MEDIA_UPLOAD", media_type: "PHOTO" };
+    endpoint = "https://open.tiktokapis.com/v2/post/publish/content/init/";
+  } else {
+    body = { post_info: postInfo, source_info: { source: "PULL_FROM_URL", video_url: mediaUrl } };
+    endpoint = mode === "direct" ? "https://open.tiktokapis.com/v2/post/publish/video/init/" : "https://open.tiktokapis.com/v2/post/publish/inbox/video/init/";
+  }
+  const init = await fetchImpl(endpoint, { method: "POST", headers: { Authorization: "Bearer " + token, "Content-Type": "application/json; charset=UTF-8" }, body: JSON.stringify(body) });
+  const data = await readJson(init);
+  if (!init.ok || !data?.data?.publish_id) throw new Error("TikTok publish initialization failed: HTTP " + init.status);
+  return { status: "completed", tool: "tiktok", data };
+}
+
 export async function executeInstagram(input, context, fetchImpl = fetch) {
   const token = context.instagramAccessToken;
   const igUserId = context.instagramUserId || input.igUserId;
