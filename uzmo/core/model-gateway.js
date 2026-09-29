@@ -90,3 +90,62 @@ async function request(fetchImpl, endpoint, key, body, extraHeaders = {}) {
     throw error;
   } finally { if (timer) clearTimeout(timer); }
 }
+
+
+function parseToolResultMessage(message) {
+  if (message?.role !== "user" || typeof message.content !== "string") return null;
+  try {
+    const parsed = JSON.parse(message.content);
+    return parsed?.tool_result || null;
+  } catch {
+    return null;
+  }
+}
+
+function toOpenAIMessages(messages) {
+  return (messages || []).map(message => {
+    const result = parseToolResultMessage(message);
+    if (result) return { role: "tool", tool_call_id: result.call_id || "", content: JSON.stringify(result.result ?? {}) };
+    if (message?.role === "assistant" && Array.isArray(message.tool_calls)) {
+      return {
+        role: "assistant",
+        content: message.content || null,
+        tool_calls: message.tool_calls.map(call => ({
+          id: call.id,
+          type: "function",
+          function: { name: call.name, arguments: JSON.stringify(call.arguments || {}) }
+        }))
+      };
+    }
+    return { role: message.role, content: message.content };
+  });
+}
+
+function toAnthropicMessages(messages) {
+  return (messages || []).filter(message => message?.role !== "system").map(message => {
+    const result = parseToolResultMessage(message);
+    if (result) {
+      return { role: "user", content: [{ type: "tool_result", tool_use_id: result.call_id || "", content: JSON.stringify(result.result ?? {}) }] };
+    }
+    if (message?.role === "assistant" && Array.isArray(message.tool_calls)) {
+      const content = [];
+      if (message.content) content.push({ type: "text", text: message.content });
+      for (const call of message.tool_calls) content.push({ type: "tool_use", id: call.id, name: call.name, input: call.arguments || {} });
+      return { role: "assistant", content };
+    }
+    return { role: message.role === "assistant" ? "assistant" : "user", content: message.content || "" };
+  });
+}
+
+function toGeminiMessages(messages) {
+  return (messages || []).filter(message => message?.role !== "system").map(message => {
+    const result = parseToolResultMessage(message);
+    if (result) {
+      return { role: "user", parts: [{ functionResponse: { name: result.tool || "uzmo_tool", response: result.result ?? {} } }] };
+    }
+    if (message?.role === "assistant" && Array.isArray(message.tool_calls)) {
+      return { role: "model", parts: message.tool_calls.map(call => ({ functionCall: { name: call.name, args: call.arguments || {} } })) };
+    }
+    return { role: message.role === "assistant" ? "model" : "user", parts: [{ text: String(message.content ?? "") }] };
+  });
+}
