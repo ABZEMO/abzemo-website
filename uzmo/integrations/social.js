@@ -92,6 +92,30 @@ export async function executeInstagram(input, context, fetchImpl = fetch) {
   return { status: "completed", tool: "instagram", data: published };
 }
 
+export async function executeBluesky(input, context, fetchImpl = fetch) {
+  const token = context.blueskyAccessToken;
+  const service = String(context.blueskyServiceUrl || input.serviceUrl || "https://bsky.social").trim().replace(/\/$/, "");
+  const repoDid = context.blueskyRepoDid || input.repoDid;
+  if (!token || !repoDid) return { status: "authorization_required", tool: "bluesky", message: "Connect a Bluesky account before publishing." };
+  const text = String(input.text || "").trim();
+  if (!text) throw new Error("Bluesky post text is required.");
+  if (Array.from(text).length > 300) throw new Error("Bluesky post exceeds the 300-character safety limit.");
+  const record = {
+    $type: "app.bsky.feed.post",
+    text,
+    createdAt: new Date().toISOString()
+  };
+  if (Array.isArray(input.langs) && input.langs.length) record.langs = input.langs.map(String);
+  const response = await fetchImpl(service + "/xrpc/com.atproto.repo.createRecord", {
+    method: "POST",
+    headers: { Authorization: "Bearer " + token, "Content-Type": "application/json" },
+    body: JSON.stringify({ repo: repoDid, collection: "app.bsky.feed.post", record })
+  });
+  const data = await readJson(response);
+  if (!response.ok || !data?.uri) throw new Error("Bluesky post failed: HTTP " + response.status);
+  return { status: "completed", tool: "bluesky", data };
+}
+
 function validatePublicUrl(value, label) {
   if (typeof value !== "string" || !value.trim()) throw new Error(label + " URL is required.");
   const url = new URL(value.trim());
