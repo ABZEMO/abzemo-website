@@ -4,6 +4,7 @@ import { handleRuntime } from "./runtime.js";
 import { handleSecurity } from "./security.js";
 import { handleMemory } from "./memory.js";
 import { handleKnowledge } from "./knowledge.js";
+import { handleIntegrations } from "./integrations.js";
 import { handleAgent } from "./agent.js";
 
 const corsHeaders = {
@@ -26,6 +27,9 @@ export default {
     if (url.pathname === "/api/agent") {
       try { return withCors(await handleAgent(request, env)); }
       catch (error) { return json({ error: error.message || "Agent request failed" }, 500); }
+    }
+    if (url.pathname === "/api/integrations" && request.method === "GET") {
+      return withCors(await handleIntegrations(request));
     }
     if (url.pathname === "/api/knowledge") {
       try { return withCors(await handleKnowledge(request, env)); }
