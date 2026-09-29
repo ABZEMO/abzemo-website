@@ -92,6 +92,57 @@ export async function executeInstagram(input, context, fetchImpl = fetch) {
   return { status: "completed", tool: "instagram", data: published };
 }
 
+
+export async function executeThreads(input, context, fetchImpl = fetch) {
+  const token = context.threadsAccessToken;
+  const userId = context.threadsUserId || input.userId;
+  if (!token || !userId) return { status: "authorization_required", tool: "threads", message: "Connect a Threads account before publishing." };
+
+  const version = String(context.threadsGraphVersion || "v1.0").replace(/^\/+|\/+$/g, "");
+  const root = "https://graph.threads.net/" + version + "/" + encodeURIComponent(userId);
+  const mediaType = String(input.mediaType || "TEXT").toUpperCase();
+  if (!["TEXT", "IMAGE", "VIDEO"].includes(mediaType)) throw new Error("Unsupported Threads mediaType.");
+
+  const params = new URLSearchParams({
+    media_type: mediaType,
+    ...(input.text ? { text: String(input.text).slice(0, 500) } : {}),
+    ...(input.imageUrl ? { image_url: validatePublicUrl(input.imageUrl, "Threads image") } : {}),
+    ...(input.videoUrl ? { video_url: validatePublicUrl(input.videoUrl, "Threads video") } : {}),
+    ...(input.altText ? { alt_text: String(input.altText).slice(0, 1000) } : {}),
+    access_token: token
+  });
+  if (mediaType === "TEXT" && !input.text && !input.linkAttachment) throw new Error("Threads text or linkAttachment is required.");
+  if (mediaType === "IMAGE" && !input.imageUrl) throw new Error("Threads imageUrl is required.");
+  if (mediaType === "VIDEO" && !input.videoUrl) throw new Error("Threads videoUrl is required.");
+  if (input.linkAttachment) params.set("link_attachment", validatePublicUrl(input.linkAttachment, "Threads link"));
+
+  const create = await fetchImpl(root + "/threads?" + params.toString(), { method: "POST" });
+  const created = await readJson(create);
+  if (!create.ok || !created?.id) throw new Error("Threads container creation failed: HTTP " + create.status);
+
+  if (mediaType === "VIDEO") {
+    const attempts = Math.min(Math.max(Number(input.statusAttempts || 8), 1), 12);
+    let status = "IN_PROGRESS";
+    for (let i = 0; i < attempts; i++) {
+      const response = await fetchImpl("https://graph.threads.net/" + version + "/" + encodeURIComponent(created.id) +
+        "?fields=id,status,error_message&access_token=" + encodeURIComponent(token));
+      const data = await readJson(response);
+      if (!response.ok) throw new Error("Threads container status check failed: HTTP " + response.status);
+      status = data?.status || "IN_PROGRESS";
+      if (status === "FINISHED") break;
+      if (status === "ERROR" || status === "EXPIRED") throw new Error("Threads container processing failed: " + status);
+      await new Promise(resolve => setTimeout(resolve, Math.min(Number(input.statusDelayMs || 1500), 5000)));
+    }
+    if (status !== "FINISHED") throw new Error("Threads video container did not reach FINISHED status.");
+  }
+
+  const publish = await fetchImpl(root + "/threads_publish?creation_id=" + encodeURIComponent(created.id) +
+    "&access_token=" + encodeURIComponent(token), { method: "POST" });
+  const published = await readJson(publish);
+  if (!publish.ok || !published?.id) throw new Error("Threads publish failed: HTTP " + publish.status);
+  return { status: "completed", tool: "threads", data: published };
+}
+
 function validatePublicUrl(value, label) {
   if (typeof value !== "string" || !value.trim()) throw new Error(label + " URL is required.");
   const url = new URL(value.trim());
