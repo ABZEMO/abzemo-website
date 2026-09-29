@@ -119,3 +119,46 @@ async function readJson(response) {
   const text = await response.text();
   try { return text ? JSON.parse(text) : {}; } catch { return { raw: text.slice(0, 2000) }; }
 }
+
+export async function executeGitHubIssue(input, context, fetchImpl = fetch) {
+  const token = context.githubAccessToken;
+  const repository = String(context.githubRepository || input.repository || "").trim();
+  if (!token || !repository) {
+    return { status: "authorization_required", tool: "github_issues", message: "Connect GitHub and provide a target repository before creating an issue." };
+  }
+  const match = repository.match(/^([^/]+)\/([^/]+)$/);
+  if (!match) throw new Error("GitHub repository must use owner/name format.");
+
+  const title = String(input.title || "").trim();
+  const body = input.body == null ? "" : String(input.body);
+  if (!title) throw new Error("GitHub issue title is required.");
+  if (title.length > 300) throw new Error("GitHub issue title exceeds 300 characters.");
+  if (body.length > 65536) throw new Error("GitHub issue body exceeds 65536 characters.");
+
+  const payload = { title, body };
+  if (Array.isArray(input.labels)) payload.labels = input.labels.map(String).slice(0, 100);
+  if (Array.isArray(input.assignees)) payload.assignees = input.assignees.map(String).slice(0, 100);
+
+  const response = await fetchImpl(
+    "https://api.github.com/repos/" + encodeURIComponent(match[1]) + "/" + encodeURIComponent(match[2]) + "/issues",
+    {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + token,
+        Accept: "application/vnd.github+json",
+        "X-GitHub-Api-Version": String(context.githubApiVersion || "2026-03-10"),
+        "content-type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    }
+  );
+  const data = await readJson(response);
+  if (!response.ok || !data?.number) {
+    throw new Error("GitHub issue creation failed: HTTP " + response.status);
+  }
+  return {
+    status: "completed",
+    tool: "github_issues",
+    data: { number: data.number, id: data.id, title: data.title, url: data.html_url }
+  };
+}
