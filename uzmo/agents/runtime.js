@@ -13,46 +13,68 @@ export function createAgentRuntime({ modelGateway, toolExecutor = createToolExec
       const emit = event => { const value = { timestamp: new Date().toISOString(), ...event }; events.push(value); onEvent(value); };
       emit({ type: "runtime.started", goal });
 
-      if (!plan?.steps?.length) { emit({ type: "runtime.completed" }); return { status: "completed", events }; }
-      if (plan.requiresApproval && !context.approved) { emit({ type: "approval.required" }); return { status: "approval_required", events, plan }; }
+      if (plan?.requiresApproval && !context.approved) {
+        emit({ type: "approval.required" });
+        return { status: "approval_required", events, plan };
+      }
 
       const results = [];
       const messages = [
-        { role: "system", content: "You are UZMO, a tool-using agent orchestrator. Never claim an action succeeded unless its tool result confirms it." },
+        { role: "system", content: "You are UZMO, a tool-using agent orchestrator. Use tools when they are needed. Never claim an action succeeded unless its tool result confirms it." },
         ...(Array.isArray(context.messages) ? context.messages.slice(-12) : []),
         { role: "user", content: goal }
       ];
       const schemas = toolSchemas();
 
-      for (let index = 0; index < Math.min(plan.steps.length, maxSteps); index += 1) {
-        const step = plan.steps[index];
-        emit({ type: "step.started", step: step.id, tool: step.tool || null });
-        if (step.tool) {
-          const result = await toolExecutor.execute(step.tool, step.input || {}, context);
-          results.push({ step: step.id, tool: step.tool, result });
-          emit({ type: "tool.completed", step: step.id, tool: step.tool, status: result.status });
-          if (result.status === "approval_required" || result.status === "failed") {
-            emit({ type: "runtime.stopped", status: result.status });
-            return { status: result.status, events, results, verification: verifyExecution({ goal, results }) };
-          }
-        }
-      }
-
       if (!gateway.configured) {
-        emit({ type: "runtime.completed" });
+        emit({ type: "runtime.completed", reason: "model_not_configured" });
         return { status: "completed", events, results, verification: verifyExecution({ goal, results }) };
       }
 
-      const completion = await gateway.complete(
-        [...messages, { role: "user", content: JSON.stringify(results) }],
-        { provider: context.provider, tools: schemas }
-      );
-      emit({ type: "model.completed", provider: completion.provider, model: completion.model, tool_calls: completion.tool_calls?.length || 0 });
+      let completion = null;
+      for (let step = 0; step < maxSteps; step += 1) {
+        emit({ type: "model.requested", step: step + 1 });
+        completion = await gateway.complete(messages, { provider: context.provider, tools: schemas, tool_choice: "auto" });
+        const calls = completion.tool_calls || [];
+        emit({ type: "model.completed", step: step + 1, provider: completion.provider, model: completion.model, tool_calls: calls.length });
 
-      const verification = verifyExecution({ goal, results, response: completion.text });
+        if (!calls.length) break;
+
+        for (const call of calls) {
+          if (!call?.name) continue;
+          emit({ type: "tool.requested", step: step + 1, tool: call.name, call_id: call.id || null });
+          const result = await toolExecutor.execute(call.name, call.arguments || {}, context);
+          results.push({ step: step + 1, call_id: call.id || null, tool: call.name, input: call.arguments || {}, result });
+          emit({ type: "tool.completed", step: step + 1, tool: call.name, status: result.status, call_id: call.id || null });
+
+          if (result.status === "approval_required" || result.status === "failed") {
+            emit({ type: "runtime.stopped", status: result.status });
+            return { status: result.status, events, results, response: completion.text || "", verification: verifyExecution({ goal, results, response: completion.text }) };
+          }
+
+          messages.push({
+            role: "assistant",
+            content: completion.text || "",
+            tool_calls: calls.map(item => ({ id: item.id, name: item.name, arguments: item.arguments || {} }))
+          });
+          messages.push({
+            role: "user",
+            content: JSON.stringify({ tool_result: { call_id: call.id || null, tool: call.name, result } })
+          });
+        }
+      }
+
+      const verification = verifyExecution({ goal, results, response: completion?.text || "" });
       emit({ type: "runtime.verified", verified: verification.verified });
-      emit({ type: "runtime.completed" });
-      return { status: "completed", events, results, response: completion.text, tool_calls: completion.tool_calls || [], verification };
+      emit({ type: "runtime.completed", steps: results.length });
+      return {
+        status: "completed",
+        events,
+        results,
+        response: completion?.text || "",
+        tool_calls: results.map(item => ({ id: item.call_id, name: item.tool, arguments: item.input })),
+        verification
+      };
     }
   };
 }
