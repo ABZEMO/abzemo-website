@@ -7,22 +7,46 @@ export async function handleJobs(request, env) {
   if (!access.ok) return access.response;
 
   const stores = createRuntimeStores(env);
+
   if (request.method === "GET") {
-    const jobs = (await stores.jobs.list()).filter(job => job.input?.orgId === access.session.orgId);
+    const jobs = (await stores.jobs.list()).filter(job =>
+      job.input?.orgId === access.session.orgId &&
+      job.input?.userId === access.session.userId
+    );
     return json({ jobs, persistence: stores.durable ? "d1" : "memory" });
   }
+
   if (request.method !== "POST") return json({ error: "GET or POST required" }, 405);
 
   const body = await request.json().catch(() => ({}));
-  body.input = { ...(body.input || {}), userId: access.session.userId, orgId: access.session.orgId };
-  try {
-    const job = createJob(body);
-    await stores.jobs.put(job);
-    return json({ status: "queued", job, persistence: stores.durable ? "d1" : "memory" }, 202);
-  } catch (error) {
-    return json({ error: error.message || "Unable to create job" }, 400);
+  if (!body.workflowId || typeof body.workflowId !== "string") {
+    return json({ error: "workflowId is required" }, 400);
   }
+
+  const workflow = await stores.workflows.get(body.workflowId, access.session.orgId);
+  if (!workflow) return json({ error: "Workflow not found" }, 404);
+
+  const job = createJob({
+    workflowId: workflow.id,
+    input: {
+      ...(body.input || {}),
+      userId: access.session.userId,
+      orgId: access.session.orgId
+    },
+    scheduledFor: body.scheduledFor || null,
+    scheduleKey: body.scheduleKey || null
+  });
+
+  await stores.jobs.put(job);
+  return json({
+    status: "queued",
+    job,
+    persistence: stores.durable ? "d1" : "memory"
+  }, 202);
 }
 function json(payload, status = 200) {
-  return new Response(JSON.stringify(payload), { status, headers: { "Content-Type": "application/json" } });
+  return new Response(JSON.stringify(payload), {
+    status,
+    headers: { "Content-Type": "application/json" }
+  });
 }

@@ -4,25 +4,40 @@ import { authenticateRequest, requirePermission } from "../auth/request-auth.js"
 
 export async function handleSecurity(request, env) {
   if (request.method !== "POST") return json({ error: "POST required" }, 405);
-  const body = await request.json().catch(() => ({}));
+
   const session = await authenticateRequest(request, env);
   if (!session) return json({ error: "Authentication required." }, 401);
-  const role = session.role;
+
+  const body = await request.json().catch(() => ({}));
   const action = body.action || "permissions";
 
-  if (action === "permissions") return json({ role, permissions: [] });
-  if (action === "check") return json({ allowed: can(role, body.permission || "read") });
-
-  if (action === "memory.list") {
-    const auth = requirePermission(session, "read", can);\n    if (!auth.ok) return json({ error: auth.error }, auth.status);
-    return json({ items: await createPersistentMemory(env).list({ userId: body.userId, orgId: body.orgId }) });
+  if (action === "permissions") {
+    return json({ role: session.role, permissions: permissionsForRole(session.role) });
   }
 
-  if (action === "memory.put") {
-    if (!can(role, "read")) return json({ error: "forbidden" }, 403);
-    return json(await createPersistentMemory(env).put({
-      user_id: body.userId,
-      org_id: body.orgId,
+  if (action === "check") {
+    return json({ allowed: can(session.role, body.permission || "read") });
+  }
+
+  if (action === "memory.list" || action === "memory.put") {
+    const permission = requirePermission(session, "read", can);
+    if (!permission.ok) return json({ error: permission.error }, permission.status);
+
+    const memory = createPersistentMemory(env);
+    if (!memory.configured) return json({ status: "unconfigured", message: "UZMO_DB is not configured." }, 503);
+
+    if (action === "memory.list") {
+      return json({
+        items: await memory.list({
+          userId: session.userId,
+          orgId: session.orgId
+        })
+      });
+    }
+
+    return json(await memory.put({
+      user_id: session.userId,
+      org_id: session.orgId,
       kind: body.kind,
       content: body.content,
       metadata: body.metadata
@@ -32,6 +47,14 @@ export async function handleSecurity(request, env) {
   return json({ error: "Unknown security action" }, 400);
 }
 
+function permissionsForRole(role) {
+  return ["read", "execute_safe", "manage_agents", "manage_integrations", "approve", "manage_users", "manage_security"]
+    .filter(permission => can(role, permission));
+}
+
 function json(data, status = 200) {
-  return new Response(JSON.stringify(data), { status, headers: { "content-type": "application/json" } });
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: { "content-type": "application/json" }
+  });
 }

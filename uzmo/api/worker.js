@@ -24,11 +24,10 @@ function getCorsHeaders(env, request) {
     .map(origin => origin.trim())
     .filter(Boolean);
   const requestOrigin = request.headers.get("Origin");
-  const origin = requestOrigin && configured.includes(requestOrigin)
-    ? requestOrigin
-    : configured[0] || "https://abzemo.com";
+  const allowed = !requestOrigin || configured.includes(requestOrigin);
+  const origin = allowed ? (requestOrigin || configured[0] || "https://abzemo.com") : null;
   return {
-    "Access-Control-Allow-Origin": origin,
+    ...(origin ? {"Access-Control-Allow-Origin": origin} : {}),
     "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type, Authorization",
     "Vary": "Origin"
@@ -59,71 +58,71 @@ export default {
     }
 
     if (url.pathname === "/api/agent") {
-      try { return withCors(await handleAgent(request, env, corsHeaders)); }
+      try { return withCors(await handleAgent(request, env)); }
       catch (error) { return respond({ error: error.message || "Agent request failed" }, 500); }
     }
 
     if (url.pathname === "/api/triggers") {
-      try { return withCors(await handleTriggers(request, corsHeaders)); }
+      try { return withCors(await handleTriggers(request, env)); }
       catch (error) { return respond({ error: error.message || "Trigger request failed" }, 500); }
     }
 
     if (url.pathname === "/api/job-run") {
-      try { return withCors(await handleJobRun(request, env, corsHeaders)); }
+      try { return withCors(await handleJobRun(request, env)); }
       catch (error) { return respond({ error: error.message || "Job execution failed" }, 500); }
     }
 
     if (url.pathname === "/api/jobs") {
-      try { return withCors(await handleJobs(request, env, corsHeaders)); }
+      try { return withCors(await handleJobs(request, env)); }
       catch (error) { return respond({ error: error.message || "Job request failed" }, 500); }
     }
 
     if (url.pathname === "/api/scheduler") {
-      try { return withCors(await handleScheduler(request, env, corsHeaders)); }
+      try { return withCors(await handleScheduler(request, env)); }
       catch (error) { return respond({ error: error.message || "Scheduler failed" }, 500); }
     }
 
     if (url.pathname === "/api/studio/run") {
-      try { return withCors(await handleStudioRun(request, env, corsHeaders)); }
+      try { return withCors(await handleStudioRun(request, env)); }
       catch (error) { return respond({ error: error.message || "Studio run failed" }, 500); }
     }
 
     if (url.pathname === "/api/studio") {
-      try { return withCors(await handleStudio(request, corsHeaders)); }
+      try { return withCors(await handleStudio(request, env)); }
       catch (error) { return respond({ error: error.message || "Studio request failed" }, 500); }
     }
 
     if (url.pathname === "/api/automations") {
-      try { return withCors(await handleAutomations(request, corsHeaders)); }
+      try { return withCors(await handleAutomations(request, env)); }
       catch (error) { return respond({ error: error.message || "Automation request failed" }, 500); }
     }
 
     if (url.pathname.startsWith("/api/integrations/google/oauth")) {
-      try { return withCors(await handleGoogleOAuth(request, env, corsHeaders)); }
+      try { return withCors(await handleGoogleOAuth(request, env)); }
       catch (error) { return respond({ error: error.message || "Google OAuth failed" }, 500); }
     }
 
     if (url.pathname === "/api/integrations" && request.method === "GET") {
-      return withCors(await handleIntegrations(request, corsHeaders));
+      return withCors(await handleIntegrations(request));
     }
 
     if (url.pathname === "/api/knowledge") {
-      try { return withCors(await handleKnowledge(request, env, corsHeaders)); }
+      try { return withCors(await handleKnowledge(request, env)); }
       catch (error) { return respond({ error: error.message || "Knowledge request failed" }, 500); }
     }
 
     if (url.pathname === "/api/memory") {
-      try { return withCors(await handleMemory(request, env, corsHeaders)); }
+      try { return withCors(await handleMemory(request, env)); }
       catch (error) { return respond({ error: error.message || "Memory request failed" }, 500); }
     }
 
     if (url.pathname === "/api/runtime") {
-      try { return withCors(await handleRuntime(request, env, corsHeaders)); }
+      try { return withCors(await handleRuntime(request, env)); }
       catch (error) { return respond({ error: error.message || "Runtime request failed" }, 500); }
     }
 
     if (url.pathname === "/api/security") {
-      try { return withCors(await handleSecurity(request, env, corsHeaders)); }
+      try { return withCors(await handleSecurity(request, env)); }
       catch (error) { return respond({ error: error.message || "Security request failed" }, 500); }
     }
 

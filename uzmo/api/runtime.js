@@ -1,61 +1,116 @@
 import { buildPlan } from "../orchestrator/planner.js";
-import { createWorkflowRunner } from "../workflows/runner.js";
-import { createApprovalRequest } from "../core/approval.js";
-import { createMemoryStore } from "../memory/store.js";
+import { createApprovalRequest, requiresHumanApproval } from "../core/approval.js";
+import { createWorkflowDefinition } from "../workflows/definition.js";
+import { createJob } from "../workflows/jobs.js";
+import { createRuntimeStores } from "../workflows/runtime-stores.js";
+import { createApprovalStore } from "../workflows/approval-store.js";
+import { audit } from "../auth/audit.js";
 import { guard } from "../auth/runtime-guard.js";
-
-const memory = createMemoryStore();
-const runner = createWorkflowRunner();
 
 export async function handleRuntime(request, env) {
   const access = await guard(request, env, "execute_safe");
   if (!access.ok) return access.response;
-
   if (request.method !== "POST") return json({ error: "POST required" }, 405);
 
   const body = await request.json().catch(() => ({}));
   const action = body.action || "plan";
-  const userId = access.session.userId;
 
   if (action === "plan") {
-    const plan = buildPlan(body.goal || "");
-    return json({ status: "planned", plan });
+    const goal = normalizeGoal(body.goal);
+    if (!goal) return json({ error: "goal is required" }, 400);
+    return json({ status: "planned", plan: buildPlan(goal) });
   }
 
   if (action === "execute") {
-    const plan = body.plan || buildPlan(body.goal || "");
-    const result = await runner.run(plan, {
-      approved: body.approved === true,
-      userId
+    const goal = normalizeGoal(body.goal);
+    if (!goal) return json({ error: "goal is required; client-supplied plans are not accepted" }, 400);
+
+    const plan = buildPlan(goal);
+    if (requiresHumanApproval(plan)) {
+      return json({
+        status: "approval_required",
+        approval: await persistApproval(env, access.session.orgId, access.session.userId, goal, plan)
+      }, 202);
+    }
+
+    const stores = createRuntimeStores(env);
+    const workflow = createWorkflowDefinition({
+      id: crypto.randomUUID(),
+      name: plan.goal,
+      orgId: access.session.orgId,
+      trigger: { type: "manual" },
+      steps: []
     });
-    return json(result);
+    await stores.workflows.put(workflow);
+
+    const job = createJob({
+      workflowId: workflow.id,
+      input: {
+        goal: plan.goal,
+        userId: access.session.userId,
+        orgId: access.session.orgId
+      }
+    });
+    await stores.jobs.put(job);
+
+    return json({
+      status: "queued",
+      workflow,
+      job,
+      persistence: stores.durable ? "d1" : "memory"
+    }, 202);
   }
 
   if (action === "approve") {
     if (access.session.role !== "owner" && access.session.role !== "admin") {
       return json({ error: "Approval requires admin or owner role." }, 403);
     }
-    const plan = body.plan;
-    if (!plan) return json({ error: "plan is required" }, 400);
-    const approval = createApprovalRequest(plan, userId);
-    return json({ status: approval.status, approval });
-  }
 
-  if (action === "memory.add") {
-    const item = memory.add(body.item || {});
-    return json({ status: "stored", item });
-  }
+    const approvalId = typeof body.approvalId === "string" ? body.approvalId.trim() : "";
+    const goal = normalizeGoal(body.goal);
+    const approvalStore = createApprovalStore(env);
 
-  if (action === "memory.list") {
-    return json({ status: "ok", items: memory.list() });
-  }
+    if (approvalId) {
+      const pending = await approvalStore.get(approvalId, access.session.orgId);
+      if (!pending || pending.requestedBy !== access.session.userId && access.session.role !== "owner" && access.session.role !== "admin") {
+        return json({ error: "Approval not found." }, 404);
+      }
+      if (pending.status !== "pending") return json({ error: "Approval is no longer pending." }, 409);
+      const plan = pending.plan;
+      if (!requiresHumanApproval(plan)) return json({ error: "Approval is not required for this plan." }, 400);
 
-  if (action === "memory.clear") {
-    memory.clear();
-    return json({ status: "cleared" });
+      const stores = createRuntimeStores(env);
+      const workflow = createWorkflowDefinition({
+        id: crypto.randomUUID(),
+        name: pending.goal,
+        orgId: access.session.orgId,
+        trigger: { type: "manual" },
+        steps: []
+      });
+      await stores.workflows.put(workflow);
+      const job = createJob({
+        workflowId: workflow.id,
+        input: { goal: pending.goal, userId: pending.requestedBy, orgId: access.session.orgId, approvalId: pending.id, approved: true }
+      });
+      await stores.jobs.put(job);
+      const approved = await approvalStore.approve(approvalId, access.session.orgId, access.session.userId, job.id);
+      if (!approved) return json({ error: "Approval could not be completed; it may have expired or already been used." }, 409);
+      await audit(env,{userId:access.session.userId,orgId:access.session.orgId,action:"approval.approved",resource:approvalId,metadata:{jobId:job.id}});
+      return json({ status:"queued", approval:approved, workflow, job },202);
+    }
+
+    if (!goal) return json({ error: "goal is required" }, 400);
+    const plan = buildPlan(goal);
+    if (!requiresHumanApproval(plan)) return json({ error: "This goal does not require human approval." }, 400);
+    const approval = await persistApproval(env, access.session.orgId, access.session.userId, goal, plan);
+    return json({ status: "pending", approval }, 202);
   }
 
   return json({ error: "Unknown runtime action" }, 400);
+}
+
+function normalizeGoal(value) {
+  return typeof value === "string" ? value.trim().replace(/\s+/g, " ").slice(0, 8000) : "";
 }
 
 function json(data, status = 200) {
@@ -63,4 +118,12 @@ function json(data, status = 200) {
     status,
     headers: { "content-type": "application/json; charset=utf-8" }
   });
+}
+
+
+async function persistApproval(env, orgId, userId, goal, plan) {
+  const store = createApprovalStore(env);
+  const approval = await store.create({orgId,requestedBy:userId,goal,plan});
+  await audit(env,{userId,orgId,action:"approval.requested",resource:approval.id,metadata:{goal}});
+  return approval;
 }
