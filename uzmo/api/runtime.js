@@ -87,14 +87,22 @@ export async function handleRuntime(request, env) {
         trigger: { type: "manual" },
         steps: []
       });
-      await stores.workflows.put(workflow);
       const job = createJob({
         workflowId: workflow.id,
         input: { goal: pending.goal, userId: pending.requestedBy, orgId: access.session.orgId, approvalId: pending.id, approved: true }
       });
-      await stores.jobs.put(job);
+
+      // Approve first so an expired/already-used approval cannot leave a queued orphan job.
       const approved = await approvalStore.approve(approvalId, access.session.orgId, access.session.userId, job.id);
       if (!approved) return json({ error: "Approval could not be completed; it may have expired or already been used." }, 409);
+
+      try {
+        await stores.workflows.put(workflow);
+        await stores.jobs.put(job);
+      } catch (error) {
+        return json({ error: "Approval succeeded but the execution job could not be persisted.", details: error.message || "Persistence failed." }, 503);
+      }
+
       await audit(env,{userId:access.session.userId,orgId:access.session.orgId,action:"approval.approved",resource:approvalId,metadata:{jobId:job.id}});
       return json({ status:"queued", approval:approved, workflow, job },202);
     }
@@ -119,7 +127,6 @@ function json(data, status = 200) {
     headers: { "content-type": "application/json; charset=utf-8" }
   });
 }
-
 
 async function persistApproval(env, orgId, userId, goal, plan) {
   const store = createApprovalStore(env);
