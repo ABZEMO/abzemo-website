@@ -49,7 +49,7 @@ export default {
       catch (error) { return json({ error: error.message || "Job request failed" }, 500); }
     }
     if (url.pathname === "/api/scheduler") {
-      try { return withCors(await handleScheduler(request)); }
+      try { return withCors(await handleScheduler(request, env)); }
       catch (error) { return json({ error: error.message || "Scheduler failed" }, 500); }
     }
     if (url.pathname === "/api/studio/run") {
