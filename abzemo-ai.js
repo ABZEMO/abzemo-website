@@ -1,5 +1,5 @@
 /* =========================================================
-   ABZEMO AI — GLOBAL MULTILINGUAL SALES AGENT
+   ABZEMO AI — GLOBAL MULTI-AGENT AI PLATFORM
    Version: 3.0
    Objective:
    Website visitor -> understand -> qualify -> solution match
@@ -79,10 +79,9 @@
   ];
 
   const AGENT_OBJECTIVE =
-    "Understand the visitor's need, qualify the business opportunity, " +
-    "match the relevant ABZEMO solution, capture consented lead information, " +
-    "standardize the lead record in English, and recommend human sales handoff " +
-    "when appropriate.";
+    "Operate as a global multi-agent AI platform: understand the visitor, " +
+    "route the request to the relevant specialist capability, use live research/location tools when needed, " +
+    "provide useful source-backed answers, match ABZEMO solutions, and qualify sales opportunities only when appropriate.";
 
   /* =========================================================
      3. WIDGET STYLES
@@ -139,6 +138,11 @@
       .abzemo-ai-location-list{padding:8px 12px 10px;display:grid;gap:6px}
       .abzemo-ai-location-item{font-size:10px;line-height:1.35;color:#46566d}
       .abzemo-ai-location-item strong{display:block;color:#17345b}
+      .abzemo-ai-research-card{margin:4px 0 14px;background:#fff;border:1px solid rgba(7,26,53,.1);border-radius:16px;overflow:hidden;box-shadow:0 6px 22px rgba(7,26,53,.06)}
+      .abzemo-ai-research-head{padding:10px 12px;background:#f3f7fc;color:#17345b;font-size:11px;font-weight:800}
+      .abzemo-ai-research-list{padding:9px 12px;display:grid;gap:7px}
+      .abzemo-ai-research-link{font-size:10px;line-height:1.35;color:#1264d8;text-decoration:none;font-weight:700}
+      .abzemo-ai-research-link:hover{text-decoration:underline}
       .abzemo-ai-location-note{padding:0 12px 9px;font-size:8px;line-height:1.3;color:#7b8798}
       .abzemo-ai-note{margin-top:8px;font-size:9px;line-height:1.3;color:#8a96a8;text-align:center;letter-spacing:.25px}
       @media(max-width:600px){.abzemo-ai-launcher-wrap{right:18px;bottom:18px}.abzemo-ai-launcher{right:auto;bottom:auto;min-width:132px;height:50px;padding:0 17px}.abzemo-ai-chat{right:12px;bottom:80px;width:calc(100vw - 24px);height:min(590px,calc(100vh - 100px));border-radius:18px}.abzemo-ai-messages{padding:16px}.abzemo-ai-bubble{max-width:88%}}
@@ -254,7 +258,7 @@
             <div class="abzemo-ai-logo">AI</div>
             <div>
               <div class="abzemo-ai-title">ABZEMO AI</div>
-              <div class="abzemo-ai-status">Global Multilingual Sales Agent</div>
+              <div class="abzemo-ai-status">Global Multi-Agent AI Platform • 50+ Languages</div>
             </div>
           </div>
           <button class="abzemo-ai-close" id="abzemoAiClose" type="button" aria-label="Close ABZEMO AI">×</button>
@@ -442,6 +446,32 @@
       } catch (error) {
         console.error("ABZEMO AI map error:", error);
       }
+    }
+
+    function renderResearchSources(sources) {
+      if (!Array.isArray(sources) || !sources.length) return;
+      const card = document.createElement("div");
+      card.className = "abzemo-ai-research-card";
+      const head = document.createElement("div");
+      head.className = "abzemo-ai-research-head";
+      head.textContent = "🔎 Sources & Research";
+      card.appendChild(head);
+      const list = document.createElement("div");
+      list.className = "abzemo-ai-research-list";
+      sources.slice(0, 10).forEach(function (source) {
+        if (!source || typeof source.url !== "string" || !/^https?:\/\//i.test(source.url)) return;
+        const link = document.createElement("a");
+        link.className = "abzemo-ai-research-link";
+        link.href = source.url;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.textContent = source.title || source.url;
+        list.appendChild(link);
+      });
+      if (!list.children.length) return;
+      card.appendChild(list);
+      messages.insertBefore(card, typing);
+      scrollToBottom();
     }
 
     let leadState = {
@@ -709,6 +739,11 @@
 
           /* Finalized sales objective */
           objective: AGENT_OBJECTIVE,
+    platform: "Global Multi-Agent AI Platform",
+
+          /* Multi-agent platform context */
+          agent_platform: "ABZEMO AI Global Multi-Agent AI Platform",
+          specialist_routes: ["sales","business_automation","finance","erp_workflow","education_university","scholarship_study_abroad","healthcare","real_estate_property","trade_b2b","logistics","manufacturing","hr_recruitment","business_intelligence","web_research","location_maps","document_knowledge","general"],
 
           /* ABZEMO solution matching context */
           solutions: ABZEMO_SOLUTIONS,
@@ -793,6 +828,10 @@
 
         if (data.location_context) {
           renderLocationContext(data.location_context);
+        }
+
+        if (Array.isArray(data.research_sources)) {
+          renderResearchSources(data.research_sources);
         }
 
         setLeadStatus(
