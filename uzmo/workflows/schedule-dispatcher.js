@@ -1,8 +1,3 @@
 import {createJob} from "./jobs.js";
-export function findDueSchedules(workflows,now=new Date()){
- return workflows.filter(w=>w.enabled&&w.trigger?.type==="schedule"&&w.nextRunAt&&new Date(w.nextRunAt)<=now);
-}
-export function queueDueSchedules({workflows,jobStore,now=new Date()}){
- const due=findDueSchedules(workflows,now);
- return due.map(w=>jobStore.put(createJob({workflowId:w.id,input:{trigger:"schedule"},scheduledFor:now.toISOString()})));
-}
+export function findDueSchedules(workflows,now=new Date()){return workflows.filter(w=>w.enabled&&w.trigger?.type==="schedule"&&w.nextRunAt&&new Date(w.nextRunAt)<=now);}
+export async function queueDueSchedules({workflows,jobStore,now=new Date()}){const due=findDueSchedules(workflows,now);const jobs=[];for(const w of due)jobs.push(await jobStore.put(createJob({workflowId:w.id,input:{trigger:"schedule",orgId:w.orgId},scheduledFor:now.toISOString()})));return jobs;}
