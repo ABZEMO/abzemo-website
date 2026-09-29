@@ -27,6 +27,7 @@ const KEYWORDS = {
   procurement: ["procurement", "purchase", "vendor", "po", "quotation"],
   content: ["content", "social", "instagram", "linkedin", "post", "caption"],
   education: ["education", "university", "universities", "admission", "admissions", "scholarship", "scholarships", "study", "degree"],
+  finance: ["finance", "financial", "accounting", "audit", "tax", "ifrs", "ias", "isa", "iris", "budget", "forecast", "cash flow", "financial statement", "ledger", "audit", "forensic"],
   health: ["health", "medical", "medicine", "treatment", "symptom", "symptoms", "disease", "drug", "medication", "patient"],
   web: ["web", "browse", "search", "website"],
   automation: ["automate", "automation", "workflow", "recurring", "every day", "every week", "schedule"]
