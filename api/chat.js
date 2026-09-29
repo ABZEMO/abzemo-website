@@ -81,11 +81,28 @@ function corsHeaders(origin) {
   };
 }
 
-function json(body, status, origin) {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: corsHeaders(origin)
-  });
+function sendJson(res, body, status, origin) {
+  const payload = JSON.stringify(body);
+  const headers = corsHeaders(origin);
+
+  if (res && typeof res.status === "function" && typeof res.json === "function") {
+    return res.status(status).setHeader("Content-Type", headers["Content-Type"]).setHeader("Access-Control-Allow-Origin", headers["Access-Control-Allow-Origin"]).setHeader("Access-Control-Allow-Methods", headers["Access-Control-Allow-Methods"]).setHeader("Access-Control-Allow-Headers", headers["Access-Control-Allow-Headers"]).setHeader("Vary", headers.Vary).json(body);
+  }
+
+  return new Response(payload, { status, headers });
+}
+
+async function parseRequestBody(req) {
+  if (req && req.body !== undefined && req.body !== null) {
+    if (typeof req.body === "string") return JSON.parse(req.body);
+    if (Buffer.isBuffer(req.body)) return JSON.parse(req.body.toString("utf8"));
+    if (typeof req.body === "object") return req.body;
+  }
+
+  const chunks = [];
+  for await (const chunk of req) chunks.push(Buffer.from(chunk));
+  const raw = Buffer.concat(chunks).toString("utf8");
+  return JSON.parse(raw);
 }
 
 function cleanConversation(value) {
@@ -608,36 +625,33 @@ async function persistLeadIfConfigured(lead, origin, language) {
   };
 }
 
-export default async function handler(req) {
-  const origin = req.headers.get("origin") || "";
+export default async function handler(req, res) {
+  const origin = (req.headers && (req.headers.origin || (typeof req.headers.get === "function" ? req.headers.get("origin") : ""))) || "";
 
   if (req.method === "OPTIONS") {
-    return new Response(null, {
-      status: 204,
-      headers: corsHeaders(origin)
-    });
+    return sendJson(res, null, 204, origin);
   }
 
   if (req.method !== "POST") {
-    return json({ error: "Method not allowed." }, 405, origin);
+    return sendJson(res, { error: "Method not allowed." }, 405, origin);
   }
 
   if (!OPENAI_API_KEY) {
-    return json({ error: "AI backend is not configured." }, 500, origin);
+    return sendJson(res, { error: "AI backend is not configured." }, 500, origin);
   }
 
   let body;
 
   try {
-    body = await req.json();
+    body = await parseRequestBody(req);
   } catch {
-    return json({ error: "Invalid JSON request." }, 400, origin);
+    return sendJson(res, { error: "Invalid JSON request." }, 400, origin);
   }
 
   const conversation = cleanConversation(body.conversation);
 
   if (!conversation.length) {
-    return json({ error: "Conversation is empty." }, 400, origin);
+    return sendJson(res, { error: "Conversation is empty." }, 400, origin);
   }
 
   const language =
@@ -681,20 +695,20 @@ export default async function handler(req) {
       })
     });
   } catch {
-    return json({ error: "AI provider connection failed." }, 502, origin);
+    return sendJson(res, { error: "AI provider connection failed." }, 502, origin);
   }
 
   if (!response.ok) {
     const detail = await response.text();
     console.error("OpenAI error:", detail);
-    return json({ error: "AI provider request failed." }, 502, origin);
+    return sendJson(res, { error: "AI provider request failed." }, 502, origin);
   }
 
   const data = await response.json();
   const raw = extractText(data);
 
   if (!raw) {
-    return json({ error: "AI provider returned no structured output." }, 502, origin);
+    return sendJson(res, { error: "AI provider returned no structured output." }, 502, origin);
   }
 
   let modelResult;
@@ -702,7 +716,7 @@ export default async function handler(req) {
   try {
     modelResult = JSON.parse(raw);
   } catch {
-    return json({ error: "AI provider returned invalid structured output." }, 502, origin);
+    return sendJson(res, { error: "AI provider returned invalid structured output." }, 502, origin);
   }
 
   const qualification = normalizeQualification(
@@ -730,7 +744,7 @@ export default async function handler(req) {
   const actualHandoffReady =
     leadState.handoff_ready && persistence.persisted;
 
-  return json(
+  return sendJson(res, 
     {
       reply: modelResult.reply.trim(),
       lead_status: leadState.status,
