@@ -59,3 +59,12 @@ UZMO Orchestrator
 The repository is currently a static site. The UZMO frontend is therefore self-contained and deployable as static assets. The production orchestration API should be hosted separately (for example with Cloudflare Workers) so model credentials and integration secrets never reach the browser.
 
 This directory is the product foundation, not a claim that all external integrations are already connected.
+
+## Education and health discovery
+
+UZMO includes dedicated discovery tools for two high-value information domains:
+
+- **Education Discovery**: searches universities, admissions and scholarships through configured education sources and returns direct source links. Current eligibility, deadlines and program availability must be re-verified at the linked source before being presented as current.
+- **Health Information**: provides treatment, medicine, disease and patient-safety information through authoritative health sources. It is an information and source-navigation capability, not a diagnostic, prescribing or emergency-care substitute.
+
+Health responses should prioritize authoritative sources such as WHO, FDA, MedlinePlus, NHS, EMA and NICE and clearly distinguish general information from individualized clinical advice.
