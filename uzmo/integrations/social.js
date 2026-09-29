@@ -56,6 +56,52 @@ export async function executeYouTube(input, context, fetchImpl = fetch) {
   return { status: "completed", tool: "youtube", data };
 }
 
+export async function executeWordPress(input, context, fetchImpl = fetch) {
+  const token = context.wordpressAccessToken;
+  const site = context.wordpressSite || input.site;
+  if (!token || !site) {
+    return { status: "authorization_required", tool: "wordpress", message: "Connect WordPress.com and select a site before publishing." };
+  }
+
+  const title = String(input.title || "").trim().slice(0, 300);
+  const content = String(input.content || "");
+  if (!title) throw new Error("WordPress title is required.");
+  if (!content.trim()) throw new Error("WordPress content is required.");
+
+  const status = input.status || "publish";
+  if (!["publish", "draft", "pending", "private"].includes(status)) {
+    throw new Error("Invalid WordPress post status.");
+  }
+
+  const body = {
+    title,
+    content,
+    status,
+    ...(input.excerpt ? { excerpt: String(input.excerpt).slice(0, 1000) } : {}),
+    ...(input.slug ? { slug: String(input.slug).slice(0, 200) } : {}),
+    ...(Array.isArray(input.tags) ? { tags: input.tags.map(String).slice(0, 50) } : {}),
+    ...(Array.isArray(input.categories) ? { categories: input.categories.map(String).slice(0, 50) } : {})
+  };
+
+  const response = await fetchImpl(
+    "https://public-api.wordpress.com/wp/v2/sites/" + encodeURIComponent(site) + "/posts",
+    {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + token,
+        "content-type": "application/json",
+        accept: "application/json"
+      },
+      body: JSON.stringify(body)
+    }
+  );
+  const data = await readJson(response);
+  if (!response.ok || !data?.id) {
+    throw new Error("WordPress post creation failed: HTTP " + response.status);
+  }
+  return { status: "completed", tool: "wordpress", data };
+}
+
 export async function executeInstagram(input, context, fetchImpl = fetch) {
   const token = context.instagramAccessToken;
   const igUserId = context.instagramUserId || input.igUserId;
