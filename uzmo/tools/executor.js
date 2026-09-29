@@ -3,6 +3,7 @@ import { createGoogleWorkspace } from "../integrations/google-workspace.js";
 import { createGoogleConnectionStore } from "../integrations/google-connections.js";
 import { executeInstagram, executeYouTube } from "../integrations/social.js";
 import { executeHealthInformation } from "./health.js";
+import { executeEducationDiscovery } from "./education.js";
 
 const SAFE_METHODS = new Set(["GET", "HEAD", "OPTIONS"]);
 const SOCIAL_SIDE_EFFECTS = new Set(["youtube:upload", "instagram:publish"]);
@@ -46,6 +47,7 @@ export function createToolExecutor({ fetchImpl = fetch } = {}) {
       if (toolId === "youtube" && input.action === "upload") return executeYouTube(input, context, fetchImpl);
       if (toolId === "instagram" && input.action === "publish") return executeInstagram(input, context, fetchImpl);
       if (toolId === "health_information") return executeHealthInformation(input);
+      if (toolId === "education_discovery") return executeEducationDiscovery(input);
       if (toolId === "webhook") return executeWebhook(fetchImpl, input, context);
       if (["gmail", "google_calendar", "google_drive", "google_sheets"].includes(toolId)) {
         return executeGoogle(toolId, input, context);
