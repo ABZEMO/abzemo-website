@@ -14,16 +14,16 @@ export async function handleRuntime(request, env) {
   const action = body.action || "plan";
 
   if (action === "plan") {
-    const goal = typeof body.goal === "string" ? body.goal.trim() : "";
+    const goal = normalizeGoal(body.goal);
     if (!goal) return json({ error: "goal is required" }, 400);
     return json({ status: "planned", plan: buildPlan(goal) });
   }
 
   if (action === "execute") {
-    const goal = typeof body.goal === "string" ? body.goal.trim() : "";
-    const plan = body.plan || (goal ? buildPlan(goal) : null);
-    if (!plan) return json({ error: "goal or plan is required" }, 400);
+    const goal = normalizeGoal(body.goal);
+    if (!goal) return json({ error: "goal is required; client-supplied plans are not accepted" }, 400);
 
+    const plan = buildPlan(goal);
     if (requiresHumanApproval(plan)) {
       return json({
         status: "approval_required",
@@ -34,18 +34,17 @@ export async function handleRuntime(request, env) {
     const stores = createRuntimeStores(env);
     const workflow = createWorkflowDefinition({
       id: crypto.randomUUID(),
-      name: goal || plan.goal || "UZMO execution",
+      name: plan.goal,
       orgId: access.session.orgId,
       trigger: { type: "manual" },
-      steps: plan.steps || []
+      steps: []
     });
     await stores.workflows.put(workflow);
 
     const job = createJob({
       workflowId: workflow.id,
       input: {
-        goal: goal || plan.goal || workflow.name,
-        plan,
+        goal: plan.goal,
         userId: access.session.userId,
         orgId: access.session.orgId
       }
@@ -64,8 +63,15 @@ export async function handleRuntime(request, env) {
     if (access.session.role !== "owner" && access.session.role !== "admin") {
       return json({ error: "Approval requires admin or owner role." }, 403);
     }
-    const plan = body.plan;
-    if (!plan) return json({ error: "plan is required" }, 400);
+
+    const goal = normalizeGoal(body.goal);
+    if (!goal) return json({ error: "goal is required" }, 400);
+
+    const plan = buildPlan(goal);
+    if (!requiresHumanApproval(plan)) {
+      return json({ error: "This goal does not require human approval." }, 400);
+    }
+
     return json({
       status: "pending",
       approval: createApprovalRequest(plan, access.session.userId)
@@ -73,6 +79,10 @@ export async function handleRuntime(request, env) {
   }
 
   return json({ error: "Unknown runtime action" }, 400);
+}
+
+function normalizeGoal(value) {
+  return typeof value === "string" ? value.trim().replace(/\s+/g, " ").slice(0, 8000) : "";
 }
 
 function json(data, status = 200) {
