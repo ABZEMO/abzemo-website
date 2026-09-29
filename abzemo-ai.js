@@ -133,6 +133,13 @@
       .abzemo-ai-voice-status{margin-top:7px;text-align:center;font-size:9px;color:#6d7b90;min-height:12px}
       .abzemo-ai-lead-status{margin:8px 0 0;padding:8px 10px;border-radius:9px;background:#eef5fd;color:#245b9d;font-size:10px;line-height:1.35;display:none}
       .abzemo-ai-lead-status.active{display:block}
+      .abzemo-ai-location-card{margin:4px 0 14px;background:#fff;border:1px solid rgba(7,26,53,.1);border-radius:16px;overflow:hidden;box-shadow:0 6px 22px rgba(7,26,53,.06)}
+      .abzemo-ai-location-head{padding:10px 12px;background:#f3f7fc;color:#17345b;font-size:11px;font-weight:800}
+      .abzemo-ai-map{width:100%;height:220px}
+      .abzemo-ai-location-list{padding:8px 12px 10px;display:grid;gap:6px}
+      .abzemo-ai-location-item{font-size:10px;line-height:1.35;color:#46566d}
+      .abzemo-ai-location-item strong{display:block;color:#17345b}
+      .abzemo-ai-location-note{padding:0 12px 9px;font-size:8px;line-height:1.3;color:#7b8798}
       .abzemo-ai-note{margin-top:8px;font-size:9px;line-height:1.3;color:#8a96a8;text-align:center;letter-spacing:.25px}
       @media(max-width:600px){.abzemo-ai-launcher-wrap{right:18px;bottom:18px}.abzemo-ai-launcher{right:auto;bottom:auto;min-width:132px;height:50px;padding:0 17px}.abzemo-ai-chat{right:12px;bottom:80px;width:calc(100vw - 24px);height:min(590px,calc(100vh - 100px));border-radius:18px}.abzemo-ai-messages{padding:16px}.abzemo-ai-bubble{max-width:88%}}
       @media(prefers-reduced-motion:reduce){.abzemo-ai-chat.active,.abzemo-ai-typing span{animation:none}}
@@ -330,6 +337,103 @@
       instead of treating every message as a new enquiry.
     */
     const conversation = [];
+
+    let mapLibraryPromise = null;
+
+    function loadMapLibrary() {
+      if (mapLibraryPromise) return mapLibraryPromise;
+
+      mapLibraryPromise = new Promise(function (resolve, reject) {
+        if (window.L) {
+          resolve(window.L);
+          return;
+        }
+
+        const css = document.createElement("link");
+        css.rel = "stylesheet";
+        css.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
+        document.head.appendChild(css);
+
+        const script = document.createElement("script");
+        script.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
+        script.onload = function () { resolve(window.L); };
+        script.onerror = reject;
+        document.head.appendChild(script);
+      });
+
+      return mapLibraryPromise;
+    }
+
+    async function renderLocationContext(locationContext) {
+      if (!locationContext || !locationContext.needed || !Array.isArray(locationContext.results) || !locationContext.results.length) {
+        return;
+      }
+
+      const valid = locationContext.results.filter(function (item) {
+        return item && Number.isFinite(Number(item.lat)) && Number.isFinite(Number(item.lon));
+      });
+
+      if (!valid.length) return;
+
+      const card = document.createElement("div");
+      card.className = "abzemo-ai-location-card";
+
+      const head = document.createElement("div");
+      head.className = "abzemo-ai-location-head";
+      head.textContent = locationContext.intent === "property_search"
+        ? "📍 Property / Location Map"
+        : "📍 Location Map";
+      card.appendChild(head);
+
+      const mapNode = document.createElement("div");
+      mapNode.className = "abzemo-ai-map";
+      card.appendChild(mapNode);
+
+      const list = document.createElement("div");
+      list.className = "abzemo-ai-location-list";
+
+      valid.slice(0, 4).forEach(function (item) {
+        const row = document.createElement("div");
+        row.className = "abzemo-ai-location-item";
+        row.innerHTML = "<strong>" + escapeHtml(item.display_name || "Location") + "</strong>" +
+          escapeHtml((item.category || "") + (item.type ? " • " + item.type : ""));
+        list.appendChild(row);
+      });
+
+      card.appendChild(list);
+
+      const note = document.createElement("div");
+      note.className = "abzemo-ai-location-note";
+      note.textContent = locationContext.property_listings === "not_configured"
+        ? "Map location data is available. Live property listings require a connected property-data provider."
+        : "Map data provided by OpenStreetMap.";
+      card.appendChild(note);
+
+      messages.insertBefore(card, typing);
+      scrollToBottom();
+
+      try {
+        const L = await loadMapLibrary();
+        const first = valid[0];
+        const map = L.map(mapNode, { scrollWheelZoom: false }).setView([Number(first.lat), Number(first.lon)], valid.length > 1 ? 10 : 13);
+
+        L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          attribution: "&copy; OpenStreetMap contributors"
+        }).addTo(map);
+
+        const bounds = [];
+        valid.slice(0, 6).forEach(function (item) {
+          const point = [Number(item.lat), Number(item.lon)];
+          bounds.push(point);
+          L.marker(point).addTo(map).bindPopup(escapeHtml(item.display_name || "Location"));
+        });
+
+        if (bounds.length > 1) map.fitBounds(bounds, { padding: [24, 24] });
+        setTimeout(function () { map.invalidateSize(); }, 100);
+      } catch (error) {
+        console.error("ABZEMO AI map error:", error);
+      }
+    }
 
     let leadState = {
       status: "new",
@@ -676,6 +780,10 @@
 
         if (data.notification_sent === true) {
           leadState.notification_sent = true;
+        }
+
+        if (data.location_context) {
+          renderLocationContext(data.location_context);
         }
 
         setLeadStatus(
