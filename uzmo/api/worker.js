@@ -13,9 +13,10 @@ import { handleScheduler } from "./scheduler.js";
 import { handleJobs } from "./jobs.js";
 import { handleJobRun } from "./job-run.js";
 import { handleTriggers } from "./triggers.js";\nimport { createRuntimeStores } from "../workflows/runtime-stores.js";\nimport { executeJob } from "../workflows/executor.js";
+import { handleGoogleOAuth } from "../integrations/google-oauth.js";
 
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Origin": "https://abzemo.com",
   "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type, Authorization"
 };
@@ -62,6 +63,10 @@ export default {
     if (url.pathname === "/api/automations") {
       try { return withCors(await handleAutomations(request)); }
       catch (error) { return json({ error: error.message || "Automation request failed" }, 500); }
+    }
+    if (url.pathname.startsWith("/api/integrations/google/oauth")) {
+      try { return withCors(await handleGoogleOAuth(request, env)); }
+      catch (error) { return json({ error: error.message || "Google OAuth failed" }, 500); }
     }
     if (url.pathname === "/api/integrations" && request.method === "GET") {
       return withCors(await handleIntegrations(request));
