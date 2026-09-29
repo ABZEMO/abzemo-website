@@ -56,6 +56,53 @@ export async function executeYouTube(input, context, fetchImpl = fetch) {
   return { status: "completed", tool: "youtube", data };
 }
 
+
+export async function executeDiscourse(input, context, fetchImpl = fetch) {
+  const apiKey = context.discourseApiKey;
+  const username = context.discourseUsername;
+  const baseUrl = validatePublicUrl(context.discourseBaseUrl || input.baseUrl, "Discourse base");
+  if (!apiKey || !username) {
+    return { status: "authorization_required", tool: "discourse", message: "Connect a Discourse API key and username before publishing." };
+  }
+
+  const action = String(input.action || "create_topic");
+  if (!["create_topic", "reply"].includes(action)) throw new Error("Invalid Discourse action.");
+
+  const raw = String(input.raw || "");
+  if (!raw.trim()) throw new Error("Discourse post content is required.");
+  if (raw.length > 50000) throw new Error("Discourse post content exceeds the 50,000 character limit.");
+
+  const body = action === "create_topic"
+    ? {
+        title: String(input.title || "").trim().slice(0, 300),
+        raw,
+        ...(input.categoryId != null ? { category: Number(input.categoryId) } : {}),
+        ...(Array.isArray(input.tags) ? { tags: input.tags.map(String).filter(Boolean).slice(0, 5) } : {})
+      }
+    : {
+        topic_id: Number(input.topicId),
+        raw
+      };
+
+  if (action === "create_topic" && !body.title) throw new Error("Discourse topic title is required.");
+  if (action === "reply" && (!Number.isInteger(body.topic_id) || body.topic_id <= 0)) {
+    throw new Error("A valid Discourse topicId is required for replies.");
+  }
+
+  const response = await fetchImpl(baseUrl.replace(/\\/$/, "") + "/posts.json", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      "Api-Key": apiKey,
+      "Api-Username": username
+    },
+    body: JSON.stringify(body)
+  });
+  const data = await readJson(response);
+  if (!response.ok) throw new Error("Discourse publish failed: HTTP " + response.status);
+  return { status: "completed", tool: "discourse", data };
+}
+
 export async function executeInstagram(input, context, fetchImpl = fetch) {
   const token = context.instagramAccessToken;
   const igUserId = context.instagramUserId || input.igUserId;
