@@ -92,6 +92,32 @@ export async function executeInstagram(input, context, fetchImpl = fetch) {
   return { status: "completed", tool: "instagram", data: published };
 }
 
+export async function executeTumblr(input, context, fetchImpl = fetch) {
+  const token = context.tumblrAccessToken;
+  const blog = context.tumblrBlogIdentifier || input.blogIdentifier;
+  if (!token || !blog) return { status: "authorization_required", tool: "tumblr", message: "Connect Tumblr and select a blog before publishing." };
+  const bodyText = String(input.body || input.text || "").trim();
+  if (!bodyText) throw new Error("Tumblr post body is required.");
+  if (bodyText.length > 100000) throw new Error("Tumblr post body exceeds the supported safety limit.");
+  const state = String(input.state || "published");
+  if (!["published","draft","queue","private"].includes(state)) throw new Error("Invalid Tumblr post state.");
+  const form = new URLSearchParams({ type: "text", body: bodyText, state });
+  if (input.title) form.set("title", String(input.title));
+  if (input.tags) form.set("tags", Array.isArray(input.tags) ? input.tags.map(String).join(",") : String(input.tags));
+  const response = await fetchImpl("https://api.tumblr.com/v2/blog/" + encodeURIComponent(blog) + "/post", {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer " + token,
+      "Content-Type": "application/x-www-form-urlencoded",
+      "User-Agent": String(context.tumblrUserAgent || "UZMO/1.0")
+    },
+    body: form.toString()
+  });
+  const data = await readJson(response);
+  if (!response.ok || data?.meta?.status >= 400) throw new Error("Tumblr post failed: HTTP " + response.status);
+  return { status: "completed", tool: "tumblr", data };
+}
+
 function validatePublicUrl(value, label) {
   if (typeof value !== "string" || !value.trim()) throw new Error(label + " URL is required.");
   const url = new URL(value.trim());
