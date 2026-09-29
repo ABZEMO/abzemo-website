@@ -92,6 +92,29 @@ export async function executeInstagram(input, context, fetchImpl = fetch) {
   return { status: "completed", tool: "instagram", data: published };
 }
 
+export async function executeFacebook(input, context, fetchImpl = fetch) {
+  const token = context.facebookPageAccessToken;
+  const pageId = context.facebookPageId || input.pageId;
+  if (!token || !pageId) {
+    return { status: "authorization_required", tool: "facebook", message: "Connect an authorized Facebook Page before publishing." };
+  }
+  const message = String(input.message || "").trim();
+  if (!message) throw new Error("Facebook Page post message is required.");
+  if (message.length > 63206) throw new Error("Facebook Page post message exceeds the supported limit.");
+  const version = String(context.facebookGraphVersion || context.env?.META_GRAPH_API_VERSION || "v23.0");
+  const endpoint = META_ROOT + "/" + version + "/" + encodeURIComponent(pageId) + "/feed";
+  const params = new URLSearchParams({ message, access_token: token });
+  if (input.link) params.set("link", validatePublicUrl(input.link, "Facebook link"));
+  const response = await fetchImpl(endpoint, {
+    method: "POST",
+    headers: { "content-type": "application/x-www-form-urlencoded" },
+    body: params
+  });
+  const data = await readJson(response);
+  if (!response.ok || !data?.id) throw new Error("Facebook Page post failed: HTTP " + response.status);
+  return { status: "completed", tool: "facebook", data };
+}
+
 function validatePublicUrl(value, label) {
   if (typeof value !== "string" || !value.trim()) throw new Error(label + " URL is required.");
   const url = new URL(value.trim());
