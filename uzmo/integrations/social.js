@@ -92,6 +92,25 @@ export async function executeInstagram(input, context, fetchImpl = fetch) {
   return { status: "completed", tool: "instagram", data: published };
 }
 
+const SLACK_ROOT = "https://slack.com/api";
+
+export async function executeSlack(input, context, fetchImpl = fetch) {
+  const token = context.slackBotToken;
+  const channel = context.slackChannelId || input.channelId;
+  if (!token || !channel) return { status: "authorization_required", tool: "slack", message: "Connect a Slack app and target channel before sending." };
+  const text = String(input.text || "").trim();
+  if (!text) throw new Error("Slack message text is required.");
+  if (text.length > 40000) throw new Error("Slack message exceeds the supported text limit.");
+  const response = await fetchImpl(SLACK_ROOT + "/chat.postMessage", {
+    method: "POST",
+    headers: { Authorization: "Bearer " + token, "Content-Type": "application/json; charset=utf-8" },
+    body: JSON.stringify({ channel, text })
+  });
+  const data = await readJson(response);
+  if (!response.ok || data?.ok !== true) throw new Error("Slack message failed: HTTP " + response.status);
+  return { status: "completed", tool: "slack", data };
+}
+
 function validatePublicUrl(value, label) {
   if (typeof value !== "string" || !value.trim()) throw new Error(label + " URL is required.");
   const url = new URL(value.trim());
