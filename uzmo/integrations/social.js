@@ -92,6 +92,33 @@ export async function executeInstagram(input, context, fetchImpl = fetch) {
   return { status: "completed", tool: "instagram", data: published };
 }
 
+const GOOGLE_BUSINESS_ROOT = "https://mybusiness.googleapis.com/v4";
+
+export async function executeGoogleBusinessProfile(input, context, fetchImpl = fetch) {
+  const token = context.googleBusinessAccessToken;
+  const accountId = context.googleBusinessAccountId || input.accountId;
+  const locationId = context.googleBusinessLocationId || input.locationId;
+  if (!token || !accountId || !locationId) return { status: "authorization_required", tool: "google_business_profile", message: "Connect Google Business Profile and select an account/location before publishing." };
+  const summary = String(input.summary || "").trim();
+  if (!summary) throw new Error("Google Business Profile post summary is required.");
+  if (summary.length > 1500) throw new Error("Google Business Profile post summary exceeds the supported limit.");
+  const topicType = String(input.topicType || "STANDARD").toUpperCase();
+  if (!["STANDARD","EVENT","OFFER"].includes(topicType)) throw new Error("Unsupported Google Business Profile topic type.");
+  const body = { languageCode: input.languageCode || "en-US", summary, topicType };
+  if (input.callToAction) body.callToAction = input.callToAction;
+  if (input.event) body.event = input.event;
+  if (input.offer) body.offer = input.offer;
+  if (input.media) body.media = input.media;
+  const response = await fetchImpl(GOOGLE_BUSINESS_ROOT + "/accounts/" + encodeURIComponent(accountId) + "/locations/" + encodeURIComponent(locationId) + "/localPosts", {
+    method: "POST",
+    headers: { Authorization: "Bearer " + token, "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+  const data = await readJson(response);
+  if (!response.ok) throw new Error("Google Business Profile post failed: HTTP " + response.status);
+  return { status: "completed", tool: "google_business_profile", data };
+}
+
 function validatePublicUrl(value, label) {
   if (typeof value !== "string" || !value.trim()) throw new Error(label + " URL is required.");
   const url = new URL(value.trim());
