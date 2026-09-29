@@ -92,6 +92,74 @@ export async function executeInstagram(input, context, fetchImpl = fetch) {
   return { status: "completed", tool: "instagram", data: published };
 }
 
+
+export async function executeFlickr(input, context, fetchImpl = fetch) {
+  const token = context.flickrAccessToken;
+  const tokenSecret = context.flickrAccessTokenSecret;
+  const consumerKey = context.flickrConsumerKey;
+  const consumerSecret = context.flickrConsumerSecret;
+  if (!token || !tokenSecret || !consumerKey || !consumerSecret) {
+    return { status: "authorization_required", tool: "flickr", message: "Connect Flickr with OAuth credentials before uploading." };
+  }
+
+  const sourceUrl = validatePublicUrl(input.sourceUrl, "Flickr source");
+  const source = await fetchImpl(sourceUrl);
+  if (!source.ok) return { status: "failed", tool: "flickr", message: "Flickr source returned HTTP " + source.status + "." };
+  const contentType = source.headers.get("content-type") || "application/octet-stream";
+  const contentLength = Number(source.headers.get("content-length") || 0);
+  if (contentLength > 100 * 1024 * 1024) throw new Error("Flickr upload exceeds the 100 MB safety limit.");
+
+  const oauth = {
+    oauth_consumer_key: consumerKey,
+    oauth_nonce: crypto.randomUUID().replace(/-/g, ""),
+    oauth_signature_method: "HMAC-SHA1",
+    oauth_timestamp: String(Math.floor(Date.now() / 1000)),
+    oauth_token: token,
+    oauth_version: "1.0"
+  };
+  const fields = {
+    ...oauth,
+    ...(input.title ? { title: String(input.title).slice(0, 255) } : {}),
+    ...(input.description ? { description: String(input.description).slice(0, 5000) } : {}),
+    ...(input.tags ? { tags: String(input.tags).slice(0, 500) } : {}),
+    ...(input.isPublic !== undefined ? { is_public: input.isPublic ? "1" : "0" } : {}),
+    ...(input.isFriend !== undefined ? { is_friend: input.isFriend ? "1" : "0" } : {}),
+    ...(input.isFamily !== undefined ? { is_family: input.isFamily ? "1" : "0" } : {}),
+    ...(input.safetyLevel ? { safety_level: String(input.safetyLevel) } : {}),
+    ...(input.contentType ? { content_type: String(input.contentType) } : {}),
+    ...(input.hidden ? { hidden: String(input.hidden) } : {})
+  };
+  const signature = await createOAuth1Signature("POST", "https://up.flickr.com/services/upload/", fields, consumerSecret, tokenSecret);
+  fields.oauth_signature = signature;
+
+  const form = new FormData();
+  for (const [key, value] of Object.entries(fields)) form.append(key, value);
+  const blob = await source.blob();
+  form.append("photo", blob, String(input.filename || "uzmo-upload"));
+  const response = await fetchImpl("https://up.flickr.com/services/upload/", { method: "POST", body: form });
+  const body = await response.text();
+  if (!response.ok) throw new Error("Flickr upload failed: HTTP " + response.status);
+  const photoId = body.match(/<photoid>([^<]+)<\\/photoid>/i)?.[1] || body.match(/<photoid>([^<]+)<\\/photoid>/i)?.[1];
+  return { status: "completed", tool: "flickr", data: { photoId: photoId || null, raw: body.slice(0, 2000) } };
+}
+
+async function createOAuth1Signature(method, url, params, consumerSecret, tokenSecret) {
+  const encoded = Object.entries(params)
+    .map(([key, value]) => [oauthEncode(key), oauthEncode(String(value))])
+    .sort(([aKey, aValue], [bKey, bValue]) => aKey.localeCompare(bKey) || aValue.localeCompare(bValue))
+    .map(([key, value]) => key + "=" + value)
+    .join("&");
+  const baseString = method.toUpperCase() + "&" + oauthEncode(url) + "&" + oauthEncode(encoded);
+  const key = oauthEncode(consumerSecret) + "&" + oauthEncode(tokenSecret);
+  const cryptoKey = await crypto.subtle.importKey("raw", new TextEncoder().encode(key), { name: "HMAC", hash: "SHA-1" }, false, ["sign"]);
+  const digest = await crypto.subtle.sign("HMAC", cryptoKey, new TextEncoder().encode(baseString));
+  return btoa(String.fromCharCode(...new Uint8Array(digest)));
+}
+
+function oauthEncode(value) {
+  return encodeURIComponent(value).replace(/[!'()*]/g, char => "%" + char.charCodeAt(0).toString(16).toUpperCase());
+}
+
 function validatePublicUrl(value, label) {
   if (typeof value !== "string" || !value.trim()) throw new Error(label + " URL is required.");
   const url = new URL(value.trim());
