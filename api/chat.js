@@ -249,14 +249,21 @@ async function hubspotRequest(path, options = {}) {
   const token = process.env.HUBSPOT_ACCESS_TOKEN;
   if (!token) return null;
 
-  const response = await fetch("https://api.hubapi.com" + path, {
-    ...options,
-    headers: {
-      Authorization: "Bearer " + token,
-      "Content-Type": "application/json",
-      ...(options.headers || {})
-    }
-  });
+  let response;
+
+  try {
+    response = await fetch("https://api.hubapi.com" + path, {
+      ...options,
+      headers: {
+        Authorization: "Bearer " + token,
+        "Content-Type": "application/json",
+        ...(options.headers || {})
+      }
+    });
+  } catch (error) {
+    console.error("HubSpot request failed:", error);
+    return null;
+  }
 
   if (!response.ok) {
     const detail = await response.text();
