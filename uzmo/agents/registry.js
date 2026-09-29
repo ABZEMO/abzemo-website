@@ -1,4 +1,4 @@
-const AGENTS = [
+const AGENTS = [\n  { id: "universal", name: "Universal Services Agent", capabilities: ["business", "legal", "hr", "sales", "marketing", "procurement", "projects", "education", "health", "science", "engineering", "software", "cybersecurity", "data", "documents", "communication", "social", "creative", "travel", "shopping", "real-estate", "government", "agriculture", "manufacturing", "energy", "language", "personal", "automation"] },\n
   { id: "executive", name: "Executive Agent", capabilities: ["strategy", "briefing", "decision", "reporting"] },
   { id: "project", name: "Project Agent", capabilities: ["project", "tasks", "risks", "dependencies", "delivery"] },
   { id: "research", name: "Research Agent", capabilities: ["research", "sources", "web", "synthesis"] },
@@ -30,7 +30,7 @@ const KEYWORDS = {
   finance: ["finance", "financial", "accounting", "audit", "tax", "ifrs", "ias", "isa", "iris", "budget", "forecast", "cash flow", "financial statement", "ledger", "audit", "forensic"],
   health: ["health", "medical", "medicine", "treatment", "symptom", "symptoms", "disease", "drug", "medication", "patient"],
   web: ["web", "browse", "search", "website"],
-  automation: ["automate", "automation", "workflow", "recurring", "every day", "every week", "schedule"]
+  automation: ["automate", "automation", "workflow", "recurring", "every day", "every week", "schedule"],\n  universal: ["help", "service", "business", "legal", "hr", "sales", "marketing", "procurement", "education", "health", "science", "engineering", "software", "cybersecurity", "travel", "shopping", "government", "agriculture", "manufacturing", "anything", "whatever"]
 };
 
 export function listAgents() {
