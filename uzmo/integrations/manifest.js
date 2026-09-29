@@ -3,7 +3,7 @@ export const CONNECTOR_MANIFEST = {
     name: "Google Workspace",
     auth: "oauth2",
     capabilities: ["gmail", "calendar", "drive", "sheets"],
-    scopes: ["gmail", "calendar", "drive", "spreadsheets"]
+    scopes: [\n      "https://www.googleapis.com/auth/gmail.modify",\n      "https://www.googleapis.com/auth/calendar",\n      "https://www.googleapis.com/auth/drive",\n      "https://www.googleapis.com/auth/spreadsheets"\n    ]
   },
   microsoft_365: {
     name: "Microsoft 365",
