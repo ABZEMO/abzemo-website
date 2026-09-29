@@ -24,11 +24,10 @@ function getCorsHeaders(env, request) {
     .map(origin => origin.trim())
     .filter(Boolean);
   const requestOrigin = request.headers.get("Origin");
-  const origin = requestOrigin && configured.includes(requestOrigin)
-    ? requestOrigin
-    : configured[0] || "https://abzemo.com";
+  const allowed = !requestOrigin || configured.includes(requestOrigin);
+  const origin = allowed ? (requestOrigin || configured[0] || "https://abzemo.com") : null;
   return {
-    "Access-Control-Allow-Origin": origin,
+    ...(origin ? {"Access-Control-Allow-Origin": origin} : {}),
     "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type, Authorization",
     "Vary": "Origin"
