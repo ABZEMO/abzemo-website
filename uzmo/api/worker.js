@@ -16,15 +16,24 @@ import { handleTriggers } from "./triggers.js";
 import { createRuntimeStores } from "../workflows/runtime-stores.js";
 import { executeJob } from "../workflows/executor.js";
 import { handleGoogleOAuth } from "../integrations/google-oauth.js";
+import { guard } from "../auth/runtime-guard.js";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "https://abzemo.com",
-  "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type, Authorization"
-};
+function getCorsHeaders(env) {
+  const configured = String(env?.UZMO_ALLOWED_ORIGINS || "https://abzemo.com")
+    .split(",")
+    .map(origin => origin.trim())
+    .filter(Boolean);
+  return {
+    "Access-Control-Allow-Origin": configured[0] || "https://abzemo.com",
+    "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    "Vary": "Origin"
+  };
+}
 
 export default {
   async fetch(request, env) {
+    const corsHeaders = getCorsHeaders(env);
     if (request.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
     const url = new URL(request.url);
@@ -34,6 +43,8 @@ export default {
     }
 
     if (url.pathname === "/api/plan" && request.method === "POST") {
+      const access = await guard(request, env, "execute_safe");
+      if (!access.ok) return withCors(access.response);
       const body = await request.json().catch(() => ({}));
       try {
         return json({ status: "planned", ...buildPlan(body.goal) });
@@ -112,11 +123,15 @@ export default {
     }
 
     if (url.pathname === "/api/model/status" && request.method === "GET") {
+      const access = await guard(request, env, "execute_safe");
+      if (!access.ok) return withCors(access.response);
       const gateway = createModelGateway(env);
       return json({ product: "UZMO", configured: gateway.configured, providers: gateway.providers });
     }
 
     if (url.pathname === "/api/model/complete" && request.method === "POST") {
+      const access = await guard(request, env, "execute_safe");
+      if (!access.ok) return withCors(access.response);
       const body = await request.json().catch(() => ({}));
       if (!Array.isArray(body.messages) || !body.messages.length) {
         return json({ error: "messages is required" }, 400);
