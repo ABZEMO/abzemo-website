@@ -256,7 +256,7 @@ async function sendLeadEmail(lead, origin) {
   }
 
   const q = lead.qualification || {};
-  const from = process.env.RESEND_FROM_EMAIL || "ABZEMO AI <ai@abzemo.com>";
+  const from = process.env.RESEND_FROM_EMAIL || "ABZEMO AI <sales@abzemo.com>";
   const to = process.env.RESEND_TO_EMAIL || "sales@abzemo.com";
 
   const html = [
@@ -286,6 +286,7 @@ async function sendLeadEmail(lead, origin) {
         from,
         to: [to],
         subject: "ABZEMO AI — Qualified Lead",
+        reply_to: ["sales@abzemo.com"],
         html
       })
     });
@@ -304,9 +305,18 @@ async function sendLeadEmail(lead, origin) {
 }
 
 async function persistLeadIfConfigured(lead, origin) {
+  if (!lead.handoff_ready) {
+    return {
+      attempted: false,
+      persisted: false,
+      notification_sent: lead.notification_sent === true
+    };
+  }
+
+  let webhookPersisted = false;
   const webhook = process.env.LEAD_WEBHOOK_URL;
 
-  if (webhook && lead.handoff_ready) {
+  if (webhook) {
     try {
       const response = await fetch(webhook, {
         method: "POST",
@@ -325,14 +335,19 @@ async function persistLeadIfConfigured(lead, origin) {
         })
       });
 
-      return { attempted: true, persisted: response.ok, notification_sent: lead.notification_sent === true };
+      webhookPersisted = response.ok;
     } catch (error) {
       console.error("Lead persistence error:", error);
-      return { attempted: true, persisted: false, notification_sent: lead.notification_sent === true };
     }
   }
 
-  return sendLeadEmail(lead, origin);
+  const email = await sendLeadEmail(lead, origin);
+
+  return {
+    attempted: Boolean(webhook || process.env.RESEND_API_KEY),
+    persisted: webhookPersisted || email.persisted,
+    notification_sent: email.notification_sent
+  };
 }
 
 export default async function handler(req) {
@@ -461,8 +476,8 @@ export default async function handler(req) {
     {
       reply: modelResult.reply.trim(),
       lead_status: leadState.status,
-      handoff_ready: leadState.handoff_ready,
-      lead_state: { ...leadState, handoff_ready: actualHandoffReady },
+      handoff_ready: actualHandoffReady,
+      lead_state: { ...leadState, handoff_ready: actualHandoffReady, notification_sent: persistence.notification_sent === true },
       qualification: leadState.qualification,
       internal_record_language: "en",
       session_id: sessionId,
