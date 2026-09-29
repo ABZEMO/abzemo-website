@@ -45,6 +45,12 @@ export function createAgentRuntime({ modelGateway, toolExecutor = createToolExec
 
         if (!calls.length) break;
 
+        messages.push({
+          role: "assistant",
+          content: completion.text || "",
+          tool_calls: calls.map(item => ({ id: item.id, name: item.name, arguments: item.arguments || {} }))
+        });
+
         for (const call of calls) {
           if (!call?.name) continue;
           emit({ type: "tool.requested", step: step + 1, tool: call.name, call_id: call.id || null });
@@ -57,11 +63,6 @@ export function createAgentRuntime({ modelGateway, toolExecutor = createToolExec
             return { status: result.status, events, results, response: completion.text || "", verification: verifyExecution({ goal, results, response: completion.text }) };
           }
 
-          messages.push({
-            role: "assistant",
-            content: completion.text || "",
-            tool_calls: calls.map(item => ({ id: item.id, name: item.name, arguments: item.arguments || {} }))
-          });
           messages.push({
             role: "user",
             content: JSON.stringify({ tool_result: { call_id: call.id || null, tool: call.name, result } })
