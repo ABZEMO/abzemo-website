@@ -92,6 +92,21 @@ export async function executeInstagram(input, context, fetchImpl = fetch) {
   return { status: "completed", tool: "instagram", data: published };
 }
 
+export async function executeSnapchat(input, context, fetchImpl = fetch) {
+  const token = context.snapchatAccessToken;
+  const profileId = context.snapchatPublicProfileId || input.profileId;
+  const mediaId = context.snapchatMediaId || input.mediaId;
+  if (!token || !profileId || !mediaId) return { status: "authorization_required", tool: "snapchat", message: "Connect an allowlisted Snapchat Public Profile and provide an uploaded media ID before posting." };
+  const response = await fetchImpl("https://businessapi.snapchat.com/v1/public_profiles/" + encodeURIComponent(profileId) + "/stories", {
+    method: "POST",
+    headers: { Authorization: "Bearer " + token, "Content-Type": "application/json" },
+    body: JSON.stringify({ media_id: mediaId })
+  });
+  const data = await readJson(response);
+  if (!response.ok || data?.request_status !== "SUCCESS") throw new Error("Snapchat Story post failed: HTTP " + response.status);
+  return { status: "completed", tool: "snapchat", data };
+}
+
 function validatePublicUrl(value, label) {
   if (typeof value !== "string" || !value.trim()) throw new Error(label + " URL is required.");
   const url = new URL(value.trim());
