@@ -6,3 +6,4 @@ CREATE TABLE IF NOT EXISTS uzmo_jobs (
 );
 CREATE INDEX IF NOT EXISTS idx_uzmo_jobs_org_status ON uzmo_jobs(org_id,status);
 CREATE INDEX IF NOT EXISTS idx_uzmo_jobs_scheduled ON uzmo_jobs(scheduled_for);
+\nALTER TABLE uzmo_jobs ADD COLUMN locked_by TEXT;\n
