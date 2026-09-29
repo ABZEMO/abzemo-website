@@ -64,20 +64,31 @@ export async function executeInstagram(input, context, fetchImpl = fetch) {
   }
 
   const mediaUrl = validatePublicUrl(input.mediaUrl, "Instagram media");
-  const version = String(context.instagramGraphVersion || "v23.0");
+  const version = String(context.instagramGraphVersion || context.env?.META_GRAPH_API_VERSION || "v23.0");
   const base = META_ROOT + "/" + version + "/" + encodeURIComponent(igUserId);
+  const mediaType = String(input.mediaType || (input.videoUrl ? "REELS" : "IMAGE")).toUpperCase();
+  if (![ "IMAGE", "REELS" ].includes(mediaType)) {
+    throw new Error("Instagram mediaType must be IMAGE or REELS.");
+  }
+
+  const params = {
+    ...(mediaType === "IMAGE" ? { image_url: mediaUrl } : { video_url: mediaUrl, media_type: "REELS" }),
+    ...(input.caption ? { caption: String(input.caption).slice(0, 2200) } : {}),
+    access_token: token
+  };
+
   const create = await fetchImpl(base + "/media", {
     method: "POST",
     headers: { "content-type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams({
-      image_url: mediaUrl,
-      ...(input.caption ? { caption: String(input.caption).slice(0, 2200) } : {}),
-      access_token: token
-    })
+    body: new URLSearchParams(params)
   });
   const created = await readJson(create);
   if (!create.ok || !created?.id) {
     throw new Error("Instagram media container creation failed: HTTP " + create.status);
+  }
+
+  if (mediaType === "REELS") {
+    await waitForInstagramContainer(base, created.id, token, fetchImpl, context);
   }
 
   const publish = await fetchImpl(base + "/media_publish", {
@@ -90,6 +101,31 @@ export async function executeInstagram(input, context, fetchImpl = fetch) {
     throw new Error("Instagram publish failed: HTTP " + publish.status);
   }
   return { status: "completed", tool: "instagram", data: published };
+}
+
+async function waitForInstagramContainer(base, containerId, token, fetchImpl, context) {
+  const maxAttempts = Math.min(Math.max(Number(context.instagramStatusAttempts || 10), 1), 30);
+  const delayMs = Math.min(Math.max(Number(context.instagramStatusDelayMs || 2000), 250), 10000);
+
+  for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+    const response = await fetchImpl(
+      base + "?fields=status_code,status&access_token=" + encodeURIComponent(token)
+    );
+    const data = await readJson(response);
+    if (!response.ok) throw new Error("Instagram media status check failed: HTTP " + response.status);
+
+    const status = String(data.status_code || data.status || "").toUpperCase();
+    if (status === "FINISHED" || status === "PUBLISHED") return;
+    if (status === "ERROR" || status === "EXPIRED") {
+      throw new Error("Instagram media processing failed with status " + status + ".");
+    }
+
+    if (attempt < maxAttempts - 1) {
+      await new Promise(resolve => setTimeout(resolve, delayMs));
+    }
+  }
+
+  throw new Error("Instagram media processing did not finish before the configured timeout.");
 }
 
 function validatePublicUrl(value, label) {
