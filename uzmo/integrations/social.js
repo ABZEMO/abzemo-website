@@ -56,6 +56,47 @@ export async function executeYouTube(input, context, fetchImpl = fetch) {
   return { status: "completed", tool: "youtube", data };
 }
 
+export async function executeBlogger(input, context, fetchImpl = fetch) {
+  const token = context.bloggerAccessToken;
+  const blogId = context.bloggerBlogId || input.blogId;
+  if (!token || !blogId) {
+    return { status: "authorization_required", tool: "blogger", message: "Connect Google Blogger before publishing." };
+  }
+
+  const title = String(input.title || "").trim().slice(0, 300);
+  const content = String(input.content || "");
+  if (!title) throw new Error("Blogger title is required.");
+  if (!content.trim()) throw new Error("Blogger content is required.");
+  if (content.length > 200000) throw new Error("Blogger content exceeds the 200000 character safety limit.");
+
+  const isDraft = input.status === "draft";
+  if (input.status && !["draft", "published"].includes(input.status)) {
+    throw new Error("Invalid Blogger status.");
+  }
+
+  const url = "https://www.googleapis.com/blogger/v3/blogs/" +
+    encodeURIComponent(blogId) + "/posts?isDraft=" + String(isDraft);
+  const body = {
+    title,
+    content,
+    ...(Array.isArray(input.labels) ? { labels: input.labels.map(String).slice(0, 20) } : {})
+  };
+
+  const response = await fetchImpl(url, {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer " + token,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(body)
+  });
+  const data = await readJson(response);
+  if (!response.ok || !data?.id) {
+    throw new Error("Blogger post creation failed: HTTP " + response.status);
+  }
+  return { status: "completed", tool: "blogger", data };
+}
+
 export async function executeInstagram(input, context, fetchImpl = fetch) {
   const token = context.instagramAccessToken;
   const igUserId = context.instagramUserId || input.igUserId;
