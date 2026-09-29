@@ -13,7 +13,8 @@ export default async function handler(req) {
     ok: true,
     service: "ABZEMO AI Global Sales Agent",
     backend: "online",
-    model_configured: Boolean(process.env.OPENAI_MODEL),
+    openai_configured: Boolean(process.env.OPENAI_API_KEY),
+    model: process.env.OPENAI_MODEL || "gpt-5.6-luna",
     lead_storage_configured: Boolean(process.env.LEAD_WEBHOOK_URL),
     timestamp: new Date().toISOString()
   }), {
