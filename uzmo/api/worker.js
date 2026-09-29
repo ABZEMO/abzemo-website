@@ -1,5 +1,6 @@
 import { buildPlan } from "../orchestrator/planner.js";
 import { createModelGateway } from "../core/model-gateway.js";
+import { handleRuntime } from "./runtime.js";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -26,6 +27,15 @@ export default {
       }
     }
 
+    if (url.pathname === "/api/runtime") {
+      try {
+        const response = await handleRuntime(request);
+        return withCors(response);
+      } catch (error) {
+        return json({ error: error.message || "Runtime request failed" }, 500);
+      }
+    }
+
     if (url.pathname === "/api/model/status" && request.method === "GET") {
       const gateway = createModelGateway(env);
       return json({ product: "UZMO", configured: gateway.configured });
@@ -47,6 +57,12 @@ export default {
     return json({ error: "Not found" }, 404);
   }
 };
+
+function withCors(response) {
+  const headers = new Headers(response.headers);
+  Object.entries(corsHeaders).forEach(([key, value]) => headers.set(key, value));
+  return new Response(response.body, { status: response.status, headers });
+}
 
 function json(payload, status = 200) {
   return new Response(JSON.stringify(payload), {
