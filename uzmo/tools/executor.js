@@ -42,7 +42,12 @@ export function createToolExecutor({ fetchImpl = fetch } = {}) {
       if (SOCIAL_SIDE_EFFECTS.has(socialAction) && !context.approved) {
         return { status: "approval_required", tool: toolId, message: "Human approval is required before publishing social content." };
       }
-      if (toolId === "youtube" && input.action === "upload") return executeYouTube(input, context, fetchImpl);
+      if (toolId === "youtube" && input.action === "upload") {
+        return executeYouTube(input, {
+          ...context,
+          youtubeAccessToken: context.youtubeAccessToken || await loadGoogleAccessToken(context, context.env || {})
+        }, fetchImpl);
+      }
       if (toolId === "instagram" && input.action === "publish") return executeInstagram(input, context, fetchImpl);
       if (toolId === "webhook") return executeWebhook(fetchImpl, input, context);
       if (["gmail", "google_calendar", "google_drive", "google_sheets"].includes(toolId)) {
@@ -113,6 +118,17 @@ async function executeHttpApi(fetchImpl, input, context) {
     tool: "http_api",
     http_status: response.status
   };
+}
+
+async function loadGoogleAccessToken(context, env) {
+  if (!context.userId || !context.orgId) return null;
+  const google = createGoogleWorkspace(env);
+  if (!google.configured) return null;
+  return createGoogleConnectionStore(env).getAccessToken({
+    userId: context.userId,
+    orgId: context.orgId,
+    google
+  });
 }
 
 async function executeGoogle(toolId, input, context) {

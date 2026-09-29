@@ -5,7 +5,7 @@ export function createGoogleWorkspace(env){
   return {
     configured:Boolean(env?.UZMO_GOOGLE_CLIENT_ID && env?.UZMO_GOOGLE_CLIENT_SECRET),
     authorizationUrl(state,redirectUri){
-      const p=new URLSearchParams({client_id:env.UZMO_GOOGLE_CLIENT_ID,response_type:"code",redirect_uri:redirectUri,scope:["https://www.googleapis.com/auth/gmail.modify","https://www.googleapis.com/auth/calendar","https://www.googleapis.com/auth/drive","https://www.googleapis.com/auth/spreadsheets"].join(" "),access_type:"offline",prompt:"consent",state});
+      const p=new URLSearchParams({client_id:env.UZMO_GOOGLE_CLIENT_ID,response_type:"code",redirect_uri:redirectUri,scope:["https://www.googleapis.com/auth/gmail.modify","https://www.googleapis.com/auth/calendar","https://www.googleapis.com/auth/drive","https://www.googleapis.com/auth/spreadsheets","https://www.googleapis.com/auth/youtube.upload"].join(" "),access_type:"offline",prompt:"consent",state});
       return "https://accounts.google.com/o/oauth2/v2/auth?"+p;
     },
     async refreshAccessToken(refreshToken){ const body=new URLSearchParams({client_id:env.UZMO_GOOGLE_CLIENT_ID,client_secret:env.UZMO_GOOGLE_CLIENT_SECRET,refresh_token:refreshToken,grant_type:"refresh_token"}); const r=await fetch(GOOGLE_TOKEN_URL,{method:"POST",headers:{"content-type":"application/x-www-form-urlencoded"},body}); if(!r.ok) throw new Error("Google OAuth token refresh failed."); return r.json(); },
