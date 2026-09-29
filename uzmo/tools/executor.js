@@ -1,4 +1,4 @@
-import { getTool } from "./registry.js";
+import { getTool } from "./registry.js";\nimport { createGoogleWorkspace } from "../integrations/google-workspace.js";
 
 const SAFE_METHODS = new Set(["GET", "HEAD", "OPTIONS"]);
 
@@ -16,7 +16,7 @@ export function createToolExecutor({ fetchImpl = fetch } = {}) {
         };
       }
 
-      if (toolId === "webhook") return executeWebhook(fetchImpl, input);
+      if (toolId === "webhook") return executeWebhook(fetchImpl, input);\n      if (["gmail","google_calendar","google_drive","google_sheets"].includes(toolId)) return executeGoogle(toolId,input,context);
       if (toolId === "http_api") return executeHttpApi(fetchImpl, input, context);
 
       return {
