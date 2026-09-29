@@ -11,20 +11,16 @@ const TOOLS = [
   { id: "a2a", name: "Agent-to-Agent", capabilities: ["agent", "a2a"] }
 ];
 
-export function listTools() {
-  return TOOLS;
-}
+export function listTools() { return TOOLS; }
 
 export function selectTools(goal, agents) {
   const text = goal.toLowerCase();
   const agentIds = new Set(agents.map(agent => agent.id));
-  const selected = TOOLS.filter(tool => {
-    const capabilityHit = tool.capabilities.some(cap => text.includes(cap));
-    const agentHit =
-      (tool.id === "google_sheets" && agentIds.has("data")) ||
-      (tool.id === "gmail" && agentIds.has("email")) ||
-      (tool.id === "google_calendar" && agentIds.has("calendar"));
-    return capabilityHit || agentHit;
-  });
+  const selected = TOOLS.filter(tool =>
+    tool.capabilities.some(cap => text.includes(cap)) ||
+    (tool.id === "google_sheets" && agentIds.has("data")) ||
+    (tool.id === "gmail" && agentIds.has("email")) ||
+    (tool.id === "google_calendar" && agentIds.has("calendar"))
+  );
   return selected.length ? selected : [{ id: "http", name: "HTTP API", capabilities: ["api"] }];
 }
