@@ -18,13 +18,17 @@ import { executeJob } from "../workflows/executor.js";
 import { handleGoogleOAuth } from "../integrations/google-oauth.js";
 import { guard } from "../auth/runtime-guard.js";
 
-function getCorsHeaders(env) {
+function getCorsHeaders(env, request) {
   const configured = String(env?.UZMO_ALLOWED_ORIGINS || "https://abzemo.com")
     .split(",")
     .map(origin => origin.trim())
     .filter(Boolean);
+  const requestOrigin = request.headers.get("Origin");
+  const origin = requestOrigin && configured.includes(requestOrigin)
+    ? requestOrigin
+    : configured[0] || "https://abzemo.com";
   return {
-    "Access-Control-Allow-Origin": configured[0] || "https://abzemo.com",
+    "Access-Control-Allow-Origin": origin,
     "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type, Authorization",
     "Vary": "Origin"
@@ -33,117 +37,118 @@ function getCorsHeaders(env) {
 
 export default {
   async fetch(request, env) {
-    const corsHeaders = getCorsHeaders(env);
+    const corsHeaders = getCorsHeaders(env, request);
+    const respond = (payload, status = 200) => json(payload, status, corsHeaders);
     if (request.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
     const url = new URL(request.url);
 
     if (url.pathname === "/health") {
-      return json({ ok: true, service: "uzmo-api", version: "0.1.0" });
+      return respond({ ok: true, service: "uzmo-api", version: "0.1.0" });
     }
 
     if (url.pathname === "/api/plan" && request.method === "POST") {
       const access = await guard(request, env, "execute_safe");
-      if (!access.ok) return withCors(access.response);
+      if (!access.ok) return withCors(access.response, corsHeaders);
       const body = await request.json().catch(() => ({}));
       try {
-        return json({ status: "planned", ...buildPlan(body.goal) });
+        return respond({ status: "planned", ...buildPlan(body.goal) });
       } catch (error) {
-        return json({ error: error.message || "Unable to build plan" }, 400);
+        return respond({ error: error.message || "Unable to build plan" }, 400);
       }
     }
 
     if (url.pathname === "/api/agent") {
-      try { return withCors(await handleAgent(request, env)); }
-      catch (error) { return json({ error: error.message || "Agent request failed" }, 500); }
+      try { return withCors(await handleAgent(request, env, corsHeaders)); }
+      catch (error) { return respond({ error: error.message || "Agent request failed" }, 500); }
     }
 
     if (url.pathname === "/api/triggers") {
-      try { return withCors(await handleTriggers(request)); }
-      catch (error) { return json({ error: error.message || "Trigger request failed" }, 500); }
+      try { return withCors(await handleTriggers(request, corsHeaders)); }
+      catch (error) { return respond({ error: error.message || "Trigger request failed" }, 500); }
     }
 
     if (url.pathname === "/api/job-run") {
-      try { return withCors(await handleJobRun(request, env)); }
-      catch (error) { return json({ error: error.message || "Job execution failed" }, 500); }
+      try { return withCors(await handleJobRun(request, env, corsHeaders)); }
+      catch (error) { return respond({ error: error.message || "Job execution failed" }, 500); }
     }
 
     if (url.pathname === "/api/jobs") {
-      try { return withCors(await handleJobs(request, env)); }
-      catch (error) { return json({ error: error.message || "Job request failed" }, 500); }
+      try { return withCors(await handleJobs(request, env, corsHeaders)); }
+      catch (error) { return respond({ error: error.message || "Job request failed" }, 500); }
     }
 
     if (url.pathname === "/api/scheduler") {
-      try { return withCors(await handleScheduler(request, env)); }
-      catch (error) { return json({ error: error.message || "Scheduler failed" }, 500); }
+      try { return withCors(await handleScheduler(request, env, corsHeaders)); }
+      catch (error) { return respond({ error: error.message || "Scheduler failed" }, 500); }
     }
 
     if (url.pathname === "/api/studio/run") {
-      try { return withCors(await handleStudioRun(request, env)); }
-      catch (error) { return json({ error: error.message || "Studio run failed" }, 500); }
+      try { return withCors(await handleStudioRun(request, env, corsHeaders)); }
+      catch (error) { return respond({ error: error.message || "Studio run failed" }, 500); }
     }
 
     if (url.pathname === "/api/studio") {
-      try { return withCors(await handleStudio(request)); }
-      catch (error) { return json({ error: error.message || "Studio request failed" }, 500); }
+      try { return withCors(await handleStudio(request, corsHeaders)); }
+      catch (error) { return respond({ error: error.message || "Studio request failed" }, 500); }
     }
 
     if (url.pathname === "/api/automations") {
-      try { return withCors(await handleAutomations(request)); }
-      catch (error) { return json({ error: error.message || "Automation request failed" }, 500); }
+      try { return withCors(await handleAutomations(request, corsHeaders)); }
+      catch (error) { return respond({ error: error.message || "Automation request failed" }, 500); }
     }
 
     if (url.pathname.startsWith("/api/integrations/google/oauth")) {
-      try { return withCors(await handleGoogleOAuth(request, env)); }
-      catch (error) { return json({ error: error.message || "Google OAuth failed" }, 500); }
+      try { return withCors(await handleGoogleOAuth(request, env, corsHeaders)); }
+      catch (error) { return respond({ error: error.message || "Google OAuth failed" }, 500); }
     }
 
     if (url.pathname === "/api/integrations" && request.method === "GET") {
-      return withCors(await handleIntegrations(request));
+      return withCors(await handleIntegrations(request, corsHeaders));
     }
 
     if (url.pathname === "/api/knowledge") {
-      try { return withCors(await handleKnowledge(request, env)); }
-      catch (error) { return json({ error: error.message || "Knowledge request failed" }, 500); }
+      try { return withCors(await handleKnowledge(request, env, corsHeaders)); }
+      catch (error) { return respond({ error: error.message || "Knowledge request failed" }, 500); }
     }
 
     if (url.pathname === "/api/memory") {
-      try { return withCors(await handleMemory(request, env)); }
-      catch (error) { return json({ error: error.message || "Memory request failed" }, 500); }
+      try { return withCors(await handleMemory(request, env, corsHeaders)); }
+      catch (error) { return respond({ error: error.message || "Memory request failed" }, 500); }
     }
 
     if (url.pathname === "/api/runtime") {
-      try { return withCors(await handleRuntime(request, env)); }
-      catch (error) { return json({ error: error.message || "Runtime request failed" }, 500); }
+      try { return withCors(await handleRuntime(request, env, corsHeaders)); }
+      catch (error) { return respond({ error: error.message || "Runtime request failed" }, 500); }
     }
 
     if (url.pathname === "/api/security") {
-      try { return withCors(await handleSecurity(request, env)); }
-      catch (error) { return json({ error: error.message || "Security request failed" }, 500); }
+      try { return withCors(await handleSecurity(request, env, corsHeaders)); }
+      catch (error) { return respond({ error: error.message || "Security request failed" }, 500); }
     }
 
     if (url.pathname === "/api/model/status" && request.method === "GET") {
       const access = await guard(request, env, "execute_safe");
-      if (!access.ok) return withCors(access.response);
+      if (!access.ok) return withCors(access.response, corsHeaders);
       const gateway = createModelGateway(env);
-      return json({ product: "UZMO", configured: gateway.configured, providers: gateway.providers });
+      return respond({ product: "UZMO", configured: gateway.configured, providers: gateway.providers });
     }
 
     if (url.pathname === "/api/model/complete" && request.method === "POST") {
       const access = await guard(request, env, "execute_safe");
-      if (!access.ok) return withCors(access.response);
+      if (!access.ok) return withCors(access.response, corsHeaders);
       const body = await request.json().catch(() => ({}));
       if (!Array.isArray(body.messages) || !body.messages.length) {
-        return json({ error: "messages is required" }, 400);
+        return respond({ error: "messages is required" }, 400);
       }
       try {
-        return json(await createModelGateway(env).complete(body.messages, body.options || {}));
+        return respond(await createModelGateway(env).complete(body.messages, body.options || {}));
       } catch (error) {
-        return json({ error: error.message || "Model request failed" }, 502);
+        return respond({ error: error.message || "Model request failed" }, 502);
       }
     }
 
-    return json({ error: "Not found" }, 404);
+    return respond({ error: "Not found" }, 404);
   },
 
   async scheduled(event, env, ctx) {
@@ -169,13 +174,13 @@ export default {
   }
 };
 
-function withCors(response) {
+function withCors(response, corsHeaders) {
   const headers = new Headers(response.headers);
   Object.entries(corsHeaders).forEach(([key, value]) => headers.set(key, value));
   return new Response(response.body, { status: response.status, headers });
 }
 
-function json(payload, status = 200) {
+function json(payload, status = 200, corsHeaders = {}) {
   return new Response(JSON.stringify(payload), {
     status,
     headers: { ...corsHeaders, "Content-Type": "application/json" }
