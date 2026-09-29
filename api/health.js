@@ -18,6 +18,9 @@ export default async function handler(req) {
     lead_storage_configured: Boolean(process.env.LEAD_WEBHOOK_URL || process.env.RESEND_API_KEY),
     resend_configured: Boolean(process.env.RESEND_API_KEY),
     lead_notification_recipient: process.env.RESEND_TO_EMAIL || "sales@abzemo.com",
+    hubspot_configured: Boolean(process.env.HUBSPOT_ACCESS_TOKEN),
+    hubspot_pipeline: process.env.HUBSPOT_PIPELINE || "default",
+    hubspot_deal_stage: process.env.HUBSPOT_DEAL_STAGE || "appointmentscheduled",
     timestamp: new Date().toISOString()
   }), {
     status: 200,
