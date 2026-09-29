@@ -18,14 +18,22 @@ import { executeJob } from "../workflows/executor.js";
 import { handleGoogleOAuth } from "../integrations/google-oauth.js";
 import { guard } from "../auth/runtime-guard.js";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "https://abzemo.com",
-  "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type, Authorization"
-};
+function getCorsHeaders(env) {
+  const configured = String(env?.UZMO_ALLOWED_ORIGINS || "https://abzemo.com")
+    .split(",")
+    .map(origin => origin.trim())
+    .filter(Boolean);
+  return {
+    "Access-Control-Allow-Origin": configured[0] || "https://abzemo.com",
+    "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    "Vary": "Origin"
+  };
+}
 
 export default {
   async fetch(request, env) {
+    const corsHeaders = getCorsHeaders(env);
     if (request.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
     const url = new URL(request.url);
