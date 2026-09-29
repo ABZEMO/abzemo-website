@@ -92,6 +92,25 @@ export async function executeInstagram(input, context, fetchImpl = fetch) {
   return { status: "completed", tool: "instagram", data: published };
 }
 
+const TELEGRAM_ROOT = "https://api.telegram.org";
+
+export async function executeTelegram(input, context, fetchImpl = fetch) {
+  const token = context.telegramBotToken;
+  const chatId = context.telegramChatId || input.chatId;
+  if (!token || !chatId) return { status: "authorization_required", tool: "telegram", message: "Connect a Telegram bot and target chat before publishing." };
+  const text = String(input.text || "").trim();
+  if (!text) throw new Error("Telegram message text is required.");
+  if (text.length > 4096) throw new Error("Telegram message exceeds the 4096-character limit.");
+  const response = await fetchImpl(TELEGRAM_ROOT + "/bot" + encodeURIComponent(token) + "/sendMessage", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ chat_id: chatId, text, parse_mode: input.parseMode || undefined, disable_web_page_preview: Boolean(input.disableWebPagePreview) })
+  });
+  const data = await readJson(response);
+  if (!response.ok || !data?.ok) throw new Error("Telegram message failed: HTTP " + response.status);
+  return { status: "completed", tool: "telegram", data: data.result };
+}
+
 function validatePublicUrl(value, label) {
   if (typeof value !== "string" || !value.trim()) throw new Error(label + " URL is required.");
   const url = new URL(value.trim());
