@@ -62,9 +62,22 @@ const RESPONSE_SCHEMA = {
       type: "string",
       enum: ["new", "qualifying", "qualified", "hot"]
     },
-    handoff_ready: { type: "boolean" }
+    handoff_ready: { type: "boolean" },
+    location_context: {
+      type: "object",
+      additionalProperties: false,
+      properties: {
+        needed: { type: "boolean" },
+        intent: {
+          type: "string",
+          enum: ["none", "location_search", "property_search", "business_location"]
+        },
+        query: { type: ["string", "null"] }
+      },
+      required: ["needed", "intent", "query"]
+    }
   },
-  required: ["reply", "qualification", "lead_status", "handoff_ready"]
+  required: ["reply", "qualification", "lead_status", "handoff_ready", "location_context"]
 };
 
 function corsHeaders(origin) {
@@ -161,6 +174,9 @@ function buildInstructions(language, previousQualification) {
     "Set handoff_ready true only when there is enough business context for a human sales follow-up AND consent_to_contact is true AND a usable contact value exists.",
     "Use lead_status new when there is not enough information yet, qualifying while gathering useful business information, qualified when the opportunity is sufficiently understood, and hot only when qualified plus consented contact information and a clear near-term business opportunity are present.",
     "Never claim that a human has already contacted the visitor. Handoff_ready only means the conversation is ready for handoff.",
+    "If the visitor asks about a location, address, map, area, property, land, plot, house, apartment, office, warehouse, real estate, or another location-specific matter, set location_context.needed true and put the location/search phrase in location_context.query. Use property_search for property/real-estate requests, business_location for an ABZEMO office or business location request, and location_search for general places.",
+    "Do not invent property listings, availability, prices, coordinates, addresses, or map results. Location data returned by the system is only the result of an external location lookup.",
+    "For current or time-sensitive external information, use web search when useful rather than relying on memory.",
     "For general client requests, document requests, company information requests, or enquiries that do not need a sales handoff, tell the visitor they can email info@abzemo.com. Do not invent an email address other than info@abzemo.com for this general-information route.",
     "When enough information is available, briefly summarize the understood need and recommend the relevant ABZEMO solution direction.",
     "Relevant ABZEMO solution categories: " + SOLUTIONS.join(", ") + ".",
@@ -168,6 +184,63 @@ function buildInstructions(language, previousQualification) {
     "Detected response language: " + (language || "en") + ".",
     "Previously known qualification: " + JSON.stringify(previousQualification || {})
   ].join("\n");
+}
+
+const LOCATION_CACHE = new Map();
+let lastLocationLookupAt = 0;
+
+async function resolveLocation(query, language) {
+  const clean = typeof query === "string" ? query.trim().slice(0, 300) : "";
+  if (!clean) return [];
+
+  const cacheKey = clean.toLowerCase();
+  const cached = LOCATION_CACHE.get(cacheKey);
+  if (cached) return cached;
+
+  const wait = 1000 - (Date.now() - lastLocationLookupAt);
+  if (wait > 0) await new Promise(resolve => setTimeout(resolve, wait));
+  lastLocationLookupAt = Date.now();
+
+  const params = new URLSearchParams({
+    q: clean,
+    format: "jsonv2",
+    addressdetails: "1",
+    limit: "6"
+  });
+
+  const lang = String(language || "en").split("-")[0];
+  if (/^[a-z]{2,3}$/.test(lang)) params.set("accept-language", lang);
+
+  try {
+    const response = await fetch(
+      "https://nominatim.openstreetmap.org/search?" + params.toString(),
+      {
+        headers: {
+          "User-Agent": "ABZEMO-AI-Global-Sales-Agent/1.0 (+https://abzemo.com; contact: info@abzemo.com)"
+        }
+      }
+    );
+
+    if (!response.ok) return [];
+
+    const data = await response.json();
+    const results = Array.isArray(data)
+      ? data.map(item => ({
+          display_name: String(item.display_name || "").slice(0, 500),
+          lat: Number(item.lat),
+          lon: Number(item.lon),
+          type: String(item.type || ""),
+          category: String(item.category || ""),
+          osm_id: item.osm_id || null
+        })).filter(item => Number.isFinite(item.lat) && Number.isFinite(item.lon))
+      : [];
+
+    LOCATION_CACHE.set(cacheKey, results);
+    return results;
+  } catch (error) {
+    console.error("Location lookup error:", error);
+    return [];
+  }
 }
 
 function extractText(data) {
@@ -683,7 +756,12 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         model: MODEL,
         input,
-        max_output_tokens: 700,
+        max_output_tokens: 900,
+        tools: [
+          {
+            type: "web_search"
+          }
+        ],
         text: {
           format: {
             type: "json_schema",
@@ -731,6 +809,16 @@ export default async function handler(req, res) {
       ? body.session_id.slice(0, 120)
       : null;
 
+  const locationContext =
+    modelResult.location_context &&
+    typeof modelResult.location_context === "object"
+      ? modelResult.location_context
+      : { needed: false, intent: "none", query: null };
+
+  const locationResults = locationContext.needed === true
+    ? await resolveLocation(locationContext.query, language)
+    : [];
+
   const lead = {
     session_id: sessionId,
     handoff_ready: leadState.handoff_ready,
@@ -755,6 +843,14 @@ export default async function handler(req, res) {
       qualification: leadState.qualification,
       internal_record_language: "en",
       session_id: sessionId,
+      location_context: {
+        needed: locationContext.needed === true,
+        intent: locationContext.intent || "none",
+        query: locationContext.query || null,
+        results: locationResults,
+        source: locationResults.length ? "OpenStreetMap Nominatim" : null,
+        property_listings: "not_configured"
+      },
       lead_persistence: persistence.persisted
         ? "stored"
         : persistence.attempted
