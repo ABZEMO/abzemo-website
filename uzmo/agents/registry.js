@@ -34,10 +34,10 @@ export function listAgents() {
 
 export function selectAgents(goal) {
   const text = goal.toLowerCase();
-  const ranked = AGENTS.map(agent => {
-    const score = (KEYWORDS[agent.id] || []).reduce((n, word) => n + (text.includes(word) ? 1 : 0), 0);
-    return { agent, score };
-  }).filter(item => item.score > 0).sort((a, b) => b.score - a.score);
+  const ranked = AGENTS.map(agent => ({
+    agent,
+    score: (KEYWORDS[agent.id] || []).reduce((n, word) => n + (text.includes(word) ? 1 : 0), 0)
+  })).filter(item => item.score > 0).sort((a, b) => b.score - a.score);
 
   return (ranked.length ? ranked.slice(0, 4) : [{ agent: AGENTS[0], score: 0 }]).map(item => item.agent);
 }
