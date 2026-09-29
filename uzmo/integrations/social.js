@@ -92,6 +92,43 @@ export async function executeInstagram(input, context, fetchImpl = fetch) {
   return { status: "completed", tool: "instagram", data: published };
 }
 
+export async function executeDevTo(input, context, fetchImpl = fetch) {
+  const apiKey = context.devtoApiKey;
+  if (!apiKey) return { status: "authorization_required", tool: "devto", message: "Connect DEV.to before publishing." };
+
+  const title = String(input.title || "").trim();
+  const bodyMarkdown = String(input.bodyMarkdown || input.body_markdown || "");
+  if (!title) throw new Error("DEV.to title is required.");
+  if (!bodyMarkdown) throw new Error("DEV.to bodyMarkdown is required.");
+  if (title.length > 200) throw new Error("DEV.to title exceeds the supported limit.");
+  if (bodyMarkdown.length > 200000) throw new Error("DEV.to article body exceeds the safety limit.");
+
+  const article = {
+    title,
+    body_markdown: bodyMarkdown,
+    published: Boolean(input.published),
+    ...(input.series ? { series: String(input.series).slice(0, 200) } : {}),
+    ...(input.mainImage ? { main_image: validatePublicUrl(input.mainImage, "DEV.to main image") } : {}),
+    ...(input.canonicalUrl ? { canonical_url: validatePublicUrl(input.canonicalUrl, "DEV.to canonical") } : {}),
+    ...(input.description ? { description: String(input.description).slice(0, 1000) } : {}),
+    ...(Array.isArray(input.tags) ? { tags: input.tags.map(String).slice(0, 4) } : {}),
+    ...(input.organizationId != null ? { organization_id: Number(input.organizationId) } : {})
+  };
+
+  const response = await fetchImpl("https://dev.to/api/articles", {
+    method: "POST",
+    headers: {
+      "api-key": apiKey,
+      "accept": "application/vnd.forem.api-v1+json",
+      "content-type": "application/json"
+    },
+    body: JSON.stringify({ article })
+  });
+  const data = await readJson(response);
+  if (!response.ok) throw new Error("DEV.to article publish failed: HTTP " + response.status);
+  return { status: "completed", tool: "devto", data };
+}
+
 function validatePublicUrl(value, label) {
   if (typeof value !== "string" || !value.trim()) throw new Error(label + " URL is required.");
   const url = new URL(value.trim());
