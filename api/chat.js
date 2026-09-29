@@ -235,36 +235,104 @@ function finalizeState(modelState, qualification) {
   };
 }
 
-async function persistLeadIfConfigured(lead, origin) {
-  const webhook = process.env.LEAD_WEBHOOK_URL;
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
 
-  if (!webhook || !lead.handoff_ready) {
-    return { attempted: false, persisted: false };
+async function sendLeadEmail(lead, origin) {
+  const apiKey = process.env.RESEND_API_KEY;
+
+  if (!apiKey || !lead.handoff_ready || lead.notification_sent === true) {
+    return {
+      attempted: false,
+      persisted: false,
+      notification_sent: lead.notification_sent === true
+    };
   }
 
+  const q = lead.qualification || {};
+  const from = process.env.RESEND_FROM_EMAIL || "ABZEMO AI <ai@abzemo.com>";
+  const to = process.env.RESEND_TO_EMAIL || "sales@abzemo.com";
+
+  const html = [
+    "<h2>New ABZEMO AI Qualified Lead</h2>",
+    "<p><strong>Name:</strong> " + escapeHtml(q.name || "Not provided") + "</p>",
+    "<p><strong>Company:</strong> " + escapeHtml(q.company || "Not provided") + "</p>",
+    "<p><strong>Industry:</strong> " + escapeHtml(q.industry || "Not provided") + "</p>",
+    "<p><strong>Business need:</strong> " + escapeHtml(q.business_need || "Not provided") + "</p>",
+    "<p><strong>Solution interest:</strong> " + escapeHtml(q.solution_interest || "Not provided") + "</p>",
+    "<p><strong>Timeline:</strong> " + escapeHtml(q.timeline || "Not provided") + "</p>",
+    "<p><strong>Budget:</strong> " + escapeHtml(q.budget || "Not provided") + "</p>",
+    "<p><strong>Contact method:</strong> " + escapeHtml(q.contact_method || "Not provided") + "</p>",
+    "<p><strong>Contact:</strong> " + escapeHtml(q.contact_value || "Not provided") + "</p>",
+    "<p><strong>Consent to contact:</strong> Yes</p>",
+    "<p><strong>Session:</strong> " + escapeHtml(lead.session_id || "Not provided") + "</p>",
+    "<p><strong>Origin:</strong> " + escapeHtml(origin || "Unknown") + "</p>"
+  ].join("");
+
   try {
-    const response = await fetch(webhook, {
+    const response = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        ...(process.env.LEAD_WEBHOOK_SECRET
-          ? { "X-ABZEMO-Lead-Secret": process.env.LEAD_WEBHOOK_SECRET }
-          : {})
+        Authorization: "Bearer " + apiKey,
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        source: "ABZEMO AI Global Sales Agent",
-        session_id: lead.session_id,
-        origin,
-        qualification: lead.qualification,
-        created_at: new Date().toISOString()
+        from,
+        to: [to],
+        subject: "ABZEMO AI — Qualified Lead",
+        html
       })
     });
 
-    return { attempted: true, persisted: response.ok };
+    if (!response.ok) {
+      const detail = await response.text();
+      console.error("Resend error:", detail);
+      return { attempted: true, persisted: false, notification_sent: false };
+    }
+
+    return { attempted: true, persisted: true, notification_sent: true };
   } catch (error) {
-    console.error("Lead persistence error:", error);
-    return { attempted: true, persisted: false };
+    console.error("Lead email error:", error);
+    return { attempted: true, persisted: false, notification_sent: false };
   }
+}
+
+async function persistLeadIfConfigured(lead, origin) {
+  const webhook = process.env.LEAD_WEBHOOK_URL;
+
+  if (webhook && lead.handoff_ready) {
+    try {
+      const response = await fetch(webhook, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(process.env.LEAD_WEBHOOK_SECRET
+            ? { "X-ABZEMO-Lead-Secret": process.env.LEAD_WEBHOOK_SECRET }
+            : {})
+        },
+        body: JSON.stringify({
+          source: "ABZEMO AI Global Sales Agent",
+          session_id: lead.session_id,
+          origin,
+          qualification: lead.qualification,
+          created_at: new Date().toISOString()
+        })
+      });
+
+      return { attempted: true, persisted: response.ok, notification_sent: lead.notification_sent === true };
+    } catch (error) {
+      console.error("Lead persistence error:", error);
+      return { attempted: true, persisted: false, notification_sent: lead.notification_sent === true };
+    }
+  }
+
+  return sendLeadEmail(lead, origin);
 }
 
 export default async function handler(req) {
@@ -378,12 +446,16 @@ export default async function handler(req) {
 
   const lead = {
     session_id: sessionId,
-    handoff_ready: actualHandoffReady,
+    handoff_ready: leadState.handoff_ready,
+    notification_sent:
+      body.lead_state &&
+      body.lead_state.notification_sent === true,
     qualification: leadState.qualification
   };
 
   const persistence = await persistLeadIfConfigured(lead, origin);
-  const actualHandoffReady = leadState.handoff_ready && persistence.persisted;
+  const actualHandoffReady =
+    leadState.handoff_ready && persistence.persisted;
 
   return json(
     {
@@ -394,7 +466,12 @@ export default async function handler(req) {
       qualification: leadState.qualification,
       internal_record_language: "en",
       session_id: sessionId,
-      lead_persistence: persistence.persisted ? "stored" : persistence.attempted ? "failed" : "not_configured"
+      lead_persistence: persistence.persisted
+        ? "stored"
+        : persistence.attempted
+          ? "failed"
+          : "not_configured",
+      notification_sent: persistence.notification_sent === true
     },
     200,
     origin
