@@ -92,6 +92,27 @@ export async function executeInstagram(input, context, fetchImpl = fetch) {
   return { status: "completed", tool: "instagram", data: published };
 }
 
+export async function executeVimeo(input, context, fetchImpl = fetch) {
+  const token = context.vimeoAccessToken;
+  const videoUrl = String(input.videoUrl || "").trim();
+  if (!token || !videoUrl) return { status: "authorization_required", tool: "vimeo", message: "Connect Vimeo and provide a direct public video URL before publishing." };
+  let parsed;
+  try { parsed = new URL(videoUrl); } catch { throw new Error("Vimeo video URL is invalid."); }
+  if (parsed.protocol !== "https:") throw new Error("Vimeo video URL must use HTTPS.");
+  if (videoUrl.length > 16384) throw new Error("Vimeo source URL exceeds the supported limit.");
+  const body = { upload: { approach: "pull", link: videoUrl }, name: String(input.name || "UZMO Video").slice(0, 255) };
+  if (input.description) body.description = String(input.description);
+  if (input.privacyView) body.privacy = { view: String(input.privacyView) };
+  const response = await fetchImpl("https://api.vimeo.com/me/videos", {
+    method: "POST",
+    headers: { Authorization: "bearer " + token, "Content-Type": "application/json", Accept: "application/vnd.vimeo.*+json;version=3.4" },
+    body: JSON.stringify(body)
+  });
+  const data = await readJson(response);
+  if (!response.ok || !data?.uri) throw new Error("Vimeo upload failed: HTTP " + response.status);
+  return { status: "completed", tool: "vimeo", data };
+}
+
 function validatePublicUrl(value, label) {
   if (typeof value !== "string" || !value.trim()) throw new Error(label + " URL is required.");
   const url = new URL(value.trim());
