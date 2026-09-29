@@ -56,6 +56,39 @@ export async function executeYouTube(input, context, fetchImpl = fetch) {
   return { status: "completed", tool: "youtube", data };
 }
 
+export async function executeGitHubDiscussion(input, context, fetchImpl = fetch) {
+  const token = context.githubAccessToken;
+  const repositoryId = context.githubRepositoryId || input.repositoryId;
+  const categoryId = context.githubDiscussionCategoryId || input.categoryId;
+  if (!token || !repositoryId || !categoryId) {
+    return { status: "authorization_required", tool: "github_discussions", message: "Connect GitHub and provide an authorized repository and discussion category." };
+  }
+
+  const title = String(input.title || "").trim().slice(0, 300);
+  const body = String(input.body || "");
+  if (!title) throw new Error("GitHub Discussion title is required.");
+  if (!body.trim()) throw new Error("GitHub Discussion body is required.");
+  if (body.length > 65536) throw new Error("GitHub Discussion body exceeds the 65536 character safety limit.");
+
+  const response = await fetchImpl("https://api.github.com/graphql", {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer " + token,
+      Accept: "application/vnd.github+json",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      query: "mutation CreateDiscussion($input: CreateDiscussionInput!) { createDiscussion(input: $input) { discussion { id url title } } }",
+      variables: { input: { repositoryId, categoryId, title, body } }
+    })
+  });
+  const data = await readJson(response);
+  if (!response.ok || data?.errors?.length || !data?.data?.createDiscussion?.discussion?.id) {
+    throw new Error("GitHub Discussion creation failed: HTTP " + response.status);
+  }
+  return { status: "completed", tool: "github_discussions", data: data.data.createDiscussion.discussion };
+}
+
 export async function executeInstagram(input, context, fetchImpl = fetch) {
   const token = context.instagramAccessToken;
   const igUserId = context.instagramUserId || input.igUserId;
