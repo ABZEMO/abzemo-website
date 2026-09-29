@@ -174,13 +174,13 @@ export default {
   }
 };
 
-function withCors(response) {
+function withCors(response, corsHeaders) {
   const headers = new Headers(response.headers);
   Object.entries(corsHeaders).forEach(([key, value]) => headers.set(key, value));
   return new Response(response.body, { status: response.status, headers });
 }
 
-function json(payload, status = 200) {
+function json(payload, status = 200, corsHeaders = {}) {
   return new Response(JSON.stringify(payload), {
     status,
     headers: { ...corsHeaders, "Content-Type": "application/json" }
