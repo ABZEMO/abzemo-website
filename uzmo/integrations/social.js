@@ -92,6 +92,34 @@ export async function executeInstagram(input, context, fetchImpl = fetch) {
   return { status: "completed", tool: "instagram", data: published };
 }
 
+const REDDIT_ROOT = "https://oauth.reddit.com";
+
+export async function executeReddit(input, context, fetchImpl = fetch) {
+  const token = context.redditAccessToken;
+  if (!token) return { status: "authorization_required", tool: "reddit", message: "Connect Reddit before publishing." };
+  const subreddit = String(input.subreddit || "").trim();
+  const title = String(input.title || "").trim();
+  const kind = String(input.kind || "self");
+  if (!subreddit || !title) throw new Error("Reddit subreddit and title are required.");
+  if (title.length > 300) throw new Error("Reddit title exceeds the supported limit.");
+  if (!["self", "link"].includes(kind)) throw new Error("Unsupported Reddit post kind.");
+  const params = new URLSearchParams({
+    api_type: "json",
+    sr: subreddit,
+    title,
+    kind,
+    ...(kind === "self" ? { text: String(input.text || "").slice(0, 40000) } : { url: validatePublicUrl(input.url, "Reddit link") })
+  });
+  const response = await fetchImpl(REDDIT_ROOT + "/api/submit", {
+    method: "POST",
+    headers: { Authorization: "Bearer " + token, "Content-Type": "application/x-www-form-urlencoded" },
+    body: params
+  });
+  const data = await readJson(response);
+  if (!response.ok || data?.json?.errors?.length) throw new Error("Reddit post failed: HTTP " + response.status);
+  return { status: "completed", tool: "reddit", data };
+}
+
 function validatePublicUrl(value, label) {
   if (typeof value !== "string" || !value.trim()) throw new Error(label + " URL is required.");
   const url = new URL(value.trim());
