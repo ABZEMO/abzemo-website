@@ -1,0 +1,14 @@
+name = "uzmo-api"
+main = "uzmo/api/worker.js"
+compatibility_date = "2026-09-29"
+
+[vars]
+UZMO_ALLOWED_ORIGINS = "https://abzemo.com"
+
+[[d1_databases]]
+binding = "UZMO_DB"
+database_name = "uzmo"
+database_id = "REPLACE_WITH_D1_DATABASE_ID"
+
+[triggers]
+crons = ["*/5 * * * *"]
