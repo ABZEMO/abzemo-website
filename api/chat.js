@@ -144,6 +144,7 @@ function buildInstructions(language, previousQualification) {
     "Set handoff_ready true only when there is enough business context for a human sales follow-up AND consent_to_contact is true AND a usable contact value exists.",
     "Use lead_status new when there is not enough information yet, qualifying while gathering useful business information, qualified when the opportunity is sufficiently understood, and hot only when qualified plus consented contact information and a clear near-term business opportunity are present.",
     "Never claim that a human has already contacted the visitor. Handoff_ready only means the conversation is ready for handoff.",
+    "For general client requests, document requests, company information requests, or enquiries that do not need a sales handoff, tell the visitor they can email info@abzemo.com. Do not invent an email address other than info@abzemo.com for this general-information route.",
     "When enough information is available, briefly summarize the understood need and recommend the relevant ABZEMO solution direction.",
     "Relevant ABZEMO solution categories: " + SOLUTIONS.join(", ") + ".",
     "Qualification fields: " + QUALIFICATION_FIELDS.join(", ") + ".",
