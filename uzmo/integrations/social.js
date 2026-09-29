@@ -92,6 +92,26 @@ export async function executeInstagram(input, context, fetchImpl = fetch) {
   return { status: "completed", tool: "instagram", data: published };
 }
 
+export async function executeWhatsApp(input, context, fetchImpl = fetch) {
+  const token = context.whatsappAccessToken;
+  const phoneNumberId = context.whatsappPhoneNumberId || input.phoneNumberId;
+  const to = String(input.to || "").trim();
+  if (!token || !phoneNumberId) return { status: "authorization_required", tool: "whatsapp", message: "Connect a WhatsApp Business account before sending." };
+  if (!to) throw new Error("WhatsApp recipient is required.");
+  const text = String(input.text || "").trim();
+  if (!text) throw new Error("WhatsApp message text is required.");
+  if (text.length > 4096) throw new Error("WhatsApp message exceeds the supported text limit.");
+  const version = String(context.whatsappGraphVersion || context.env?.META_GRAPH_API_VERSION || "v23.0");
+  const response = await fetchImpl(META_ROOT + "/" + version + "/" + encodeURIComponent(phoneNumberId) + "/messages", {
+    method: "POST",
+    headers: { Authorization: "Bearer " + token, "Content-Type": "application/json" },
+    body: JSON.stringify({ messaging_product: "whatsapp", recipient_type: "individual", to, type: "text", text: { preview_url: Boolean(input.previewUrl), body: text } })
+  });
+  const data = await readJson(response);
+  if (!response.ok || !data?.messages?.[0]?.id) throw new Error("WhatsApp message failed: HTTP " + response.status);
+  return { status: "completed", tool: "whatsapp", data };
+}
+
 function validatePublicUrl(value, label) {
   if (typeof value !== "string" || !value.trim()) throw new Error(label + " URL is required.");
   const url = new URL(value.trim());
