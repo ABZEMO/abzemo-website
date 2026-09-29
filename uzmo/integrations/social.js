@@ -92,6 +92,50 @@ export async function executeInstagram(input, context, fetchImpl = fetch) {
   return { status: "completed", tool: "instagram", data: published };
 }
 
+
+export async function executePeerTube(input, context, fetchImpl = fetch) {
+  const token = context.peerTubeAccessToken;
+  const baseUrl = String(context.peerTubeBaseUrl || input.baseUrl || "").trim().replace(/\/+$/, "");
+  const channelId = Number(context.peerTubeChannelId || input.channelId);
+  if (!token || !baseUrl || !Number.isInteger(channelId) || channelId < 1) {
+    return { status: "authorization_required", tool: "peertube", message: "Connect PeerTube and configure a valid channel before uploading." };
+  }
+
+  const sourceUrl = validatePublicUrl(input.sourceUrl, "PeerTube source");
+  const source = await fetchImpl(sourceUrl);
+  if (!source.ok) throw new Error("PeerTube source returned HTTP " + source.status);
+
+  const contentLength = Number(source.headers.get("content-length") || 0);
+  if (contentLength > 100 * 1024 * 1024) throw new Error("PeerTube upload exceeds the 100 MB safety limit.");
+
+  const name = String(input.name || "").trim().slice(0, 120);
+  if (name.length < 3) throw new Error("PeerTube video name must be 3-120 characters.");
+
+  const fileBlob = await source.blob();
+  const filename = String(input.filename || "uzmo-video.mp4").trim().slice(0, 255) || "uzmo-video.mp4";
+  const form = new FormData();
+  form.append("channelId", String(channelId));
+  form.append("name", name);
+  form.append("videofile", fileBlob, filename);
+  if (input.category != null) form.append("category", String(input.category));
+  if (input.commentsPolicy != null) form.append("commentsPolicy", String(input.commentsPolicy));
+  if (Array.isArray(input.tags)) {
+    for (const tag of input.tags.map(String).slice(0, 5)) form.append("tags[]", tag.slice(0, 30));
+  }
+  if (input.waitTranscoding != null) form.append("waitTranscoding", String(Boolean(input.waitTranscoding)));
+
+  const response = await fetchImpl(baseUrl + "/api/v1/videos/upload", {
+    method: "POST",
+    headers: { Authorization: "Bearer " + token },
+    body: form
+  });
+  const data = await readJson(response);
+  if (!response.ok || !(data?.video?.id || data?.video?.uuid || data?.id)) {
+    throw new Error("PeerTube video upload failed: HTTP " + response.status);
+  }
+  return { status: "completed", tool: "peertube", data };
+}
+
 function validatePublicUrl(value, label) {
   if (typeof value !== "string" || !value.trim()) throw new Error(label + " URL is required.");
   const url = new URL(value.trim());
