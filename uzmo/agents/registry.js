@@ -10,6 +10,8 @@ const AGENTS = [
   { id: "procurement", name: "Procurement Agent", capabilities: ["procurement", "purchase", "vendor", "po", "quotation"] },
   { id: "content", name: "Content Agent", capabilities: ["content", "copy", "social", "post", "marketing"] },
   { id: "web", name: "Web Agent", capabilities: ["web", "browse", "search", "extract"] },
+  { id: "education", name: "Education Agent", capabilities: ["education", "university", "admissions", "scholarship", "study", "degree"] },
+  { id: "health", name: "Health Information Agent", capabilities: ["health", "medical", "medicine", "treatment", "symptoms", "disease", "drug", "patient-safety"] },
   { id: "automation", name: "Automation Agent", capabilities: ["automation", "workflow", "trigger", "schedule", "recurring"] }
 ];
 
@@ -24,6 +26,8 @@ const KEYWORDS = {
   finance: ["finance", "invoice", "budget", "payment", "reconcile"],
   procurement: ["procurement", "purchase", "vendor", "po", "quotation"],
   content: ["content", "social", "instagram", "linkedin", "post", "caption"],
+  education: ["education", "university", "universities", "admission", "admissions", "scholarship", "scholarships", "study", "degree"],
+  health: ["health", "medical", "medicine", "treatment", "symptom", "symptoms", "disease", "drug", "medication", "patient"],
   web: ["web", "browse", "search", "website"],
   automation: ["automate", "automation", "workflow", "recurring", "every day", "every week", "schedule"]
 };
