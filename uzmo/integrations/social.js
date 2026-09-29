@@ -119,3 +119,34 @@ async function readJson(response) {
   const text = await response.text();
   try { return text ? JSON.parse(text) : {}; } catch { return { raw: text.slice(0, 2000) }; }
 }
+
+export async function executeGitLabIssue(input, context, fetchImpl = fetch) {
+  const token = context.gitlabAccessToken;
+  const baseUrl = String(context.gitlabBaseUrl || input.baseUrl || "https://gitlab.com").replace(/\/+$/, "");
+  const project = String(context.gitlabProject || input.project || "").trim();
+  if (!token || !project) {
+    return { status: "authorization_required", tool: "gitlab_issues", message: "Connect GitLab and provide a target project before creating an issue." };
+  }
+  const title = String(input.title || "").trim();
+  const description = input.description == null ? "" : String(input.description);
+  if (!title) throw new Error("GitLab issue title is required.");
+  if (title.length > 255) throw new Error("GitLab issue title exceeds 255 characters.");
+  if (description.length > 1048576) throw new Error("GitLab issue description exceeds 1 MiB.");
+  const url = new URL(baseUrl);
+  if (!["https:", "http:"].includes(url.protocol)) throw new Error("GitLab base URL must use HTTP or HTTPS.");
+  const payload = { title, description };
+  if (input.labels != null) payload.labels = Array.isArray(input.labels) ? input.labels.map(String).join(",") : String(input.labels);
+  if (input.assigneeId != null) payload.assignee_id = Number(input.assigneeId);
+  const response = await fetchImpl(baseUrl + "/api/v4/projects/" + encodeURIComponent(project) + "/issues", {
+    method: "POST",
+    headers: {
+      "PRIVATE-TOKEN": token,
+      Accept: "application/json",
+      "content-type": "application/json"
+    },
+    body: JSON.stringify(payload)
+  });
+  const data = await readJson(response);
+  if (!response.ok || !data?.iid) throw new Error("GitLab issue creation failed: HTTP " + response.status);
+  return { status: "completed", tool: "gitlab_issues", data: { id: data.id, iid: data.iid, title: data.title, url: data.web_url } };
+}
