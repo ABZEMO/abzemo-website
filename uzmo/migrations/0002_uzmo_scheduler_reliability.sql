@@ -1,4 +1,5 @@
--- UZMO scheduler reliability: durable schedule cursor and idempotency key.
+-- UZMO scheduler reliability migration.
+-- Apply once to the UZMO D1 database before enabling durable scheduled workflows.
 ALTER TABLE uzmo_workflows ADD COLUMN next_run_at TEXT;
 ALTER TABLE uzmo_jobs ADD COLUMN schedule_key TEXT;
 CREATE UNIQUE INDEX IF NOT EXISTS idx_uzmo_jobs_schedule_key ON uzmo_jobs(schedule_key);
