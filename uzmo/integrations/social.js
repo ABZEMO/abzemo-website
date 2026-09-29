@@ -133,6 +133,7 @@ export async function executeLinkedInVideo(input, context, fetchImpl = fetch) {
   if (!init.ok || !videoUrn || !instructions.length) throw new Error("LinkedIn video upload initialization failed: HTTP " + init.status);
 
   const bytes = new Uint8Array(await source.arrayBuffer());
+  if (bytes.byteLength !== contentLength) throw new Error("LinkedIn video source Content-Length does not match downloaded bytes.");
   const uploadedPartIds = [];
   for (const instruction of instructions) {
     const first = Number(instruction.firstByte);
