@@ -92,6 +92,25 @@ export async function executeInstagram(input, context, fetchImpl = fetch) {
   return { status: "completed", tool: "instagram", data: published };
 }
 
+const LINE_ROOT = "https://api.line.me/v2/bot";
+
+export async function executeLine(input, context, fetchImpl = fetch) {
+  const token = context.lineChannelAccessToken;
+  const to = context.lineRecipientId || input.to;
+  if (!token || !to) return { status: "authorization_required", tool: "line", message: "Connect a LINE Messaging API channel and recipient before sending." };
+  const text = String(input.text || "").trim();
+  if (!text) throw new Error("LINE message text is required.");
+  if (text.length > 5000) throw new Error("LINE message exceeds the 5000-character limit.");
+  const response = await fetchImpl(LINE_ROOT + "/message/push", {
+    method: "POST",
+    headers: { Authorization: "Bearer " + token, "Content-Type": "application/json" },
+    body: JSON.stringify({ to, messages: [{ type: "text", text }] })
+  });
+  const data = await readJson(response);
+  if (!response.ok) throw new Error("LINE message failed: HTTP " + response.status);
+  return { status: "completed", tool: "line", data };
+}
+
 function validatePublicUrl(value, label) {
   if (typeof value !== "string" || !value.trim()) throw new Error(label + " URL is required.");
   const url = new URL(value.trim());
