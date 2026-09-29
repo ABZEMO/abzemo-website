@@ -95,6 +95,11 @@
     style.textContent = `
       .abzemo-ai-launcher{position:fixed;right:28px;bottom:28px;min-width:148px;height:54px;padding:0 20px;border:0;border-radius:999px;background:linear-gradient(135deg,#1264d8,#168cff);color:#fff;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:800;cursor:pointer;z-index:9998;box-shadow:0 14px 38px rgba(18,100,216,.32);transition:transform .25s ease,box-shadow .25s ease;display:flex;align-items:center;justify-content:center;gap:8px}
       .abzemo-ai-launcher:hover{transform:translateY(-3px);box-shadow:0 18px 45px rgba(18,100,216,.42)}
+      .abzemo-ai-launcher-wrap{position:fixed;right:28px;bottom:28px;z-index:9998;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+      .abzemo-ai-launcher-wrap .abzemo-ai-launcher{position:static}
+      .abzemo-ai-launcher-tip{max-width:230px;padding:9px 13px;border-radius:12px 12px 4px 12px;background:#071a35;color:#fff;font-family:Arial,Helvetica,sans-serif;font-size:11px;font-weight:700;line-height:1.35;box-shadow:0 10px 28px rgba(7,26,53,.22);animation:abzemoAiTip 2.8s ease-in-out infinite}
+      @keyframes abzemoAiTip{0%,100%{transform:translateY(0);opacity:.92}50%{transform:translateY(-3px);opacity:1}}
+      .abzemo-ai-robot{font-size:22px;line-height:1}
       .abzemo-ai-chat{position:fixed;right:28px;bottom:96px;width:390px;max-width:calc(100vw - 32px);height:590px;max-height:calc(100vh - 120px);background:#fff;border:1px solid rgba(7,26,53,.12);border-radius:22px;overflow:hidden;z-index:9999;display:none;flex-direction:column;box-shadow:0 25px 75px rgba(7,26,53,.25);font-family:Arial,Helvetica,sans-serif}
       .abzemo-ai-chat.active{display:flex;animation:abzemoAiOpen .22s ease-out}
       @keyframes abzemoAiOpen{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
@@ -129,7 +134,7 @@
       .abzemo-ai-lead-status{margin:8px 0 0;padding:8px 10px;border-radius:9px;background:#eef5fd;color:#245b9d;font-size:10px;line-height:1.35;display:none}
       .abzemo-ai-lead-status.active{display:block}
       .abzemo-ai-note{margin-top:8px;font-size:9px;line-height:1.3;color:#8a96a8;text-align:center;letter-spacing:.25px}
-      @media(max-width:600px){.abzemo-ai-launcher{right:18px;bottom:18px;min-width:132px;height:50px;padding:0 17px}.abzemo-ai-chat{right:12px;bottom:80px;width:calc(100vw - 24px);height:min(590px,calc(100vh - 100px));border-radius:18px}.abzemo-ai-messages{padding:16px}.abzemo-ai-bubble{max-width:88%}}
+      @media(max-width:600px){.abzemo-ai-launcher-wrap{right:18px;bottom:18px}.abzemo-ai-launcher{right:auto;bottom:auto;min-width:132px;height:50px;padding:0 17px}.abzemo-ai-chat{right:12px;bottom:80px;width:calc(100vw - 24px);height:min(590px,calc(100vh - 100px));border-radius:18px}.abzemo-ai-messages{padding:16px}.abzemo-ai-bubble{max-width:88%}}
       @media(prefers-reduced-motion:reduce){.abzemo-ai-chat.active,.abzemo-ai-typing span{animation:none}}
     `;
 
@@ -215,6 +220,14 @@
 
     if (!launcher && !chat) {
       launcher = document.createElement("button");
+      const launcherWrap = document.createElement("div");
+      launcherWrap.className = "abzemo-ai-launcher-wrap";
+      launcherWrap.id = "abzemoAiLauncherWrap";
+
+      const launcherTip = document.createElement("div");
+      launcherTip.className = "abzemo-ai-launcher-tip";
+      launcherTip.innerHTML = "<span class=\"abzemo-ai-robot\" aria-hidden=\"true\">🤖</span> Press ABZEMO AI to communicate with our Global Sales Agent";
+
       launcher.className = "abzemo-ai-launcher";
       launcher.id = "abzemoAiLauncher";
       launcher.type = "button";
@@ -270,7 +283,9 @@
         </div>
       `;
 
-      document.body.appendChild(launcher);
+      launcherWrap.appendChild(launcherTip);
+      launcherWrap.appendChild(launcher);
+      document.body.appendChild(launcherWrap);
       document.body.appendChild(chat);
     }
 
