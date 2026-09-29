@@ -5,6 +5,7 @@ const TOOLS = [
   { id: "google_calendar", name: "Google Calendar", description: "Read and manage calendar events through an authorized Google Workspace connection.", capabilities: ["calendar", "meeting", "schedule"], integration: "google_workspace", requiresApproval: true },
   { id: "youtube", name: "YouTube", description: "Upload videos to an authorized YouTube channel.", capabilities: ["youtube", "video", "upload"], requiresApproval: true },
   { id: "instagram", name: "Instagram", description: "Publish image posts to an authorized Instagram Business or Creator account.", capabilities: ["instagram", "social", "post", "publish"], requiresApproval: true },
+  { id: "google_business_profile", name: "Google Business Profile", description: "Publish posts to an authorized Google Business Profile location.", capabilities: ["google", "business_profile", "social", "post", "publish"], requiresApproval: true },
   { id: "microsoft_365", name: "Microsoft 365", description: "Work with Outlook, Excel, OneDrive and Teams through an authorized connection.", capabilities: ["office", "excel", "word", "outlook", "teams"], integration: "microsoft_365" },
   { id: "webhook", name: "Webhook", description: "Call an HTTP webhook.", capabilities: ["webhook", "trigger", "api"], requiresApproval: true },
   { id: "http", name: "HTTP API", description: "Call an external HTTP API.", capabilities: ["api", "rest", "http"] },
