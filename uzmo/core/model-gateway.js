@@ -122,30 +122,48 @@ function toOpenAIMessages(messages) {
 }
 
 function toAnthropicMessages(messages) {
-  return (messages || []).filter(message => message?.role !== "system").map(message => {
+  const output = [];
+  for (const message of (messages || []).filter(item => item?.role !== "system")) {
     const result = parseToolResultMessage(message);
     if (result) {
-      return { role: "user", content: [{ type: "tool_result", tool_use_id: result.call_id || "", content: JSON.stringify(result.result ?? {}) }] };
+      const previous = output[output.length - 1];
+      if (previous?.role === "user" && Array.isArray(previous.content) && previous.content.every(block => block?.type === "tool_result")) {
+        previous.content.push({ type: "tool_result", tool_use_id: result.call_id || "", content: JSON.stringify(result.result ?? {}) });
+      } else {
+        output.push({ role: "user", content: [{ type: "tool_result", tool_use_id: result.call_id || "", content: JSON.stringify(result.result ?? {}) }] });
+      }
+      continue;
     }
     if (message?.role === "assistant" && Array.isArray(message.tool_calls)) {
       const content = [];
       if (message.content) content.push({ type: "text", text: message.content });
       for (const call of message.tool_calls) content.push({ type: "tool_use", id: call.id, name: call.name, input: call.arguments || {} });
-      return { role: "assistant", content };
+      output.push({ role: "assistant", content });
+      continue;
     }
-    return { role: message.role === "assistant" ? "assistant" : "user", content: message.content || "" };
-  });
+    output.push({ role: message.role === "assistant" ? "assistant" : "user", content: message.content || "" });
+  }
+  return output;
 }
 
 function toGeminiMessages(messages) {
-  return (messages || []).filter(message => message?.role !== "system").map(message => {
+  const output = [];
+  for (const message of (messages || []).filter(item => item?.role !== "system")) {
     const result = parseToolResultMessage(message);
     if (result) {
-      return { role: "user", parts: [{ functionResponse: { name: result.tool || "uzmo_tool", response: result.result ?? {} } }] };
+      const previous = output[output.length - 1];
+      if (previous?.role === "user" && Array.isArray(previous.parts) && previous.parts.every(part => part?.functionResponse)) {
+        previous.parts.push({ functionResponse: { name: result.tool || "uzmo_tool", response: result.result ?? {} } });
+      } else {
+        output.push({ role: "user", parts: [{ functionResponse: { name: result.tool || "uzmo_tool", response: result.result ?? {} } }] });
+      }
+      continue;
     }
     if (message?.role === "assistant" && Array.isArray(message.tool_calls)) {
-      return { role: "model", parts: message.tool_calls.map(call => ({ functionCall: { name: call.name, args: call.arguments || {} } })) };
+      output.push({ role: "model", parts: message.tool_calls.map(call => ({ functionCall: { name: call.name, args: call.arguments || {} } })) });
+      continue;
     }
-    return { role: message.role === "assistant" ? "model" : "user", parts: [{ text: String(message.content ?? "") }] };
-  });
+    output.push({ role: message.role === "assistant" ? "model" : "user", parts: [{ text: String(message.content ?? "") }] });
+  }
+  return output;
 }
