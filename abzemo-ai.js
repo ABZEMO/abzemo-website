@@ -120,6 +120,10 @@
       .abzemo-ai-input:focus{border-color:rgba(18,100,216,.5);background:#fff;box-shadow:0 0 0 3px rgba(18,100,216,.08)}
       .abzemo-ai-send{width:42px;height:42px;border:0;border-radius:12px;background:linear-gradient(135deg,#1264d8,#168cff);color:#fff;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
       .abzemo-ai-send:disabled{opacity:.55;cursor:not-allowed}
+      .abzemo-ai-voice{width:42px;height:42px;border:1px solid rgba(7,26,53,.13);border-radius:12px;background:#fff;color:#1264d8;cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+      .abzemo-ai-voice.active{background:#1264d8;color:#fff;box-shadow:0 0 0 4px rgba(18,100,216,.12)}
+      .abzemo-ai-voice:disabled{opacity:.45;cursor:not-allowed}
+      .abzemo-ai-voice-status{margin-top:7px;text-align:center;font-size:9px;color:#6d7b90;min-height:12px}
       .abzemo-ai-lead-status{margin:8px 0 0;padding:8px 10px;border-radius:9px;background:#eef5fd;color:#245b9d;font-size:10px;line-height:1.35;display:none}
       .abzemo-ai-lead-status.active{display:block}
       .abzemo-ai-note{margin-top:8px;font-size:9px;line-height:1.3;color:#8a96a8;text-align:center;letter-spacing:.25px}
@@ -218,10 +222,12 @@
         <div class="abzemo-ai-input-area">
           <div class="abzemo-ai-input-row">
             <textarea id="abzemoAiInput" class="abzemo-ai-input" rows="1" placeholder="Tell us what your business needs..." aria-label="Message ABZEMO AI"></textarea>
+            <button id="abzemoAiVoice" class="abzemo-ai-voice" type="button" aria-label="Use voice input" title="Voice input">🎙</button>
             <button id="abzemoAiSend" class="abzemo-ai-send" type="button" aria-label="Send message">➤</button>
           </div>
 
           <div id="abzemoAiLeadStatus" class="abzemo-ai-lead-status"></div>
+          <div id="abzemoAiVoiceStatus" class="abzemo-ai-voice-status" aria-live="polite"></div>
 
           <div class="abzemo-ai-note">
             ABZEMO AI • Global Multilingual Sales Intelligence
@@ -256,10 +262,12 @@
     const chat = el.chat;
     const close = el.close;
     const send = el.send;
+    const voice = document.getElementById("abzemoAiVoice");
     const input = el.input;
     const messages = el.messages;
     const typing = el.typing;
     const leadStatus = el.leadStatus;
+    const voiceStatus = document.getElementById("abzemoAiVoiceStatus");
 
     if (!launcher || !chat || !close || !send || !input || !messages || !typing) {
       return;
@@ -343,7 +351,116 @@
     }
 
     /* =========================================================
-       7. SEND TO SECURE AGENT BACKEND
+       7. VOICE INPUT + OUTPUT
+       Browser-native voice keeps the frontend key-free.
+       ========================================================= */
+
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    let recognition = null;
+    let isListening = false;
+
+    function setVoiceStatus(text) {
+      if (voiceStatus) voiceStatus.textContent = text || "";
+    }
+
+    function stopSpeaking() {
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+      }
+    }
+
+    function speakReply(text) {
+      if (!("speechSynthesis" in window) || !text) return;
+
+      stopSpeaking();
+
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = detectedLanguage === "ur-roman" || detectedLanguage === "hi-roman"
+        ? "en-US"
+        : (navigator.language || "en-US");
+
+      utterance.rate = 0.98;
+      utterance.pitch = 1;
+
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function setupVoiceInput() {
+      if (!voice) return;
+
+      if (!SpeechRecognition) {
+        voice.disabled = true;
+        voice.title = "Voice input is not supported by this browser";
+        setVoiceStatus("Voice input is not supported in this browser.");
+        return;
+      }
+
+      recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = true;
+      recognition.maxAlternatives = 1;
+      recognition.lang = navigator.language || "en-US";
+
+      recognition.onstart = function () {
+        isListening = true;
+        voice.classList.add("active");
+        voice.textContent = "■";
+        setVoiceStatus("Listening…");
+      };
+
+      recognition.onresult = function (event) {
+        let transcript = "";
+
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          transcript += event.results[i][0].transcript;
+        }
+
+        input.value = transcript.trim();
+        autoResize();
+      };
+
+      recognition.onerror = function (event) {
+        setVoiceStatus(
+          event.error === "not-allowed"
+            ? "Microphone permission is required."
+            : "Voice input could not be captured. Please try again."
+        );
+      };
+
+      recognition.onend = function () {
+        isListening = false;
+        voice.classList.remove("active");
+        voice.textContent = "🎙";
+        if (input.value.trim()) {
+          setVoiceStatus("Voice captured — press send.");
+        } else {
+          setVoiceStatus("");
+        }
+      };
+    }
+
+    function toggleVoiceInput() {
+      if (!recognition) return;
+
+      if (isListening) {
+        recognition.stop();
+        return;
+      }
+
+      stopSpeaking();
+      recognition.lang = navigator.language || "en-US";
+
+      try {
+        recognition.start();
+      } catch (error) {
+        console.error("ABZEMO AI voice start error:", error);
+      }
+    }
+
+    /* =========================================================
+       8. SEND TO SECURE AGENT BACKEND
        ========================================================= */
 
     async function sendMessage() {
@@ -457,6 +574,7 @@
 
         if (reply) {
           addMessage(reply,"bot");
+          speakReply(reply);
 
           conversation.push({
             role: "assistant",
@@ -525,6 +643,8 @@
        ========================================================= */
 
     launcher.addEventListener("click",openAI);
+    if (voice) voice.addEventListener("click",toggleVoiceInput);
+    setupVoiceInput();
     close.addEventListener("click",closeAI);
     send.addEventListener("click",sendMessage);
     input.addEventListener("input",autoResize);
@@ -537,6 +657,7 @@
     });
 
     document.addEventListener("keydown",function (event) {
+      if (event.key === "Escape") stopSpeaking();
       if (
         event.key === "Escape" &&
         chat.classList.contains("active")
