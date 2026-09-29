@@ -1,0 +1,38 @@
+{
+  "product": "UZMO",
+  "versioning": "single-complete-product-architecture",
+  "separation": {
+    "existing_sales_agent": "../abzemo-ai.js",
+    "uzmo_runtime": "./"
+  },
+  "layers": [
+    "experience",
+    "ai_gateway",
+    "orchestrator",
+    "agents",
+    "memory_rag",
+    "workflow_engine",
+    "tool_engine",
+    "integrations",
+    "security",
+    "observability"
+  ],
+  "model_policy": {
+    "provider_neutral": true,
+    "credentials_in_browser": false,
+    "routing": "capability-cost-latency-aware"
+  },
+  "control_plane": {
+    "approvals": true,
+    "permissions": true,
+    "audit_logs": true,
+    "secret_management": true
+  },
+  "integration_protocols": [
+    "REST",
+    "GraphQL",
+    "Webhooks",
+    "MCP",
+    "A2A"
+  ]
+}
