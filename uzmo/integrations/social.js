@@ -92,6 +92,105 @@ export async function executeInstagram(input, context, fetchImpl = fetch) {
   return { status: "completed", tool: "instagram", data: published };
 }
 
+
+export async function executeLinkedInVideo(input, context, fetchImpl = fetch) {
+  const token = context.linkedinAccessToken;
+  const owner = String(context.linkedinAuthorUrn || input.authorUrn || "").trim();
+  const version = String(context.linkedinApiVersion || input.apiVersion || "202606").trim();
+  if (!token || !owner) {
+    return { status: "authorization_required", tool: "linkedin_video", message: "Connect LinkedIn and configure an authorized member or organization author URN." };
+  }
+  if (!/^\\d{6}$/.test(version)) throw new Error("LinkedIn API version must use YYYYMM format.");
+
+  const sourceUrl = validatePublicUrl(input.sourceUrl, "LinkedIn video source");
+  const source = await fetchImpl(sourceUrl);
+  if (!source.ok) throw new Error("LinkedIn video source returned HTTP " + source.status);
+  const contentLength = Number(source.headers.get("content-length") || 0);
+  if (!Number.isSafeInteger(contentLength) || contentLength < 1) throw new Error("LinkedIn video source must provide a valid Content-Length.");
+  if (contentLength > 200 * 1024 * 1024) throw new Error("LinkedIn video exceeds the 200 MB safety limit.");
+
+  const init = await fetchImpl("https://api.linkedin.com/rest/videos?action=initializeUpload", {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer " + token,
+      "Content-Type": "application/json",
+      "Linkedin-Version": version,
+      "X-Restli-Protocol-Version": "2.0.0"
+    },
+    body: JSON.stringify({
+      initializeUploadRequest: {
+        owner,
+        fileSizeBytes: contentLength,
+        uploadCaptions: false,
+        uploadThumbnail: false
+      }
+    })
+  });
+  const initialized = await readJson(init);
+  const value = initialized?.value;
+  const instructions = Array.isArray(value?.uploadInstructions) ? value.uploadInstructions : [];
+  const videoUrn = value?.video;
+  if (!init.ok || !videoUrn || !instructions.length) throw new Error("LinkedIn video upload initialization failed: HTTP " + init.status);
+
+  const bytes = new Uint8Array(await source.arrayBuffer());
+  if (bytes.byteLength !== contentLength) throw new Error("LinkedIn video source Content-Length does not match downloaded bytes.");
+  const uploadedPartIds = [];
+  for (const instruction of instructions) {
+    const first = Number(instruction.firstByte);
+    const last = Number(instruction.lastByte);
+    if (!Number.isInteger(first) || !Number.isInteger(last) || first < 0 || last < first || last >= bytes.byteLength) {
+      throw new Error("LinkedIn returned invalid video upload byte ranges.");
+    }
+    const part = bytes.slice(first, last + 1);
+    const upload = await fetchImpl(instruction.uploadUrl, {
+      method: "PUT",
+      headers: { "Content-Type": "application/octet-stream" },
+      body: part
+    });
+    if (!upload.ok) throw new Error("LinkedIn video part upload failed: HTTP " + upload.status);
+    const etag = upload.headers.get("etag");
+    if (!etag) throw new Error("LinkedIn video upload did not return an ETag.");
+    uploadedPartIds.push(etag);
+  }
+
+  const finalize = await fetchImpl("https://api.linkedin.com/rest/videos?action=finalizeUpload", {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer " + token,
+      "Content-Type": "application/json",
+      "Linkedin-Version": version,
+      "X-Restli-Protocol-Version": "2.0.0"
+    },
+    body: JSON.stringify({
+      finalizeUploadRequest: { video: videoUrn, uploadToken: value.uploadToken || "", uploadedPartIds }
+    })
+  });
+  if (!finalize.ok) throw new Error("LinkedIn video finalization failed: HTTP " + finalize.status);
+
+  const commentary = String(input.commentary || "").slice(0, 3000);
+  if (!commentary.trim()) throw new Error("LinkedIn video commentary is required.");
+  const post = await fetchImpl("https://api.linkedin.com/rest/posts", {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer " + token,
+      "Content-Type": "application/json",
+      "Linkedin-Version": version,
+      "X-Restli-Protocol-Version": "2.0.0"
+    },
+    body: JSON.stringify({
+      author: owner,
+      commentary,
+      visibility: input.visibility || "PUBLIC",
+      distribution: { feedDistribution: "MAIN_FEED", targetEntities: [], thirdPartyDistributionChannels: [] },
+      content: { media: { title: String(input.title || "UZMO video").slice(0, 200), id: videoUrn } },
+      lifecycleState: "PUBLISHED",
+      isReshareDisabledByAuthor: false
+    })
+  });
+  if (!post.ok) throw new Error("LinkedIn video post creation failed: HTTP " + post.status);
+  return { status: "completed", tool: "linkedin_video", data: { video: videoUrn, postId: post.headers.get("x-restli-id") } };
+}
+
 function validatePublicUrl(value, label) {
   if (typeof value !== "string" || !value.trim()) throw new Error(label + " URL is required.");
   const url = new URL(value.trim());
