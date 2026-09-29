@@ -25,7 +25,7 @@ function openAI(env, fetchImpl) {
   const model = env.UZMO_OPENAI_MODEL || env.UZMO_MODEL_NAME || "gpt-4o-mini";
   const endpoint = env.UZMO_OPENAI_ENDPOINT || "https://api.openai.com/v1/chat/completions";
   return provider("openai", key, model, async (messages, options) => {
-    const data = await request(fetchImpl, endpoint, key, { model, messages, temperature: options.temperature ?? 0.2, ...(options.tools ? { tools: options.tools, tool_choice: options.tool_choice || "auto" } : {}) });
+    const data = await request(fetchImpl, endpoint, key, { model, messages: toOpenAIMessages(messages), temperature: options.temperature ?? 0.2, ...(options.tools ? { tools: options.tools, tool_choice: options.tool_choice || "auto" } : {}) });
     const message = data?.choices?.[0]?.message || {};
     return normalize("openai", model, message.content || "", message.tool_calls || [], data?.usage);
   });
@@ -36,7 +36,7 @@ function anthropic(env, fetchImpl) {
   const endpoint = env.UZMO_ANTHROPIC_ENDPOINT || "https://api.anthropic.com/v1/messages";
   return provider("anthropic", key, model, async (messages, options) => {
     const system = messages.filter(m => m.role === "system").map(m => m.content).join("\n");
-    const input = messages.filter(m => m.role !== "system");
+    const input = toAnthropicMessages(messages);
     const data = await request(fetchImpl, endpoint, key, { model, max_tokens: options.max_tokens || 4096, system, messages: input, ...(options.tools ? { tools: options.tools } : {}) }, { "anthropic-version": "2023-06-01" });
     const blocks = data?.content || [];
     return normalize("anthropic", model, blocks.filter(x => x.type === "text").map(x => x.text).join(""), blocks.filter(x => x.type === "tool_use"), data?.usage);
@@ -47,7 +47,7 @@ function gemini(env, fetchImpl) {
   const model = env.UZMO_GEMINI_MODEL || "gemini-2.5-flash";
   const endpoint = env.UZMO_GEMINI_ENDPOINT || `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
   return provider("gemini", key, model, async (messages, options = {}) => {
-    const contents = messages.filter(m => m.role !== "system").map(m => ({ role: m.role === "assistant" ? "model" : "user", parts: [{ text: String(m.content ?? "") }] }));
+    const contents = toGeminiMessages(messages);
     const system = messages.filter(m => m.role === "system").map(m => m.content).join("\n");
     const tools = options.tools?.length ? [{ functionDeclarations: options.tools.map(tool => ({ name: tool.function?.name || tool.name, description: tool.function?.description || "", parameters: tool.function?.parameters || tool.input_schema || { type: "object", properties: {} } })) }] : undefined;
     const data = await request(fetchImpl, `${endpoint}?key=${encodeURIComponent(key)}`, null, { ...(system ? { systemInstruction: { parts: [{ text: system }] } } : {}), contents, ...(tools ? { tools } : {}) });
