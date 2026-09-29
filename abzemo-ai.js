@@ -169,7 +169,37 @@
     return match ? match[0] : "en";
   }
 
-  const detectedLanguage = getBrowserLanguage();
+  let detectedLanguage = getBrowserLanguage();
+
+  /*
+     Detect the visitor's writing style as well as browser language.
+     This is especially important for Roman Urdu / Roman Hindi:
+     a visitor may have an English browser but type in Roman Urdu.
+     Browser language remains the fallback; the latest meaningful
+     user message can refine the response language.
+  */
+  function detectWritingLanguage(text) {
+    const value = String(text || "").toLowerCase().trim();
+    if (!value) return detectedLanguage;
+
+    const romanUrdu = /\b(mein|mujhe|mujhy|mera|meri|mere|ap|aap|aapko|kia|kya|kyun|kyu|hai|hain|ho|hoga|hogi|karna|karo|karen|chahta|chahti|chahiye|laga|lagta|samajh|samajh|batao|bata|kahan|kab|kaise|kaisa|yeh|ye|woh|wo|aur|lekin|phir|sirf|bhi|se|ko|ka|ki|ke|nahi|nahin|nhai|kr|krna|raha|rahi|rha|rhi)\b/;
+    const romanHindi = /\b(mera|meri|mere|mujhe|mujhko|aap|aapko|kya|kyun|hai|hain|ho|hoga|hogi|karna|karo|karen|chahiye|batao|kahan|kab|kaise|kaisa|yeh|ye|woh|aur|lekin|phir|nahi|nahin|raha|rahi)\b/;
+    const arabic = /[\\u0600-\\u06ff]/;
+    const devanagari = /[\\u0900-\\u097f]/;
+    const cyrillic = /[\\u0400-\\u04ff]/;
+    const han = /[\\u4e00-\\u9fff]/;
+    const hangul = /[\\uac00-\\ud7af]/;
+
+    if (arabic.test(value)) return "ur";
+    if (devanagari.test(value)) return "hi";
+    if (cyrillic.test(value)) return "ru";
+    if (han.test(value)) return "zh";
+    if (hangul.test(value)) return "ko";
+    if (romanUrdu.test(value)) return "ur-roman";
+    if (romanHindi.test(value)) return "hi-roman";
+
+    return detectedLanguage;
+  }
 
   /* =========================================================
      5. CREATE WIDGET
@@ -520,7 +550,7 @@
           referrer: document.referrer || null,
 
           /* Multilingual layer */
-          detected_language: detectedLanguage,
+          detected_language: detectWritingLanguage(message),
           browser_language: navigator.language || "unknown",
           supported_languages_count: ABZEMO_SUPPORTED_LANGUAGES.length,
           supported_languages: ABZEMO_SUPPORTED_LANGUAGES,
@@ -529,7 +559,7 @@
             User-facing language remains the visitor's language.
             The backend should normalize internal records to English.
           */
-          response_language: detectedLanguage,
+          response_language: detectWritingLanguage(message),
           internal_record_language: "en",
 
           /* Finalized sales objective */
