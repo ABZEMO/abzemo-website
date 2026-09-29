@@ -245,6 +245,243 @@ function escapeHtml(value) {
     .replace(/'/g, "&#039;");
 }
 
+async function hubspotRequest(path, options = {}) {
+  const token = process.env.HUBSPOT_ACCESS_TOKEN;
+  if (!token) return null;
+
+  const response = await fetch("https://api.hubapi.com" + path, {
+    ...options,
+    headers: {
+      Authorization: "Bearer " + token,
+      "Content-Type": "application/json",
+      ...(options.headers || {})
+    }
+  });
+
+  if (!response.ok) {
+    const detail = await response.text();
+    console.error("HubSpot error:", response.status, detail);
+    return null;
+  }
+
+  if (response.status === 204) return {};
+  return response.json();
+}
+
+function hubspotContactProperties(q, language, sessionId, origin) {
+  const properties = {
+    firstname: q.name ? q.name.split(/\\s+/)[0] : undefined,
+    email: q.contact_method === "email" ? q.contact_value : undefined,
+    phone: q.contact_method === "phone" || q.contact_method === "whatsapp" ? q.contact_value : undefined,
+    company: q.company || undefined,
+    jobtitle: undefined,
+    website: undefined,
+    abzemo_language: language || undefined,
+    abzemo_contact_method: q.contact_method || undefined,
+    abzemo_consent_to_contact: q.consent_to_contact === true ? "true" : "false",
+    abzemo_consent_timestamp: q.consent_to_contact === true ? new Date().toISOString() : undefined,
+    abzemo_session_id: sessionId || undefined,
+    abzemo_source_page: origin || undefined,
+    abzemo_lead_status: leadStatusValue(q),
+    abzemo_solution_interest: q.solution_interest || undefined,
+    abzemo_business_need: q.business_need || undefined,
+    abzemo_budget: q.budget || undefined,
+    abzemo_timeline: q.timeline || undefined
+  };
+
+  return Object.fromEntries(
+    Object.entries(properties).filter(([, value]) => value !== undefined && value !== null && value !== "")
+  );
+}
+
+function leadStatusValue(q) {
+  if (q.consent_to_contact === true && q.business_need && q.contact_value) return "qualified";
+  return "qualifying";
+}
+
+async function hubspotFindContact(email) {
+  if (!email) return null;
+
+  const result = await hubspotRequest("/crm/v3/objects/contacts/search", {
+    method: "POST",
+    body: JSON.stringify({
+      filterGroups: [{
+        filters: [{
+          propertyName: "email",
+          operator: "EQ",
+          value: email
+        }]
+      }],
+      properties: ["firstname", "lastname", "email"],
+      limit: 1
+    })
+  });
+
+  return result && Array.isArray(result.results) ? result.results[0] || null : null;
+}
+
+async function hubspotGetAssociationLabel(fromObject, toObject) {
+  const result = await hubspotRequest("/crm/v4/associations/" + fromObject + "/" + toObject + "/labels", {
+    method: "GET"
+  });
+
+  if (!result || !Array.isArray(result.results)) return null;
+
+  const label = result.results.find(item => item.category === "HUBSPOT_DEFINED") || result.results[0];
+  return label ? label.typeId : null;
+}
+
+async function hubspotAssociate(fromObject, fromId, toObject, toId) {
+  const typeId = await hubspotGetAssociationLabel(fromObject, toObject);
+  if (!typeId) return false;
+
+  const result = await hubspotRequest(
+    "/crm/v4/objects/" + fromObject + "/" + encodeURIComponent(fromId) +
+    "/associations/" + toObject + "/" + encodeURIComponent(toId),
+    {
+      method: "PUT",
+      body: JSON.stringify([{ associationCategory: "HUBSPOT_DEFINED", associationTypeId: typeId }])
+    }
+  );
+
+  return Boolean(result);
+}
+
+async function hubspotCreateNote(contactId, dealId, lead, language, origin) {
+  const q = lead.qualification || {};
+  const lines = [
+    "ABZEMO AI Qualification Record",
+    "",
+    "Name: " + (q.name || "Not provided"),
+    "Company: " + (q.company || "Not provided"),
+    "Industry: " + (q.industry || "Not provided"),
+    "Business need: " + (q.business_need || "Not provided"),
+    "Solution interest: " + (q.solution_interest || "Not provided"),
+    "Timeline: " + (q.timeline || "Not provided"),
+    "Budget: " + (q.budget || "Not provided"),
+    "Contact method: " + (q.contact_method || "Not provided"),
+    "Contact: " + (q.contact_value || "Not provided"),
+    "Consent to contact: " + (q.consent_to_contact === true ? "Yes" : "No"),
+    "Language: " + (language || "en"),
+    "Session ID: " + (lead.session_id || "Not provided"),
+    "Source: " + (origin || "Unknown"),
+    "Recorded at: " + new Date().toISOString()
+  ];
+
+  const note = await hubspotRequest("/crm/v3/objects/notes", {
+    method: "POST",
+    body: JSON.stringify({
+      properties: {
+        hs_note_body: lines.join("\\n"),
+        hs_timestamp: new Date().toISOString()
+      }
+    })
+  });
+
+  if (!note || !note.id) return false;
+
+  let associated = false;
+  if (contactId) associated = await hubspotAssociate("notes", note.id, "contacts", contactId);
+  if (dealId) await hubspotAssociate("notes", note.id, "deals", dealId);
+  return associated || Boolean(dealId);
+}
+
+async function persistLeadToHubSpot(lead, origin, language) {
+  if (!process.env.HUBSPOT_ACCESS_TOKEN || !lead.handoff_ready) {
+    return { configured: Boolean(process.env.HUBSPOT_ACCESS_TOKEN), persisted: false };
+  }
+
+  const q = lead.qualification || {};
+  const email = q.contact_method === "email" ? q.contact_value : null;
+  let contact = await hubspotFindContact(email);
+
+  const contactProperties = hubspotContactProperties(q, language, lead.session_id, origin);
+
+  if (contact && contact.id) {
+    await hubspotRequest("/crm/v3/objects/contacts/" + contact.id, {
+      method: "PATCH",
+      body: JSON.stringify({ properties: contactProperties })
+    });
+  } else {
+    const created = await hubspotRequest("/crm/v3/objects/contacts", {
+      method: "POST",
+      body: JSON.stringify({ properties: contactProperties })
+    });
+    contact = created;
+  }
+
+  if (!contact || !contact.id) {
+    return { configured: true, persisted: false };
+  }
+
+  let company = null;
+  if (q.company) {
+    const companySearch = await hubspotRequest("/crm/v3/objects/companies/search", {
+      method: "POST",
+      body: JSON.stringify({
+        filterGroups: [{
+          filters: [{
+            propertyName: "name",
+            operator: "EQ",
+            value: q.company
+          }]
+        }],
+        properties: ["name", "industry", "domain"],
+        limit: 1
+      })
+    });
+    company = companySearch && companySearch.results && companySearch.results[0];
+
+    if (!company) {
+      company = await hubspotRequest("/crm/v3/objects/companies", {
+        method: "POST",
+        body: JSON.stringify({
+          properties: {
+            name: q.company,
+            industry: q.industry || undefined
+          }
+        })
+      });
+    }
+  }
+
+  if (company && company.id) {
+    await hubspotAssociate("contacts", contact.id, "companies", company.id);
+  }
+
+  const dealName = "ABZEMO AI — " + (q.business_need || q.solution_interest || "Qualified Lead");
+  const deal = await hubspotRequest("/crm/v3/objects/deals", {
+    method: "POST",
+    body: JSON.stringify({
+      properties: {
+        dealname: dealName.slice(0, 250),
+        dealstage: process.env.HUBSPOT_DEAL_STAGE || "appointmentscheduled",
+        pipeline: process.env.HUBSPOT_PIPELINE || "default"
+      }
+    })
+  });
+
+  if (!deal || !deal.id) {
+    await hubspotCreateNote(contact.id, null, lead, language, origin);
+    return { configured: true, persisted: true, contact_id: contact.id, deal_id: null };
+  }
+
+  await hubspotAssociate("contacts", contact.id, "deals", deal.id);
+  if (company && company.id) {
+    await hubspotAssociate("companies", company.id, "deals", deal.id);
+  }
+
+  await hubspotCreateNote(contact.id, deal.id, lead, language, origin);
+
+  return {
+    configured: true,
+    persisted: true,
+    contact_id: contact.id,
+    company_id: company && company.id ? company.id : null,
+    deal_id: deal.id
+  };
+}
+
 async function sendLeadEmail(lead, origin) {
   const apiKey = process.env.RESEND_API_KEY;
 
@@ -305,7 +542,55 @@ async function sendLeadEmail(lead, origin) {
   }
 }
 
-async function persistLeadIfConfigured(lead, origin) {
+async function persistLeadIfConfigured(lead, origin, language) {
+  if (!lead.handoff_ready) {
+    return {
+      attempted: false,
+      persisted: false,
+      notification_sent: lead.notification_sent === true,
+      crm_persisted: false
+    };
+  }
+
+  let webhookPersisted = false;
+  const webhook = process.env.LEAD_WEBHOOK_URL;
+
+  if (webhook) {
+    try {
+      const response = await fetch(webhook, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(process.env.LEAD_WEBHOOK_SECRET
+            ? { "X-ABZEMO-Lead-Secret": process.env.LEAD_WEBHOOK_SECRET }
+            : {})
+        },
+        body: JSON.stringify({
+          source: "ABZEMO AI Global Sales Agent",
+          session_id: lead.session_id,
+          origin,
+          qualification: lead.qualification,
+          created_at: new Date().toISOString()
+        })
+      });
+
+      webhookPersisted = response.ok;
+    } catch (error) {
+      console.error("Lead persistence error:", error);
+    }
+  }
+
+  const hubspot = await persistLeadToHubSpot(lead, origin, language);
+  const email = await sendLeadEmail(lead, origin);
+
+  return {
+    attempted: Boolean(webhook || process.env.RESEND_API_KEY || process.env.HUBSPOT_ACCESS_TOKEN),
+    persisted: webhookPersisted || hubspot.persisted || email.persisted,
+    crm_persisted: hubspot.persisted,
+    notification_sent: email.notification_sent,
+    hubspot_configured: hubspot.configured === true
+  };
+}
   if (!lead.handoff_ready) {
     return {
       attempted: false,
@@ -469,7 +754,7 @@ export default async function handler(req) {
     qualification: leadState.qualification
   };
 
-  const persistence = await persistLeadIfConfigured(lead, origin);
+  const persistence = await persistLeadIfConfigured(lead, origin, language);
   const actualHandoffReady =
     leadState.handoff_ready && persistence.persisted;
 
@@ -478,7 +763,7 @@ export default async function handler(req) {
       reply: modelResult.reply.trim(),
       lead_status: leadState.status,
       handoff_ready: actualHandoffReady,
-      lead_state: { ...leadState, handoff_ready: actualHandoffReady, notification_sent: persistence.notification_sent === true },
+      lead_state: { ...leadState, handoff_ready: actualHandoffReady, notification_sent: persistence.notification_sent === true,\n      crm_persisted: persistence.crm_persisted === true,\n      hubspot_configured: persistence.hubspot_configured === true },
       qualification: leadState.qualification,
       internal_record_language: "en",
       session_id: sessionId,
