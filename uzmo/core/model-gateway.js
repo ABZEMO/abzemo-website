@@ -50,7 +50,9 @@ function gemini(env, fetchImpl) {
     const contents = messages.filter(m => m.role !== "system").map(m => ({ role: m.role === "assistant" ? "model" : "user", parts: [{ text: String(m.content ?? "") }] }));
     const system = messages.filter(m => m.role === "system").map(m => m.content).join("\n");
     const data = await request(fetchImpl, `${endpoint}?key=${encodeURIComponent(key)}`, null, { ...(system ? { systemInstruction: { parts: [{ text: system }] } } : {}), contents });
-    return normalize("gemini", model, (data?.candidates?.[0]?.content?.parts || []).filter(x => x.text).map(x => x.text).join(""), [], data?.usageMetadata);
+    const parts = data?.candidates?.[0]?.content?.parts || [];
+    const calls = parts.filter(x => x.functionCall).map((x, i) => ({ id: `gemini-${Date.now()}-${i}`, name: x.functionCall.name, input: x.functionCall.args || {} }));
+    return normalize("gemini", model, parts.filter(x => x.text).map(x => x.text).join(""), calls, data?.usageMetadata);
   });
 }
 function provider(id, key, model, complete) { return { id, model, configured: Boolean(key), complete }; }
