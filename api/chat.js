@@ -52,32 +52,34 @@ const QUALIFICATION_SCHEMA = {
   required: QUALIFICATION_FIELDS
 };
 
+const AGENT_ROUTES = [
+  "sales","business_automation","finance","erp_workflow","education_university",
+  "scholarship_study_abroad","healthcare","real_estate_property","trade_b2b",
+  "logistics","manufacturing","hr_recruitment","business_intelligence",
+  "web_research","location_maps","document_knowledge","general"
+];
+
 const RESPONSE_SCHEMA = {
   type: "object",
   additionalProperties: false,
   properties: {
     reply: { type: "string" },
+    agent_route: { type: "string", enum: AGENT_ROUTES },
+    capabilities_used: { type: "array", items: { type: "string" } },
     qualification: QUALIFICATION_SCHEMA,
-    lead_status: {
-      type: "string",
-      enum: ["new", "qualifying", "qualified", "hot"]
-    },
+    lead_status: { type: "string", enum: ["new","qualifying","qualified","hot"] },
     handoff_ready: { type: "boolean" },
     location_context: {
-      type: "object",
-      additionalProperties: false,
+      type: "object", additionalProperties: false,
       properties: {
         needed: { type: "boolean" },
-        intent: {
-          type: "string",
-          enum: ["none", "location_search", "property_search", "business_location"]
-        },
-        query: { type: ["string", "null"] }
+        intent: { type: "string", enum: ["none","location_search","property_search","business_location"] },
+        query: { type: ["string","null"] }
       },
-      required: ["needed", "intent", "query"]
+      required: ["needed","intent","query"]
     }
   },
-  required: ["reply", "qualification", "lead_status", "handoff_ready", "location_context"]
+  required: ["reply","agent_route","capabilities_used","qualification","lead_status","handoff_ready","location_context"]
 };
 
 function corsHeaders(origin) {
@@ -160,7 +162,29 @@ function cleanPreviousQualification(value) {
 
 function buildInstructions(language, previousQualification) {
   return [
-    "You are the ABZEMO AI Global Sales Agent.",
+    "You are ABZEMO AI, a global multi-agent AI platform. Sales is only one specialist capability, not the whole platform.",
+    "Route each request to the most relevant specialist agent and use multiple capabilities when a request spans domains.",
+    "Specialist routes: sales, business_automation, finance, erp_workflow, education_university, scholarship_study_abroad, healthcare, real_estate_property, trade_b2b, logistics, manufacturing, hr_recruitment, business_intelligence, web_research, location_maps, document_knowledge, general.",
+    "Sales handles qualification and handoff; multilingual support is a language layer, not the definition of the sales agent.",
+    "Business Automation covers workflows, approvals, repetitive operations, integrations and reporting.",
+    "Finance covers invoicing, reconciliation, receivables/payables, reporting and finance-process automation; do not invent financial facts or unsafe regulated advice.",
+    "ERP / Workflow covers attendance, marks, vouchers, receipts, inventory, procurement, approvals, HR, CRM and ERP workflows.",
+    "Education / University handles admissions, programs and international-student requirements; use live web research for current facts.",
+    "Scholarship / Study Abroad searches current scholarships, eligibility, deadlines, tuition and funding. Prefer official university, government and scholarship-provider sources.",
+    "Healthcare handles healthcare operations and automation use cases; do not invent clinical facts or provide unsafe diagnosis/treatment.",
+    "Real Estate / Property handles property and location requests; never invent listings, availability, prices or coordinates.",
+    "Trade / B2B handles international sourcing, suppliers, buyers, market research, documentation and trade workflows.",
+    "Logistics handles shipment, routing, fleet, warehouse and logistics automation.",
+    "Manufacturing handles production, quality, maintenance, inventory and factory workflows.",
+    "HR / Recruitment handles hiring, screening, onboarding and workforce operations.",
+    "Business Intelligence / Research handles business research and current external facts.",
+    "Web Research uses the web_search tool for current information, comparisons, sources, links, universities, scholarships, companies, regulations and markets.",
+    "Location / Maps uses location tools when the request is place-specific.",
+    "Document / Knowledge uses provided documents/knowledge when available and never invents missing document facts.",
+    "For Australia university admission or scholarship requests, perform live web research, prioritize official university/government sources, identify relevant options, requirements, deadlines, scholarships and application links, and return source links.",
+    "Do not claim that every university or scholarship is preloaded. Broad coverage comes from live web research.",
+    "Set agent_route to the primary specialist route and capabilities_used to the capabilities actually used.",
+    "You are acting as the sales specialist only when the primary request is sales qualification or business lead handoff.",
     "Your job is to understand a website visitor's business need, qualify the opportunity, match an appropriate ABZEMO solution, and guide the visitor toward a useful next step.",
     "Use the visitor's language or writing style for the user-facing reply. Roman Urdu and Roman Hindi are valid.",
     "Keep the qualification record in English.",
@@ -258,6 +282,32 @@ function extractText(data) {
   }
 
   return parts.join("\n").trim();
+}
+
+function extractResearchSources(data) {
+  const sources = [];
+  const seen = new Set();
+  const output = Array.isArray(data && data.output) ? data.output : [];
+
+  for (const item of output) {
+    if (!item || !Array.isArray(item.content)) continue;
+    for (const part of item.content) {
+      const annotations = Array.isArray(part && part.annotations) ? part.annotations : [];
+      for (const annotation of annotations) {
+        if (annotation && annotation.type === "url_citation" && annotation.url) {
+          const url = String(annotation.url).slice(0, 1200);
+          if (seen.has(url)) continue;
+          seen.add(url);
+          sources.push({
+            title: String(annotation.title || url).slice(0, 300),
+            url,
+            source_type: "web_search"
+          });
+        }
+      }
+    }
+  }
+  return sources.slice(0, 20);
 }
 
 function normalizeQualification(next, previous) {
@@ -828,6 +878,7 @@ export default async function handler(req, res) {
     qualification: leadState.qualification
   };
 
+  const researchSources = extractResearchSources(data);
   const persistence = await persistLeadIfConfigured(lead, origin, language);
   const actualHandoffReady =
     leadState.handoff_ready && persistence.persisted;
@@ -835,6 +886,9 @@ export default async function handler(req, res) {
   return sendJson(res, 
     {
       reply: modelResult.reply.trim(),
+      agent_route: AGENT_ROUTES.includes(modelResult.agent_route) ? modelResult.agent_route : "general",
+      capabilities_used: Array.isArray(modelResult.capabilities_used) ? modelResult.capabilities_used.filter(item => typeof item === "string").slice(0, 20) : [],
+      research_sources: researchSources,
       lead_status: leadState.status,
       handoff_ready: actualHandoffReady,
       lead_state: { ...leadState, handoff_ready: actualHandoffReady, notification_sent: persistence.notification_sent === true,
