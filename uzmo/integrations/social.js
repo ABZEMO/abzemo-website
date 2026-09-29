@@ -146,7 +146,7 @@ export async function executeFlickr(input, context, fetchImpl = fetch) {
 async function createOAuth1Signature(method, url, params, consumerSecret, tokenSecret) {
   const encoded = Object.entries(params)
     .map(([key, value]) => [oauthEncode(key), oauthEncode(String(value))])
-    .sort(([aKey, aValue], [bKey, bValue]) => aKey.localeCompare(bKey) || aValue.localeCompare(bValue))
+    .sort(([aKey, aValue], [bKey, bValue]) => aKey < bKey ? -1 : aKey > bKey ? 1 : aValue < bValue ? -1 : aValue > bValue ? 1 : 0)
     .map(([key, value]) => key + "=" + value)
     .join("&");
   const baseString = method.toUpperCase() + "&" + oauthEncode(url) + "&" + oauthEncode(encoded);
