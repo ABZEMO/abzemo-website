@@ -6,7 +6,8 @@
     ["Project Agent","Plans projects, tracks actions, dependencies, risks and delivery workflows.","Operations"],
     ["Project Management Agent","Runs methodology-aware project delivery across predictive, adaptive and hybrid approaches.","Project Management"],
     ["HRM Agent","Coordinates workforce planning, talent, employee lifecycle, performance, learning and HR analytics.","Human Resources"],
-    ["Operations Agent","Optimizes operational planning, processes, quality, supply operations and continuous improvement.","Operations"],\n    ["Enterprise Orchestrator Agent","Coordinates strategy, governance, performance, risk, portfolios and cross-functional enterprise management.","Enterprise Management"],
+    ["Operations Agent","Optimizes operational planning, processes, quality, supply operations and continuous improvement.","Operations"],
+    ["Enterprise Orchestrator Agent","Coordinates strategy, governance, performance, risk, portfolios and cross-functional enterprise management.","Enterprise Management"],
     ["Healthcare Orchestrator Agent","Coordinates governed healthcare workflows, patient care operations and specialist healthcare agents.","Healthcare"],
     ["Life Sciences Orchestrator Agent","Coordinates pharmaceutical and life-sciences R&D, clinical, regulatory, quality, supply and commercial workflows.","Pharmaceutical"],
     ["Education Orchestrator Agent","Coordinates admissions, learning, student success, faculty and academic operations.","Education"],
@@ -47,7 +48,7 @@
   const stream = document.querySelector("#execution-stream");
   const state = document.querySelector("#run-state");
 
-  const plan = [
+  const fallbackPlan = [
     ["Understand goal","Parsing intent, constraints and requested outcome."],
     ["Build plan","Breaking the goal into executable steps."],
     ["Select agents","Routing work to the appropriate specialist agents."],
@@ -56,27 +57,59 @@
     ["Verify","Checking outputs, failures and completion criteria."]
   ];
 
+  function renderSteps(steps) {
+    stream.classList.remove("empty");
+    stream.innerHTML = steps.map((item, i) =>
+      '<div class="step" data-step="' + i + '"><span class="num">' + (i + 1) + '</span><div><b>' +
+      escapeHtml(item.name || "Step") + '</b><small>' + escapeHtml(item.status || "") +
+      (item.agents ? " — " + escapeHtml(item.agents.join(", ")) : "") +
+      '</small></div><span class="step-status">' + escapeHtml(item.status || "queued") + '</span></div>'
+    ).join("");
+  }
+
+  async function executeWithRuntime(goal) {
+    const response = await fetch("./api/execute", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ goal })
+    });
+    if (!response.ok) throw new Error("Runtime returned HTTP " + response.status);
+    return response.json();
+  }
+
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     const goal = input.value.trim();
     if (!goal) return;
-    state.textContent = "Planning";
-    stream.classList.remove("empty");
-    stream.innerHTML = plan.map((item, i) =>
-      '<div class="step" data-step="' + i + '"><span class="num">' + (i + 1) + '</span><div><b>' + item[0] + '</b><small>' + item[1] + '</small></div><span class="step-status">Queued</span></div>'
-    ).join("");
 
-    const steps = [...stream.querySelectorAll(".step")];
-    for (let i = 0; i < steps.length; i++) {
-      await new Promise(resolve => setTimeout(resolve, 380));
-      steps[i].classList.add("done");
-      steps[i].querySelector(".step-status").textContent = "Complete";
+    state.textContent = "Connecting";
+    renderSteps(fallbackPlan.map(([name]) => ({ name, status: "queued" })));
+
+    try {
+      const result = await executeWithRuntime(goal);
+      renderSteps(result.steps || fallbackPlan.map(([name]) => ({ name, status: "complete" })));
+
+      const summary = document.createElement("div");
+      summary.className = "step";
+      const status = result.status || "completed";
+      summary.innerHTML =
+        '<span class="num">✓</span><div><b>UZMO run ' + escapeHtml(status) +
+        '</b><small>Agents: ' + escapeHtml((result.agents || []).join(", ") || "Automation Agent") +
+        '</small></div><span class="step-status">' + escapeHtml(status) + '</span>';
+      stream.appendChild(summary);
+      state.textContent = status === "awaiting-approval" ? "Approval required" : "Complete";
+    } catch (error) {
+      for (const step of [...stream.querySelectorAll(".step")]) {
+        step.classList.add("done");
+        step.querySelector(".step-status").textContent = "Preview";
+      }
+      const summary = document.createElement("div");
+      summary.className = "step";
+      summary.innerHTML =
+        '<span class="num">i</span><div><b>Runtime not connected</b><small>Start UZMO Runtime on the client/server to enable live execution and observation.</small></div><span class="step-status">Offline</span>';
+      stream.appendChild(summary);
+      state.textContent = "Runtime offline";
     }
-    state.textContent = "Ready";
-    const summary = document.createElement("div");
-    summary.className = "step";
-    summary.innerHTML = '<span class="num">✓</span><div><b>Plan ready</b><small>UZMO prepared a simulated execution plan for: ' + escapeHtml(goal) + '</small></div><span class="step-status">Preview</span>';
-    stream.appendChild(summary);
   });
 
   document.querySelector("#clear-context").addEventListener("click", () => {
@@ -97,7 +130,22 @@
     recognition.start();
   });
 
-  function escapeHtml(value) {
-    return value.replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#039;" }[c]));
+  async function refreshRuntimeStatus() {
+    try {
+      const response = await fetch("./api/health", { cache: "no-store" });
+      if (!response.ok) throw new Error("offline");
+      const health = await response.json();
+      state.textContent = health.ok ? "Runtime connected" : "Runtime offline";
+      const pill = document.querySelector(".status-pill");
+      if (pill) pill.innerHTML = "<span></span> Runtime connected · " + health.agents + " agents";
+    } catch {
+      state.textContent = "Runtime offline";
+    }
   }
+
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#039;" }[c]));
+  }
+
+  refreshRuntimeStatus();
 })();
