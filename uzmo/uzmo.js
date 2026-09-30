@@ -4,6 +4,9 @@
   const agents = [
     ["Executive Agent","Turns business goals into concise plans, decisions, briefings and follow-ups.","Strategy"],
     ["Project Agent","Plans projects, tracks actions, dependencies, risks and delivery workflows.","Operations"],
+    ["Project Management Agent","Runs methodology-aware project delivery across predictive, adaptive and hybrid approaches.","Project Management"],
+    ["HRM Agent","Coordinates workforce planning, talent, employee lifecycle, performance, learning and HR analytics.","Human Resources"],
+    ["Operations Agent","Optimizes operational planning, processes, quality, supply operations and continuous improvement.","Operations"],
     ["Research Agent","Searches approved sources, synthesizes evidence and produces research outputs.","Knowledge"],
     ["Data Agent","Works with structured data, sheets, databases, calculations and analysis.","Data"],
     ["Document Agent","Creates, transforms, reviews and organizes documents and reports.","Content"],
