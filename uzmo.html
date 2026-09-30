@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="UZMO — an enterprise AI assistant and agentic automation platform for connected business operations.">
+  <title>UZMO — Enterprise Agentic AI</title>
+  <link rel="stylesheet" href="uzmo.css">
+</head>
+<body>
+  <header class="uzmo-header">
+    <div class="uzmo-container nav">
+      <a class="logo" href="index.html" aria-label="ABZEMO home">ABZEM<span>O</span></a>
+      <div class="nav-right">
+        <span class="product-tag">UZMO</span>
+        <a href="index.html">ABZEMO</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="uzmo-container hero-grid">
+        <div>
+          <p class="eyebrow">UZMO · Agentic AI Platform</p>
+          <h1>One intelligent layer for the work your business already does.</h1>
+          <p class="lead">UZMO is being built as a practical enterprise AI assistant that can understand business requests, connect to authorized systems, coordinate agents and execute governed workflows.</p>
+          <div class="actions">
+            <button class="primary" id="startSetup" type="button">Start integration setup</button>
+            <a class="secondary" href="#architecture">See architecture</a>
+          </div>
+        </div>
+        <div class="system-card" aria-label="UZMO platform status">
+          <div class="status"><span></span> Foundation ready</div>
+          <div class="core">UZMO</div>
+          <div class="orbit orbit-a">AGENTS</div>
+          <div class="orbit orbit-b">SYSTEMS</div>
+          <div class="orbit orbit-c">DATA</div>
+          <div class="orbit orbit-d">LANGUAGES</div>
+          <p>Connect → authorize → test → govern → operate</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="architecture">
+      <div class="uzmo-container">
+        <p class="eyebrow">Foundation</p>
+        <h2>Built as a platform, not a chatbot.</h2>
+        <p class="section-lead">The first UZMO layer separates the assistant experience from integrations and execution so new agents and enterprise systems can be added without redesigning the whole product.</p>
+
+        <div class="architecture">
+          <article><b>01</b><h3>UZMO Core</h3><p>Request understanding, orchestration, context and response handling.</p></article>
+          <article><b>02</b><h3>Agent Layer</h3><p>Specialized agents for finance, sales, operations, legal, audit and other workflows.</p></article>
+          <article><b>03</b><h3>Integration Layer</h3><p>Connectors for APIs, databases, Google Workspace, ERP/SAP and future systems.</p></article>
+          <article><b>04</b><h3>Governance</h3><p>Authentication, permissions, testing, auditability and controlled execution.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section dark">
+      <div class="uzmo-container">
+        <p class="eyebrow">Integration readiness</p>
+        <h2>Prepare the client's environment before agents act.</h2>
+        <div class="steps" id="setupSteps">
+          <div class="step active"><span>1</span><div><strong>Connect</strong><small>Select the system or workspace.</small></div></div>
+          <div class="step"><span>2</span><div><strong>Authorize</strong><small>Grant only the required permissions.</small></div></div>
+          <div class="step"><span>3</span><div><strong>Test</strong><small>Verify connectivity and access.</small></div></div>
+          <div class="step"><span>4</span><div><strong>Govern</strong><small>Define what UZMO may read or execute.</small></div></div>
+        </div>
+        <div class="setup-panel" id="setupPanel">
+          <h3>Integration setup</h3>
+          <p>This starter flow is a UI foundation. It does not claim a live client connection until real credentials and connector services are configured.</p>
+          <label>System
+            <select id="systemSelect">
+              <option>Google Workspace</option>
+              <option>SAP / ERP</option>
+              <option>SQL Database</option>
+              <option>REST API</option>
+            </select>
+          </label>
+          <button class="primary" id="testFlow" type="button">Run readiness check</button>
+          <div class="result" id="setupResult" role="status">Waiting for setup.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="uzmo-container">
+        <p class="eyebrow">Scale</p>
+        <h2>Designed for global operations.</h2>
+        <div class="capabilities">
+          <div><strong>50+</strong><span>languages planned for global usability</span></div>
+          <div><strong>Many systems</strong><span>APIs, databases, ERP and productivity tools</span></div>
+          <div><strong>Many agents</strong><span>specialized agents coordinated through one platform</span></div>
+          <div><strong>Controlled action</strong><span>permissions and governance before execution</span></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer><div class="uzmo-container"><strong>UZMO</strong><span>Separate platform from ABZEMO AI · © 2026 ABZEMO</span></div></footer>
+  <script src="uzmo.js"></script>
+</body>
+</html>
