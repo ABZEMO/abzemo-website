@@ -1,0 +1,14 @@
+{
+  "name": "uzmo-runtime",
+  "version": "0.1.0",
+  "private": true,
+  "description": "UZMO local/enterprise agent runtime for observation, orchestration, integrations and controlled actions.",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
