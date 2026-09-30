@@ -13,8 +13,17 @@ const root = path.resolve(__dirname, "..");
 const configPath = process.env.UZMO_CONFIG || path.join(__dirname, "config.json");
 
 async function loadConfig() {
-  try { return JSON.parse(await readFile(configPath, "utf8")); }
-  catch { return JSON.parse(await readFile(path.join(__dirname, "config.example.json"), "utf8")); }
+  try {
+    return JSON.parse(await readFile(configPath, "utf8"));
+  } catch {
+    return {
+      server: { host: "127.0.0.1", port: 8787 },
+      webResearch: { enabled: false },
+      sources: [],
+      crm: { type: "json-store", path: "./data/uzmo-crm.json" },
+      agents: { approvalRequiredByDefault: true }
+    };
+  }
 }
 
 const config = await loadConfig();
@@ -26,15 +35,22 @@ const engine = new AgentEngine({ crm, config });
 const observer = new Observer({ bus, sources: config.sources || [], pollMs: 5000 });
 
 bus.on(async event => {
-  if (event.type === "source.changed") await engine.execute({ event, goal: "Process the detected source change and update approved business records." });
-  else if (event.type === "source.error") await crm.logActivity(event);
+  if (event.type === "source.changed") {
+    await engine.execute({ event, goal: "Process the detected source change and update approved business records." });
+  } else if (event.type === "source.error") {
+    await crm.logActivity(event);
+  }
 });
 
 observer.start();
 
 function json(res, status, payload) {
   const body = JSON.stringify(payload);
-  res.writeHead(status, { "content-type": "application/json; charset=utf-8", "access-control-allow-origin": "*", "cache-control": "no-store" });
+  res.writeHead(status, {
+    "content-type": "application/json; charset=utf-8",
+    "access-control-allow-origin": "*",
+    "cache-control": "no-store"
+  });
   res.end(body);
 }
 
@@ -51,7 +67,12 @@ async function serveStatic(req, res) {
   try {
     const content = await readFile(file);
     const ext = path.extname(file);
-    const types = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8", ".json": "application/json; charset=utf-8" };
+    const types = {
+      ".html": "text/html; charset=utf-8",
+      ".js": "text/javascript; charset=utf-8",
+      ".css": "text/css; charset=utf-8",
+      ".json": "application/json; charset=utf-8"
+    };
     res.writeHead(200, { "content-type": types[ext] || "application/octet-stream" });
     res.end(content);
   } catch {
@@ -61,7 +82,13 @@ async function serveStatic(req, res) {
 
 const server = http.createServer(async (req, res) => {
   try {
-    if (req.url === "/api/health") return json(res, 200, { ok: true, service: "UZMO Runtime", observation: true, agents: listAgents().length });
+    if (req.url === "/api/health") return json(res, 200, {
+      ok: true,
+      service: "UZMO Runtime",
+      observation: true,
+      sources: (config.sources || []).length,
+      agents: listAgents().length
+    });
     if (req.url === "/api/agents") return json(res, 200, { agents: listAgents() });
     if (req.url === "/api/state") return json(res, 200, crm.getState());
     if (req.method === "POST" && req.url === "/api/execute") {
@@ -85,6 +112,8 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-server.listen(config.server?.port || 8787, config.server?.host || "127.0.0.1", () => {
-  console.log("UZMO Runtime listening on http://" + (config.server?.host || "127.0.0.1") + ":" + (config.server?.port || 8787));
-});
+server.listen(
+  config.server?.port || 8787,
+  config.server?.host || "127.0.0.1",
+  () => console.log("UZMO Runtime listening on http://" + (config.server?.host || "127.0.0.1") + ":" + (config.server?.port || 8787))
+);
