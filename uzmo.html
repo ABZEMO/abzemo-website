@@ -67,19 +67,78 @@
           <div class="step"><span>3</span><div><strong>Test</strong><small>Verify connectivity and access.</small></div></div>
           <div class="step"><span>4</span><div><strong>Govern</strong><small>Define what UZMO may read or execute.</small></div></div>
         </div>
-        <div class="setup-panel" id="setupPanel">
-          <h3>Integration setup</h3>
-          <p>This starter flow is a UI foundation. It does not claim a live client connection until real credentials and connector services are configured.</p>
-          <label>System
-            <select id="systemSelect">
-              <option>Google Workspace</option>
-              <option>SAP / ERP</option>
-              <option>SQL Database</option>
-              <option>REST API</option>
-            </select>
-          </label>
-          <button class="primary" id="testFlow" type="button">Run readiness check</button>
-          <div class="result" id="setupResult" role="status">Waiting for setup.</div>
+        <div class="setup-panel wizard" id="setupPanel">
+          <div class="wizard-progress" aria-label="Installation progress">
+            <span class="wizard-dot active" data-wizard-dot="1">1</span>
+            <span class="wizard-line"></span>
+            <span class="wizard-dot" data-wizard-dot="2">2</span>
+            <span class="wizard-line"></span>
+            <span class="wizard-dot" data-wizard-dot="3">3</span>
+            <span class="wizard-line"></span>
+            <span class="wizard-dot" data-wizard-dot="4">4</span>
+          </div>
+
+          <div class="wizard-step active" data-wizard-step="1">
+            <p class="wizard-kicker">Step 1 of 4 · Environment</p>
+            <h3>Set up the client environment</h3>
+            <p>Give this UZMO installation a name. This creates an installation profile only; it does not store credentials.</p>
+            <label>Organization / environment
+              <input id="environmentName" type="text" placeholder="e.g. Acme Production" autocomplete="organization">
+            </label>
+            <button class="primary wizard-next" type="button">Continue</button>
+          </div>
+
+          <div class="wizard-step" data-wizard-step="2">
+            <p class="wizard-kicker">Step 2 of 4 · Connector</p>
+            <h3>Choose the system UZMO will access</h3>
+            <label>System
+              <select id="systemSelect">
+                <option>Google Workspace</option>
+                <option>SAP / ERP</option>
+                <option>SQL Database</option>
+                <option>REST API</option>
+              </select>
+            </label>
+            <label>Authentication method
+              <select id="authMethod"></select>
+            </label>
+            <div id="connectionFields"></div>
+            <div class="wizard-actions">
+              <button class="secondary wizard-back" type="button">Back</button>
+              <button class="primary wizard-next" type="button">Continue</button>
+            </div>
+          </div>
+
+          <div class="wizard-step" data-wizard-step="3">
+            <p class="wizard-kicker">Step 3 of 4 · Permissions</p>
+            <h3>Define what UZMO may do</h3>
+            <p>Least privilege is the default. Start read-only and explicitly authorize broader actions later.</p>
+            <label>Permission level
+              <select id="permissionLevel">
+                <option value="read">Read only (recommended)</option>
+                <option value="write">Read + write</option>
+                <option value="execute">Read + write + execute</option>
+              </select>
+            </label>
+            <div class="security-note"><strong>Security rule</strong><span>Passwords, API keys, client secrets and certificates must be entered through the deployment/runtime secret manager. UZMO's web page never stores them in browser storage.</span></div>
+            <div class="wizard-actions">
+              <button class="secondary wizard-back" type="button">Back</button>
+              <button class="primary wizard-next" type="button">Review setup</button>
+            </div>
+          </div>
+
+          <div class="wizard-step" data-wizard-step="4">
+            <p class="wizard-kicker">Step 4 of 4 · Test & install profile</p>
+            <h3>Validate the configuration</h3>
+            <div class="review" id="setupReview"></div>
+            <button class="primary" id="testFlow" type="button">Validate configuration</button>
+            <button class="secondary" id="downloadManifest" type="button">Download sanitized manifest</button>
+            <div class="result" id="setupResult" role="status">Waiting for validation.</div>
+            <div class="security-note"><strong>Important</strong><span>Validation here checks configuration structure. A live connection requires the real connector service, approved credentials and client-side network access.</span></div>
+            <div class="wizard-actions">
+              <button class="secondary wizard-back" type="button">Back</button>
+            </div>
+          </div>
         </div>
       </div>
     </section>
