@@ -1,0 +1,41 @@
+name: UZMO Validation
+
+on:
+  push:
+    branches: ["main", "feature/**"]
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+      - name: Validate JavaScript syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          files=$(find . -type f -name '*.js' -not -path './node_modules/*' -not -path './.git/*' | sort)
+          test -n "$files"
+          while IFS= read -r file; do
+            node --check "$file"
+          done <<< "$files"
+      - name: Validate required UZMO modules
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f uzmo/tools/registry.js
+          test -f uzmo/tools/executor.js
+          test -f uzmo/integrations/social.js
+          test -f uzmo/api/worker.js
+          test -f uzmo/workflows/jobs.js
+          test -f uzmo/workflows/job-store.js
