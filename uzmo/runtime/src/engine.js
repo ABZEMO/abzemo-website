@@ -7,9 +7,8 @@ function textFromPayload(payload) {
   return JSON.stringify(payload);
 }
 
-function needsWebResearch(text, event) {
-  if (/\b(web|internet|research|latest|regulation|market|law|compliance|tariff|competitor)\b/i.test(text)) return true;
-  return Boolean(event && /\b(regulatory|compliance|external|market|law)\b/i.test(text));
+function needsWebResearch(text) {
+  return /\b(web|internet|research|latest|regulation|market|law|compliance|tariff|competitor)\b/i.test(text);
 }
 
 async function modelPlan({ config, goal, agents, web }) {
@@ -20,7 +19,7 @@ async function modelPlan({ config, goal, agents, web }) {
   const prompt = [
     "You are the UZMO planning layer.",
     "Return JSON only with keys: summary, proposedActions (array), needsApproval (boolean).",
-    "Do not invent completed actions. Only propose actions that the runtime can later validate.",
+    "Do not claim an action was completed. Only propose actions the runtime can validate.",
     "Goal:", goal,
     "Selected agents:", agents.map(a => a.name).join(", "),
     "Web research:", JSON.stringify(web || {})
@@ -47,13 +46,14 @@ export class AgentEngine {
     this.config = config;
   }
 
-  async execute({ goal, event = null, requestedAgent = null }) {
-    const text = goal || textFromPayload(event?.payload);
+  async execute({ goal = "", event = null, requestedAgent = null }) {
+    const eventText = textFromPayload(event?.payload);
+    const text = [goal, eventText].filter(Boolean).join("\n");
     const agents = requestedAgent
       ? selectAgents({ domain: requestedAgent, text })
       : selectAgents({ domain: event?.domain, text });
 
-    const webRequested = this.config.webResearch?.enabled !== false && needsWebResearch(text, event);
+    const webRequested = this.config.webResearch?.enabled === true && needsWebResearch(text);
     let web = { enabled: false, results: [] };
     if (webRequested) {
       try {
@@ -94,9 +94,23 @@ export class AgentEngine {
       createdAt: new Date().toISOString()
     };
 
+    if (event) {
+      await this.crm.upsert({
+        id: crypto.randomUUID(),
+        externalKey: event.sourceId + ":" + event.target + ":" + event.observedAt,
+        type: "source-observation",
+        status: "processed",
+        domain: event.domain || "General",
+        sourceId: event.sourceId,
+        target: event.target,
+        observedAt: event.observedAt,
+        payload: event.payload
+      });
+    }
+
     const record = {
       id: result.id,
-      externalKey: event ? event.sourceId + ":" + event.target + ":" + event.observedAt : result.id,
+      externalKey: event ? event.sourceId + ":" + event.target + ":" + event.observedAt + ":run" : result.id,
       type: "agent-run",
       status: approvalRequired && event ? "awaiting-approval" : "completed",
       goal: text,
@@ -108,7 +122,13 @@ export class AgentEngine {
     };
 
     await this.crm.upsert(record);
-    await this.crm.logActivity({ type: "agent-run", runId: result.id, status: record.status, agents: result.agents });
+    await this.crm.logActivity({
+      type: "agent-run",
+      runId: result.id,
+      status: record.status,
+      agents: result.agents,
+      sourceId: event?.sourceId || null
+    });
     result.steps[4].status = record.status === "completed" ? "complete" : "awaiting-approval";
     result.steps[5].status = record.status === "completed" ? "complete" : "waiting";
     return { ...result, status: record.status };
