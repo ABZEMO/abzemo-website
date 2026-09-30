@@ -6,7 +6,7 @@
     ["Project Agent","Plans projects, tracks actions, dependencies, risks and delivery workflows.","Operations"],
     ["Project Management Agent","Runs methodology-aware project delivery across predictive, adaptive and hybrid approaches.","Project Management"],
     ["HRM Agent","Coordinates workforce planning, talent, employee lifecycle, performance, learning and HR analytics.","Human Resources"],
-    ["Operations Agent","Optimizes operational planning, processes, quality, supply operations and continuous improvement.","Operations"],
+    ["Operations Agent","Optimizes operational planning, processes, quality, supply operations and continuous improvement.","Operations"],\n    ["Enterprise Orchestrator Agent","Coordinates strategy, governance, performance, risk, portfolios and cross-functional enterprise management.","Enterprise Management"],
     ["Healthcare Orchestrator Agent","Coordinates governed healthcare workflows, patient care operations and specialist healthcare agents.","Healthcare"],
     ["Life Sciences Orchestrator Agent","Coordinates pharmaceutical and life-sciences R&D, clinical, regulatory, quality, supply and commercial workflows.","Pharmaceutical"],
     ["Education Orchestrator Agent","Coordinates admissions, learning, student success, faculty and academic operations.","Education"],
