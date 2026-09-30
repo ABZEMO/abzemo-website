@@ -27,8 +27,13 @@ export function createAgentRuntime({ modelGateway, toolExecutor = createToolExec
       const schemas = toolSchemas();
 
       if (!gateway.configured) {
-        emit({ type: "runtime.completed", reason: "model_not_configured" });
-        return { status: "completed", events, results, verification: verifyExecution({ goal, results }) };
+        emit({ type: "runtime.failed", reason: "model_not_configured" });
+        return {
+          status: "failed",
+          events,
+          results,
+          error: "Model provider is not configured."
+        };
       }
 
       let completion = null;

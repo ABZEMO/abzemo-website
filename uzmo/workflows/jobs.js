@@ -4,7 +4,7 @@ export function createJob({workflowId,input={},scheduledFor=null,scheduleKey=nul
 export function transitionJob(job,status,patch={}){
  if(!JOB_STATES.includes(status))throw new Error("Invalid job state.");
  const next={...job,...patch,status,updatedAt:new Date().toISOString()};
- if(status==="failed"&&next.attempts<MAX_JOB_ATTEMPTS)next.status="queued";
+ if(status==="failed"&&next.attempts>0&&next.attempts<MAX_JOB_ATTEMPTS)next.status="queued";
  if(["queued","paused","completed","failed","cancelled"].includes(next.status))next.lockedBy=null;
  return next;
 }
