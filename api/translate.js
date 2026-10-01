@@ -1,5 +1,5 @@
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-const MODEL = process.env.OPENAI_MODEL || "gpt-5.6-luna";
+const MODEL = "gpt-6-luna";
 function send(res, body, status = 200) {
   const headers = {"Content-Type":"application/json; charset=utf-8","Access-Control-Allow-Origin":"*","Access-Control-Allow-Methods":"POST, OPTIONS","Access-Control-Allow-Headers":"Content-Type"};
   if (res && typeof res.status === "function") return res.status(status).setHeader("Content-Type",headers["Content-Type"]).setHeader("Access-Control-Allow-Origin","*").setHeader("Access-Control-Allow-Methods","POST, OPTIONS").setHeader("Access-Control-Allow-Headers","Content-Type").json(body);
