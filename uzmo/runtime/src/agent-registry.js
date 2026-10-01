@@ -8,7 +8,7 @@ const AGENTS = [
   { name: "Life Sciences Orchestrator Agent", domain: "Pharmaceutical", keywords: ["pharma","clinical trial","drug","regulatory","gxp","pharmacovigilance"] },
   { name: "Education Orchestrator Agent", domain: "Education", keywords: ["student","school","university","course","admission","education"] },
   { name: "Enterprise Orchestrator Agent", domain: "Enterprise Management", keywords: ["strategy","kpi","governance","risk","board","enterprise","executive"] },
-  { name: "Procurement Agent", domain: "Operations", keywords: ["procurement","rfq","purchase order","supplier","vendor","po"] },
+  { name: "Procurement Agent", domain: "Procurement", keywords: ["procurement","purchase requisition","requisition","rfq","rfi","rfx","quotation","bid","tender","supplier","vendor","sourcing","purchase order","po","contract","catalog","category","spend","three-way match","goods receipt","delivery","invoice matching","hs code","customs","import","export"] },
   { name: "Data Agent", domain: "Data", keywords: ["sheet","spreadsheet","database","data","analysis","csv","dashboard"] },
   { name: "Document Agent", domain: "Content", keywords: ["document","doc","report","policy","contract"] },
   { name: "Web Agent", domain: "Web", keywords: ["web","internet","research","search","latest","regulation","market"] },
