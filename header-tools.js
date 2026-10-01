@@ -1,4 +1,4 @@
-/* ABZEMO HEADER TOOLS — production refresh */
+/* ABZEMO HEADER TOOLS — production sync verification */
 (function(){
 "use strict";
 const pages=[
