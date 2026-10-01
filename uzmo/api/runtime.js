@@ -6,7 +6,7 @@ import { createMemoryStore } from "../memory/store.js";
 const memory = createMemoryStore();
 const runner = createWorkflowRunner();
 
-export async function handleRuntime(request) {
+export async function handleRuntime(request, env = {}) {
   if (request.method !== "POST") return json({ error: "POST required" }, 405);
 
   const body = await request.json().catch(() => ({}));
@@ -19,7 +19,7 @@ export async function handleRuntime(request) {
 
   if (action === "execute") {
     const plan = body.plan || buildPlan(body.goal || "");
-    const result = await runner.run(plan, { approved: body.approved === true, userId: body.userId || "anonymous" });
+    const result = await runner.run(plan, { approved: body.approved === true, userId: body.userId || "anonymous", env });
     return json(result);
   }
 
