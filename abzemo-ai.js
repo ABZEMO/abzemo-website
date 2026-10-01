@@ -92,11 +92,11 @@
     style.id = "abzemo-ai-global-styles";
 
     style.textContent = `
-      .abzemo-ai-launcher{position:fixed;right:28px;bottom:28px;min-width:148px;height:54px;padding:0 20px;border:0;border-radius:999px;background:linear-gradient(135deg,#1264d8,#168cff);color:#fff;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:800;cursor:pointer;z-index:9998;box-shadow:0 14px 38px rgba(18,100,216,.32);transition:transform .25s ease,box-shadow .25s ease;display:flex;align-items:center;justify-content:center;gap:8px}
-      .abzemo-ai-launcher:hover{transform:translateY(-3px);box-shadow:0 18px 45px rgba(18,100,216,.42)}
-      .abzemo-ai-launcher-wrap{position:fixed;right:28px;bottom:28px;z-index:9998;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
-      .abzemo-ai-launcher-wrap .abzemo-ai-launcher{position:static}
-      .abzemo-ai-launcher-tip{max-width:230px;padding:9px 13px;border-radius:12px 12px 4px 12px;background:#071a35;color:#fff;font-family:Arial,Helvetica,sans-serif;font-size:11px;font-weight:700;line-height:1.35;box-shadow:0 10px 28px rgba(7,26,53,.22);animation:abzemoAiTip 2.8s ease-in-out infinite}
+      .abzemo-ai-launcher{width:min(390px,calc(100vw - 56px));height:52px;padding:5px 6px 5px 16px;border:1px solid rgba(18,100,216,.28);border-radius:999px;background:rgba(255,255,255,.98);font-family:Arial,Helvetica,sans-serif;z-index:9998;box-shadow:0 14px 38px rgba(7,26,53,.18);display:flex;align-items:center;gap:8px;box-sizing:border-box}
+      .abzemo-ai-launcher:focus-within{border-color:rgba(18,100,216,.6);box-shadow:0 16px 42px rgba(18,100,216,.2),0 0 0 4px rgba(18,100,216,.08)}
+      .abzemo-ai-launcher-wrap{position:fixed;right:28px;bottom:28px;z-index:9998;display:flex;flex-direction:column;align-items:flex-end}
+      .abzemo-ai-launcher-input{flex:1;min-width:0;height:40px;border:0;outline:none;background:transparent;color:#17243a;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:40px}\n      .abzemo-ai-launcher-input::placeholder{color:#7a8798}\n      .abzemo-ai-launcher-send{width:40px;height:40px;border:0;border-radius:50%;background:linear-gradient(135deg,#1264d8,#168cff);color:#fff;cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0}\n      .abzemo-ai-launcher-send:hover{transform:translateY(-1px);box-shadow:0 7px 16px rgba(18,100,216,.28)}
+      .abzemo-ai-launcher-tip{display:none}
       @keyframes abzemoAiTip{0%,100%{transform:translateY(0);opacity:.92}50%{transform:translateY(-3px);opacity:1}}
       .abzemo-ai-robot{font-size:22px;line-height:1}
       .abzemo-ai-chat{position:fixed;right:28px;bottom:96px;width:390px;max-width:calc(100vw - 32px);height:590px;max-height:calc(100vh - 120px);background:#fff;border:1px solid rgba(7,26,53,.12);border-radius:22px;overflow:hidden;z-index:9999;display:none;flex-direction:column;box-shadow:0 25px 75px rgba(7,26,53,.25);font-family:Arial,Helvetica,sans-serif}
@@ -145,7 +145,7 @@
       .abzemo-ai-research-link:hover{text-decoration:underline}
       .abzemo-ai-location-note{padding:0 12px 9px;font-size:8px;line-height:1.3;color:#7b8798}
       .abzemo-ai-note{margin-top:8px;font-size:9px;line-height:1.3;color:#8a96a8;text-align:center;letter-spacing:.25px}
-      @media(max-width:600px){.abzemo-ai-launcher-wrap{right:18px;bottom:18px}.abzemo-ai-launcher{right:auto;bottom:auto;min-width:132px;height:50px;padding:0 17px}.abzemo-ai-chat{right:12px;bottom:80px;width:calc(100vw - 24px);height:min(590px,calc(100vh - 100px));border-radius:18px}.abzemo-ai-messages{padding:16px}.abzemo-ai-bubble{max-width:88%}}
+      @media(max-width:600px){.abzemo-ai-launcher-wrap{right:12px;bottom:12px}.abzemo-ai-launcher{width:calc(100vw - 24px);height:50px;padding-left:14px}.abzemo-ai-launcher-input{font-size:12px}.abzemo-ai-chat{right:12px;bottom:74px;width:calc(100vw - 24px);height:min(590px,calc(100vh - 100px));border-radius:18px}.abzemo-ai-messages{padding:16px}.abzemo-ai-bubble{max-width:88%}}
       @media(prefers-reduced-motion:reduce){.abzemo-ai-chat.active,.abzemo-ai-typing span{animation:none}}
     `;
 
