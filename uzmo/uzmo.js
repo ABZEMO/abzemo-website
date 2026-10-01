@@ -24,6 +24,7 @@
     ["Calendar Agent","Plans meetings, checks availability and coordinates calendar actions.","Productivity"],
     ["Finance Agent","Supports finance workflows, reporting, reconciliation and controlled approvals.","Finance"],
     ["Procurement Agent","Runs source-to-pay work: requisitions, sourcing, RFx, supplier comparison, purchase orders, invoice matching, compliance and audit controls.","Procurement"],
+    ["Compliance Agent","Monitors regulatory requirements, policies, controls, evidence, risks, incidents, audits and remediation across connected enterprise systems.","Compliance"],
     ["Content Agent","Creates multi-channel content and prepares publishing workflows.","Growth"],
     ["Web Agent","Handles web research, extraction, navigation and approved web actions.","Web"],
     ["Automation Agent","Designs and manages reusable workflows, triggers, schedules and integrations.","Automation"]

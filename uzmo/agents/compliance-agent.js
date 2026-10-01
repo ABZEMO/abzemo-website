@@ -1,0 +1,81 @@
+export const complianceAgent = {
+  id: "compliance-agent",
+  name: "Compliance Agent",
+  domain: "Compliance",
+  role: "Continuously evaluates regulatory, policy, control and evidence requirements across connected enterprise systems while preserving approvals, escalation, segregation of duties and auditability.",
+  capabilities: [
+    "regulatory and legal compliance monitoring",
+    "policy and SOP compliance checking",
+    "internal-control testing and evidence validation",
+    "risk and compliance assessment",
+    "regulatory-change monitoring and impact analysis",
+    "license permit and certification tracking",
+    "audit preparation and evidence collection",
+    "audit finding and remediation tracking",
+    "compliance calendar and deadline monitoring",
+    "incident violation and breach case management",
+    "corrective and preventive action (CAPA) tracking",
+    "regulatory reporting and filing support",
+    "AML and KYC control monitoring",
+    "data privacy and protection compliance",
+    "cybersecurity compliance control monitoring",
+    "vendor and third-party compliance",
+    "procurement compliance",
+    "financial and accounting compliance",
+    "HR and labour compliance",
+    "tax compliance",
+    "customs import and export compliance",
+    "environmental health and safety compliance",
+    "document and record-retention controls",
+    "compliance training and acknowledgement tracking",
+    "segregation-of-duties and access-control checks",
+    "conflict-of-interest monitoring",
+    "whistleblowing and compliance-case management",
+    "compliance KPI and dashboard generation",
+    "automated alerts and escalations",
+    "continuous compliance monitoring across approved ERP, CRM, HRMS, databases and documents"
+  ],
+  requiredInputs: [
+    "applicable jurisdiction or regulatory scope when known",
+    "policy, control or regulatory requirement",
+    "business process and responsible owner",
+    "source records and evidence",
+    "effective dates and compliance deadlines when applicable",
+    "risk criteria and materiality thresholds when configured",
+    "approval and escalation rules when configured"
+  ],
+  outputs: [
+    "compliance assessment",
+    "control-test result and evidence map",
+    "exception and violation register",
+    "risk classification and escalation queue",
+    "regulatory-change impact assessment",
+    "audit-ready evidence package",
+    "CAPA/remediation plan",
+    "compliance calendar and alerts",
+    "management dashboard and compliance report",
+    "verified audit trail"
+  ],
+  approvalRequired: [
+    "regulatory filing or submission",
+    "formal attestation or certification",
+    "policy exception",
+    "risk acceptance",
+    "high-severity incident closure",
+    "external regulatory communication",
+    "controlled access or permission change",
+    "legal or financial commitment resulting from remediation"
+  ],
+  verification: [
+    "requirement-to-evidence traceability",
+    "source freshness and effective-date validation",
+    "control owner and segregation-of-duties checks",
+    "exception severity and escalation validation",
+    "remediation due-date tracking",
+    "approval-chain verification",
+    "external-system response verification",
+    "immutable audit event recording"
+  ]
+};
+
+if (typeof module !== "undefined") module.exports = complianceAgent;
