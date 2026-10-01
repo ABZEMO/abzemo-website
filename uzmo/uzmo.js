@@ -75,7 +75,8 @@
       summary.innerHTML = '<span class="num">✓</span><div><b>Plan ready</b><small>' + escapeHtml((planResult.plan?.tools || []).map(t => t.name).join(", ") || "No external tool selected") + '</small></div><span class="step-status">' + (planResult.plan?.requiresApproval ? "Approval" : "Ready") + '</span>';
       stream.appendChild(summary);
 
-      if (!planResult.plan?.requiresApproval) {
+      const canExecuteNow = !planResult.plan?.requiresApproval && (planResult.plan?.tools || []).some(tool => tool.id === "frappe_crm");
+      if (canExecuteNow) {
         state.textContent = "Executing";
         const executed = await fetch("/api/uzmo", {
           method: "POST",
