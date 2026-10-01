@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="UZMO — an agentic AI operating layer for conversation, automation, knowledge, and connected work.">
+  <title>UZMO — Agentic AI Assistant</title>
+  <link rel="stylesheet" href="./uzmo.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="UZMO home">
+        <span class="brand-mark">U</span>
+        <span>UZMO</span>
+      </a>
+      <nav class="topnav" aria-label="Primary navigation">
+        <button class="nav-btn active" data-view="chat">Assistant</button>
+        <button class="nav-btn" data-view="agents">Agents</button>
+        <button class="nav-btn" data-view="automations">Automations</button>
+        <button class="nav-btn" data-view="studio">Studio</button>
+      </nav>
+      <div class="status-pill"><span></span> Local intelligence</div>
+    </header>
+
+    <main>
+      <section id="chat-view" class="view active">
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <p class="eyebrow">AGENTIC AI OPERATING LAYER</p>
+            <h1>Tell UZMO what you want done.</h1>
+            <p class="hero-text">UZMO understands goals, plans work, selects specialized agents and tools, executes actions, verifies results, and keeps you in control.</p>
+            <div class="capability-row">
+              <span>Plan</span><span>Reason</span><span>Execute</span><span>Verify</span><span>Automate</span>
+            </div>
+          </div>
+          <div class="command-card">
+            <div class="command-head">
+              <div>
+                <span class="tiny-label">COMMAND CENTER</span>
+                <strong>What should I work on?</strong>
+              </div>
+              <span class="live-dot">READY</span>
+            </div>
+            <form id="command-form">
+              <textarea id="command-input" rows="4" placeholder="Try: Build a weekly executive report from my project data, email it every Monday, and ask me before sending."></textarea>
+              <div class="command-actions">
+                <button type="button" class="ghost-btn" id="voice-btn" aria-label="Voice input">Voice</button>
+                <button class="primary-btn" type="submit">Run with UZMO →</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="workspace-grid">
+          <section class="panel">
+            <div class="panel-title"><span>Execution stream</span><span id="run-state">Idle</span></div>
+            <div id="execution-stream" class="stream empty">
+              <div class="empty-icon">✦</div>
+              <p>Your plans and actions will appear here.</p>
+            </div>
+          </section>
+          <aside class="panel">
+            <div class="panel-title"><span>Active context</span><button id="clear-context" class="icon-btn">Clear</button></div>
+            <div class="context-list">
+              <div><span>Model routing</span><b>Replaceable</b></div>
+              <div><span>Memory</span><b>Session</b></div>
+              <div><span>Approval</span><b>Human-in-loop</b></div>
+              <div><span>Integrations</span><b>Ready</b></div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section id="agents-view" class="view">
+        <div class="section-heading"><p class="eyebrow">SPECIALIZED INTELLIGENCE</p><h2>Agents that work together.</h2><p>UZMO can route a single goal to one agent or orchestrate several agents as a team.</p></div>
+        <div id="agents-grid" class="cards-grid"></div>
+      </section>
+
+      <section id="automations-view" class="view">
+        <div class="section-heading"><p class="eyebrow">AUTOMATION FABRIC</p><h2>From request to recurring work.</h2><p>Design event-driven work around schedules, webhooks, approvals, data changes, or external signals.</p></div>
+        <div class="automation-grid">
+          <div class="automation-card"><span class="card-icon">◷</span><h3>Scheduled work</h3><p>Daily, weekly, monthly, or custom schedules.</p></div>
+          <div class="automation-card"><span class="card-icon">⚡</span><h3>Event triggers</h3><p>Start workflows from webhooks, app events, or data changes.</p></div>
+          <div class="automation-card"><span class="card-icon">✓</span><h3>Approvals</h3><p>Pause sensitive actions until a person approves them.</p></div>
+          <div class="automation-card"><span class="card-icon">↗</span><h3>Verification</h3><p>Check outputs and report failures instead of silently stopping.</p></div>
+        </div>
+      </section>
+
+      <section id="studio-view" class="view">
+        <div class="section-heading"><p class="eyebrow">UZMO STUDIO</p><h2>Build agents and workflows visually.</h2><p>A future-ready canvas for connecting triggers, reasoning, agents, tools, approvals, and outputs.</p></div>
+        <div class="studio-canvas">
+          <div class="node trigger"><small>TRIGGER</small><strong>New request</strong></div>
+          <div class="connector c1"></div>
+          <div class="node"><small>PLAN</small><strong>UZMO Orchestrator</strong></div>
+          <div class="connector c2"></div>
+          <div class="node split"><small>AGENTS</small><strong>Research + Data + Document</strong></div>
+          <div class="connector c3"></div>
+          <div class="node approval"><small>CONTROL</small><strong>Human approval</strong></div>
+          <div class="connector c4"></div>
+          <div class="node output"><small>OUTPUT</small><strong>Email / Sheet / API</strong></div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="./uzmo.js"></script>
+</body>
+</html>
