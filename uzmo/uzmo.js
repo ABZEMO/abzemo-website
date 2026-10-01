@@ -48,23 +48,55 @@
     event.preventDefault();
     const goal = input.value.trim();
     if (!goal) return;
+
     state.textContent = "Planning";
     stream.classList.remove("empty");
     stream.innerHTML = plan.map((item, i) =>
       '<div class="step" data-step="' + i + '"><span class="num">' + (i + 1) + '</span><div><b>' + item[0] + '</b><small>' + item[1] + '</small></div><span class="step-status">Queued</span></div>'
     ).join("");
 
-    const steps = [...stream.querySelectorAll(".step")];
-    for (let i = 0; i < steps.length; i++) {
-      await new Promise(resolve => setTimeout(resolve, 380));
-      steps[i].classList.add("done");
-      steps[i].querySelector(".step-status").textContent = "Complete";
+    try {
+      const planned = await fetch("/api/uzmo", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ action: "plan", goal })
+      });
+      const planResult = await planned.json();
+      if (!planned.ok) throw new Error(planResult.error || "Planning failed");
+
+      const steps = [...stream.querySelectorAll(".step")];
+      steps.forEach(step => {
+        step.classList.add("done");
+        step.querySelector(".step-status").textContent = "Complete";
+      });
+
+      const summary = document.createElement("div");
+      summary.className = "step";
+      summary.innerHTML = '<span class="num">✓</span><div><b>Plan ready</b><small>' + escapeHtml((planResult.plan?.tools || []).map(t => t.name).join(", ") || "No external tool selected") + '</small></div><span class="step-status">' + (planResult.plan?.requiresApproval ? "Approval" : "Ready") + '</span>';
+      stream.appendChild(summary);
+
+      if (!planResult.plan?.requiresApproval) {
+        state.textContent = "Executing";
+        const executed = await fetch("/api/uzmo", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ action: "execute", plan: planResult.plan, approved: false })
+        });
+        const execution = await executed.json();
+        if (!executed.ok) throw new Error(execution.error || "Execution failed");
+        const result = document.createElement("div");
+        result.className = "step";
+        result.innerHTML = '<span class="num">↗</span><div><b>Execution result</b><small>' + escapeHtml(JSON.stringify(execution)) + '</small></div><span class="step-status">' + escapeHtml(execution.status || "Complete") + '</span>';
+        stream.appendChild(result);
+      }
+      state.textContent = "Ready";
+    } catch (error) {
+      state.textContent = "Error";
+      const result = document.createElement("div");
+      result.className = "step";
+      result.innerHTML = '<span class="num">!</span><div><b>UZMO request failed</b><small>' + escapeHtml(error.message || "Unknown error") + '</small></div><span class="step-status">Failed</span>';
+      stream.appendChild(result);
     }
-    state.textContent = "Ready";
-    const summary = document.createElement("div");
-    summary.className = "step";
-    summary.innerHTML = '<span class="num">✓</span><div><b>Plan ready</b><small>UZMO prepared a simulated execution plan for: ' + escapeHtml(goal) + '</small></div><span class="step-status">Preview</span>';
-    stream.appendChild(summary);
   });
 
   document.querySelector("#clear-context").addEventListener("click", () => {
