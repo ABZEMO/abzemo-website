@@ -5,7 +5,7 @@ async function getRuntime() {
   return runtimePromise;
 }
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   try {
     const { handleRuntime } = await getRuntime();
     const body = req.body && typeof req.body === "object"
@@ -24,4 +24,4 @@ export default async function handler(req, res) {
   } catch (error) {
     return res.status(500).json({ error: error?.message || "UZMO runtime failed" });
   }
-}
+};
