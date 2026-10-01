@@ -1,0 +1,85 @@
+/* ABZEMO AI Search — separate from the ABZEMO AI visitor bot */
+.abzemo-search-trigger{
+  position:absolute;
+  right:0;
+  top:50%;
+  transform:translateY(-50%);
+  width:44px;height:44px;
+  border:1px solid var(--line,#dce5f0);
+  border-radius:10px;
+  background:#fff;
+  color:var(--navy,#071a35);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;
+  box-shadow:0 6px 22px rgba(7,26,53,.06);
+  transition:.2s ease;
+  z-index:3;
+}
+.abzemo-search-trigger:hover{color:var(--blue,#1264d8);border-color:var(--blue,#1264d8);transform:translateY(-50%) translateY(-1px)}
+.abzemo-search-trigger svg{width:20px;height:20px}
+
+.abzemo-search-backdrop{
+  position:fixed;inset:0;z-index:1300;
+  background:rgba(4,18,37,.52);
+  backdrop-filter:blur(7px);
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:.25s ease;
+}
+.abzemo-search-backdrop.active{opacity:1;visibility:visible;pointer-events:auto}
+
+.abzemo-search-panel{
+  position:fixed;left:0;right:0;top:0;z-index:1310;
+  background:rgba(255,255,255,.98);
+  border-bottom:1px solid #dce5f0;
+  box-shadow:0 28px 80px rgba(4,18,37,.18);
+  transform:translateY(-105%);
+  transition:transform .34s cubic-bezier(.77,0,.18,1);
+}
+.abzemo-search-panel.active{transform:translateY(0)}
+.abzemo-search-inner{width:min(1120px,calc(100% - 40px));margin:auto;padding:24px 0 28px}
+.abzemo-search-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.abzemo-search-kicker{font-size:11px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:#1264d8}
+.abzemo-search-close{width:40px;height:40px;border:1px solid #dce5f0;border-radius:9px;background:#fff;font-size:24px;color:#071a35;cursor:pointer}
+
+.abzemo-search-box{
+  display:grid;grid-template-columns:1fr auto auto;
+  align-items:center;gap:8px;
+  min-height:64px;padding:7px 8px 7px 20px;
+  border:1px solid #bfcddd;border-radius:14px;background:#fff;
+  box-shadow:0 12px 35px rgba(7,26,53,.09);
+}
+.abzemo-search-box:focus-within{border-color:#1264d8;box-shadow:0 14px 40px rgba(18,100,216,.13)}
+.abzemo-search-input{width:100%;border:0;outline:0;background:transparent;color:#071a35;font-size:18px}
+.abzemo-search-input::placeholder{color:#7a899d}
+.abzemo-search-icon-btn{width:48px;height:48px;border:0;border-radius:10px;background:transparent;color:#52647b;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.abzemo-search-icon-btn:hover{background:#f5f8fc;color:#1264d8}
+.abzemo-search-icon-btn svg{width:22px;height:22px}
+.abzemo-search-submit{width:50px;height:48px;border:0;border-radius:10px;background:#1264d8;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.abzemo-search-submit:hover{background:#084a9e}
+.abzemo-search-submit svg{width:21px;height:21px}
+
+.abzemo-search-hints{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.abzemo-search-hint{border:1px solid #dce5f0;border-radius:999px;background:#f8fafd;color:#52647b;padding:7px 12px;font-size:12px;cursor:pointer}
+.abzemo-search-hint:hover{border-color:#1264d8;color:#1264d8}
+
+.abzemo-search-status{min-height:22px;margin-top:16px;color:#6f7f95;font-size:13px}
+.abzemo-search-results{display:grid;gap:10px;margin-top:8px;max-height:min(52vh,520px);overflow:auto}
+.abzemo-search-answer{padding:18px;border:1px solid #dce5f0;border-radius:12px;background:#f7faff;color:#24344d;line-height:1.7}
+.abzemo-search-answer strong{color:#071a35}
+.abzemo-search-result{display:block;padding:16px 18px;border:1px solid #dce5f0;border-radius:12px;background:#fff;transition:.2s ease}
+.abzemo-search-result:hover{border-color:#1264d8;transform:translateY(-1px)}
+.abzemo-search-result-title{display:block;color:#071a35;font-size:16px;font-weight:800;margin-bottom:4px}
+.abzemo-search-result-url{display:block;color:#1264d8;font-size:11px;margin-bottom:5px}
+.abzemo-search-result-snippet{display:block;color:#6f7f95;font-size:13px;line-height:1.6}
+.abzemo-search-footnote{margin-top:12px;color:#8a98aa;font-size:11px}
+
+@media(max-width:980px){
+  .abzemo-search-trigger{right:54px}
+  .abzemo-search-inner{width:min(100% - 28px,1120px)}
+}
+@media(max-width:640px){
+  .abzemo-search-trigger{right:50px;width:42px;height:42px}
+  .abzemo-search-box{grid-template-columns:1fr auto auto;min-height:58px;padding-left:14px}
+  .abzemo-search-input{font-size:16px}
+  .abzemo-search-icon-btn,.abzemo-search-submit{width:42px;height:42px}
+}
