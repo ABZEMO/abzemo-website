@@ -38,7 +38,11 @@
   }
   function setDirection(lang){document.documentElement.lang=lang;document.documentElement.dir=RTL.has(lang)?"rtl":"ltr";}
   function region(){
-    try{return new Intl.Locale(navigator.language||"en").region||"Global"}catch(_){return"Global"}
+    try{
+      const r=new Intl.Locale(navigator.language||"en").region;
+      if(!r)return"Global";
+      try{return new Intl.DisplayNames([navigator.language||"en"],{type:"region"}).of(r)||r}catch(_){return r}
+    }catch(_){return"Global"}
   }
   function buildSelector(){
     if(document.getElementById("abzemoLanguageControl"))return;
@@ -46,7 +50,7 @@
     const wrap=document.createElement("div");wrap.id="abzemoLanguageControl";wrap.className="abzemo-language-control";
     wrap.innerHTML='<span class="abzemo-globe" aria-hidden="true">◎</span><span class="abzemo-country" id="abzemoCountryLabel">Global</span><span class="abzemo-divider">|</span><select id="abzemoLanguageSelect" aria-label="Website language"></select>';
     const select=wrap.querySelector("select");
-    LANGUAGES.forEach(([code,label])=>{const o=document.createElement("option");o.value=code;o.textContent=label;o.selected=code===current;select.appendChild(o)});
+    LANGUAGES.forEach(([code,label])=>{const o=document.createElement("option");o.value=code;o.textContent=code.toUpperCase();o.title=label;o.selected=code===current;select.appendChild(o)});
     select.addEventListener("change",()=>setLanguage(select.value));nav.appendChild(wrap);
     const c=document.getElementById("abzemoCountryLabel");if(c)c.textContent=region();
   }
