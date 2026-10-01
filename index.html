@@ -937,25 +937,6 @@
         flex-direction: column;
       }
     }
-    /* ABZEMO INTELLIGENCE HERO */
-    .hero-intelligence{min-height:calc(100vh - 78px);padding-top:78px;background:radial-gradient(circle at 50% 38%,rgba(18,100,216,.11),transparent 34%),linear-gradient(135deg,#fff 0%,#f5f8fc 100%)}
-    .hero-intelligence-inner{min-height:calc(100vh - 78px);display:flex;align-items:center;justify-content:center;padding:80px 0;text-align:center}
-    .hero-intelligence-content{width:min(920px,100%);margin:0 auto}
-    .hero-intelligence-label{margin-bottom:22px;color:var(--blue);font-size:12px;font-weight:900;letter-spacing:4px;text-transform:uppercase}
-    .hero-intelligence-title{max-width:900px;margin:0 auto 22px;color:var(--navy);font-size:clamp(48px,7vw,88px);line-height:.98;letter-spacing:-4px;font-weight:900}
-    .hero-intelligence-text{max-width:650px;margin:0 auto 34px;color:var(--muted);font-size:clamp(16px,2vw,19px);line-height:1.75}
-    .hero-search-shell{width:min(780px,100%);min-height:72px;margin:0 auto;display:flex;align-items:center;gap:14px;padding:9px 10px 9px 24px;background:rgba(255,255,255,.96);border:1px solid rgba(18,100,216,.20);border-radius:18px;box-shadow:0 20px 65px rgba(7,26,53,.10),0 0 0 7px rgba(18,100,216,.035);transition:border-color .25s ease,box-shadow .25s ease,transform .25s ease}
-    .hero-search-shell:focus-within{border-color:rgba(18,100,216,.45);box-shadow:0 24px 75px rgba(7,26,53,.13),0 0 0 7px rgba(18,100,216,.06);transform:translateY(-1px)}
-    .hero-search-icon{flex:0 0 auto;color:var(--blue);font-size:29px;line-height:1;transform:rotate(-15deg)}
-    .hero-search-input{min-width:0;flex:1;border:0;outline:0;color:var(--navy);background:transparent;font-size:17px}
-    .hero-search-input::placeholder{color:#8a98aa}
-    .hero-search-submit{width:52px;height:52px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;border-radius:14px;color:#fff;background:var(--blue);cursor:pointer;font-size:25px;transition:background .2s ease,transform .2s ease}
-    .hero-search-submit:hover{background:var(--blue-dark);transform:translateX(2px)}
-    .hero-search-hint{margin-top:15px;color:#8a98aa;font-size:12px;letter-spacing:.2px}
-    .hero-intelligence-actions{margin-top:27px;display:flex;justify-content:center;flex-wrap:wrap;gap:11px}
-    .hero-intelligence-actions .secondary-btn{min-height:44px;padding:10px 18px;background:rgba(255,255,255,.72)}
-    @media(max-width:640px){.hero-intelligence{min-height:calc(100vh - 70px);padding-top:70px}.hero-intelligence-inner{min-height:calc(100vh - 70px);padding:55px 0}.hero-intelligence-title{font-size:clamp(42px,13vw,62px);letter-spacing:-2.8px}.hero-intelligence-text{font-size:16px}.hero-search-shell{min-height:64px;padding-left:17px;border-radius:15px}.hero-search-input{font-size:15px}.hero-search-submit{width:46px;height:46px;border-radius:12px}.hero-search-hint{padding:0 8px;line-height:1.6}.hero-intelligence-actions{flex-direction:column;align-items:stretch}.hero-intelligence-actions .secondary-btn{width:100%}}
-
   </style>
 </head>
 
@@ -1070,25 +1051,62 @@
 
   <main>
 
-    <section class="hero hero-intelligence">
-      <div class="container hero-intelligence-inner">
-        <div class="hero-intelligence-content">
-          <div class="hero-intelligence-label">ABZEMO</div>
-          <h1 class="hero-intelligence-title">What’s next for your business?</h1>
-          <p class="hero-intelligence-text">Tell us what you want to achieve, solve or build. Start the conversation with ABZEMO.</p>
-          <div class="hero-search-shell" role="search" aria-label="ABZEMO business search">
-            <span class="hero-search-icon" aria-hidden="true">⌕</span>
-            <input type="text" id="abzemoIntentInput" class="hero-search-input" placeholder="Describe what you want to build..." autocomplete="off" aria-label="Describe what you want to build">
-            <button type="button" class="hero-search-submit" id="abzemoIntentButton" aria-label="Start with ABZEMO"><span>→</span></button>
+    <section class="hero">
+      <div class="container hero-grid">
+
+        <div>
+          <h1 class="hero-brand">
+            ABZEM<span>O</span>
+          </h1>
+
+          <div class="hero-slogan">
+            Building What's Next.
           </div>
-          <div class="hero-search-hint">Explore solutions, automation, AI, business opportunities and more.</div>
-          <div class="hero-intelligence-actions">
-            <a class="secondary-btn" href="solutions.html">Explore Solutions</a>
-            <a class="secondary-btn" href="contact.html">Talk to ABZEMO</a>
+
+          <p class="hero-text">
+            ABZEMO is a global business platform building solutions,
+            ventures and technologies across AI, technology, healthcare,
+            trade, education and future industries.
+          </p>
+
+          <div class="hero-actions">
+            <a class="primary-btn" href="ventures.html">
+              Explore Ventures
+            </a>
+
+            <a class="secondary-btn" href="about.html">
+              Discover ABZEMO
+            </a>
           </div>
         </div>
+
+        <div class="hero-visual" aria-hidden="true">
+          <div class="global-ring">
+
+            <div class="connection one"></div>
+            <div class="connection two"></div>
+            <div class="connection three"></div>
+            <div class="connection four"></div>
+
+            <div class="global-node one"></div>
+            <div class="global-node two"></div>
+            <div class="global-node three"></div>
+            <div class="global-node four"></div>
+            <div class="global-node five"></div>
+            <div class="global-node six"></div>
+
+            <div class="globe-core">
+              <div class="global-core-line"></div>
+              <div class="global-core-line vertical"></div>
+            </div>
+
+          </div>
+        </div>
+
       </div>
-    </section>    <section class="section">
+    </section>
+
+    <section class="section">
       <div class="container">
 
         <div class="section-header">
@@ -1408,21 +1426,6 @@
         closeMegaMenu();
       }
     });
-
-    const abzemoIntentInput = document.getElementById("abzemoIntentInput");
-    const abzemoIntentButton = document.getElementById("abzemoIntentButton");
-
-    if (abzemoIntentInput && abzemoIntentButton) {
-      function startAbzemoConversation() {
-        const query = abzemoIntentInput.value.trim();
-        if (!query) { abzemoIntentInput.focus(); return; }
-        window.dispatchEvent(new CustomEvent("abzemo:intent", { detail: { query: query } }));
-      }
-      abzemoIntentButton.addEventListener("click", startAbzemoConversation);
-      abzemoIntentInput.addEventListener("keydown", function (event) {
-        if (event.key === "Enter") { event.preventDefault(); startAbzemoConversation(); }
-      });
-    }
 
     megaMenu.querySelectorAll("a").forEach(function (link) {
       link.addEventListener("click", closeMegaMenu);
