@@ -29,11 +29,12 @@ export default async function handler(req,res) {
   ].join("\n");
   try {
     const response=await fetch("https://api.openai.com/v1/responses",{method:"POST",headers:{"Authorization":"Bearer "+OPENAI_API_KEY,"Content-Type":"application/json"},body:JSON.stringify({
-      model:MODEL,input:[{role:"developer",content:prompt}],max_output_tokens:6000,
+      model:MODEL,input:[{role:"user",content:prompt}],max_output_tokens:6000,
       text:{format:{type:"json_schema",name:"abzemo_translations",strict:true,schema:{type:"object",additionalProperties:false,properties:{translations:{type:"array",items:{type:"object",additionalProperties:false,properties:{source:{type:"string"},translation:{type:"string"}},required:["source","translation"]}}},required:["translations"]}}}
     })});
     if (!response.ok) { console.error("Translation provider error:",await response.text()); return send(res,{error:"Translation provider request failed."},502); }
-    const data=await response.json(), raw=typeof data.output_text==="string"?data.output_text.trim():"";
+    const data=await response.json();
+    const raw=typeof data.output_text==="string" ? data.output_text.trim() : (Array.isArray(data.output) ? data.output.flatMap(item=>Array.isArray(item.content)?item.content:[]).map(part=>part&&typeof part.text==="string"?part.text:"").filter(Boolean).join("\n").trim() : "");
     if (!raw) return send(res,{error:"Translation provider returned no output."},502);
     const parsed=JSON.parse(raw);
     return send(res,{translations:Array.isArray(parsed.translations)?parsed.translations:[]});
