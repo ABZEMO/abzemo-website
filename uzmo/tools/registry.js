@@ -4,6 +4,7 @@ const TOOLS = [
   { id: "gmail", name: "Gmail", capabilities: ["email", "mail"] },
   { id: "google_calendar", name: "Google Calendar", capabilities: ["calendar", "meeting", "schedule"] },
   { id: "microsoft_365", name: "Microsoft 365", capabilities: ["office", "excel", "word", "outlook", "teams"] },
+  { id: "frappe_crm", name: "Frappe CRM", capabilities: ["crm", "frappe", "lead", "deal", "customer", "pipeline"] },
   { id: "webhook", name: "Webhook", capabilities: ["webhook", "trigger", "api"] },
   { id: "http", name: "HTTP API", capabilities: ["api", "rest", "http"] },
   { id: "database", name: "Database", capabilities: ["database", "sql", "data"] },
@@ -12,9 +13,10 @@ const TOOLS = [
 ];
 
 export function listTools() { return TOOLS; }
+export function getTool(id) { return TOOLS.find(tool => tool.id === id) || null; }
 
-export function selectTools(goal, agents) {
-  const text = goal.toLowerCase();
+export function selectTools(goal, agents = []) {
+  const text = String(goal || "").toLowerCase();
   const agentIds = new Set(agents.map(agent => agent.id));
   const selected = TOOLS.filter(tool =>
     tool.capabilities.some(cap => text.includes(cap)) ||
