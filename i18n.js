@@ -37,7 +37,13 @@
     while(n=w.nextNode()){if(!translatable(n.parentElement))continue;const t=n.nodeValue.trim();if(t.length>=2&&!protectedText.has(t))original.set(n,n.nodeValue);}
   }
   function setDirection(lang){document.documentElement.lang=lang;document.documentElement.dir=RTL.has(lang)?"rtl":"ltr";}
-  function region(){
+  async function region(){
+    try{
+      const r=await fetch("/api/geo",{cache:"no-store"});
+      if(r.ok){const d=await r.json();if(d.countryCode){
+        try{return new Intl.DisplayNames([navigator.language||"en"],{type:"region"}).of(d.countryCode)||d.countryCode}catch(_){return d.countryCode}
+      }}
+    }catch(_){}
     try{
       const r=new Intl.Locale(navigator.language||"en").region;
       if(!r)return"Global";
