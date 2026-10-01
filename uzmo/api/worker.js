@@ -75,7 +75,7 @@ export default {
       catch (error) { return json({ error: error.message || "Memory request failed" }, 500); }
     }
     if (url.pathname === "/api/runtime") {
-      try { return withCors(await handleRuntime(request)); }
+      try { return withCors(await handleRuntime(request, env)); }
       catch (error) { return json({ error: error.message || "Runtime request failed" }, 500); }
     }
     if (url.pathname === "/api/security") {
