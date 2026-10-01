@@ -230,22 +230,21 @@
     let chat = document.getElementById("abzemoAiChat");
 
     if (!launcher && !chat) {
-      launcher = document.createElement("button");
+      launcher = document.createElement("div");
       const launcherWrap = document.createElement("div");
       launcherWrap.className = "abzemo-ai-launcher-wrap";
       launcherWrap.id = "abzemoAiLauncherWrap";
 
-      const launcherTip = document.createElement("div");
-      launcherTip.className = "abzemo-ai-launcher-tip";
-      launcherTip.innerHTML = "<span class=\"abzemo-ai-robot\" aria-hidden=\"true\">🤖</span> Press ABZEMO AI to communicate with our Global Sales Agent";
-
       launcher.className = "abzemo-ai-launcher";
       launcher.id = "abzemoAiLauncher";
-      launcher.type = "button";
-      launcher.setAttribute("aria-label","Open ABZEMO AI Global Sales Agent");
-      launcher.title = "Talk to ABZEMO AI";
-      launcher.innerHTML =
-        "<span aria-hidden='true'>✦</span><span>ABZEMO AI</span>";
+      launcher.setAttribute("aria-label","Start a conversation with ABZEMO AI");
+      launcher.innerHTML = `
+        <input id="abzemoAiLauncherInput" class="abzemo-ai-launcher-input" type="text"
+          placeholder="Tell us what you need..."
+          aria-label="Tell ABZEMO AI what you need" />
+        <button id="abzemoAiLauncherSend" class="abzemo-ai-launcher-send" type="button"
+          aria-label="Send your request" title="Send">➤</button>
+      `;
 
       chat = document.createElement("div");
       chat.className = "abzemo-ai-chat";
@@ -294,7 +293,6 @@
         </div>
       `;
 
-      launcherWrap.appendChild(launcherTip);
       launcherWrap.appendChild(launcher);
       document.body.appendChild(launcherWrap);
       document.body.appendChild(chat);
@@ -302,6 +300,8 @@
 
     return {
       launcher: document.getElementById("abzemoAiLauncher"),
+      launcherInput: document.getElementById("abzemoAiLauncherInput"),
+      launcherSend: document.getElementById("abzemoAiLauncherSend"),
       chat: document.getElementById("abzemoAiChat"),
       close: document.getElementById("abzemoAiClose"),
       send: document.getElementById("abzemoAiSend"),
@@ -320,6 +320,8 @@
     const el = createWidget();
 
     const launcher = el.launcher;
+    const launcherInput = el.launcherInput;
+    const launcherSend = el.launcherSend;
     const chat = el.chat;
     const close = el.close;
     const send = el.send;
@@ -331,7 +333,7 @@
     const leadStatus = el.leadStatus;
     const voiceStatus = document.getElementById("abzemoAiVoiceStatus");
 
-    if (!launcher || !chat || !close || !send || !input || !messages || !typing) {
+    if (!launcher || !launcherInput || !launcherSend || !chat || !close || !send || !input || !messages || !typing) {
       return;
     }
 
@@ -860,7 +862,31 @@
        8. EVENTS
        ========================================================= */
 
-    launcher.addEventListener("click",openAI);
+    function startFromLauncher() {
+      const message = launcherInput.value.trim();
+      if (!message) {
+        openAI();
+        return;
+      }
+      openAI();
+      input.value = message;
+      launcherInput.value = "";
+      autoResize();
+      sendMessage();
+    }
+
+    launcherSend.addEventListener("click",startFromLauncher);
+
+    launcherInput.addEventListener("keydown",function (event) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        startFromLauncher();
+      }
+    });
+
+    launcherInput.addEventListener("click",function (event) {
+      event.stopPropagation();
+    });
     if (voice) voice.addEventListener("click",toggleVoiceInput);
     if (speaker) {
       speaker.addEventListener("click",function () {
