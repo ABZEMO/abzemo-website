@@ -860,6 +860,36 @@
        8. EVENTS
        ========================================================= */
 
+    document.querySelectorAll(".abzemo-intelligence-submit").forEach(function (button) {
+      button.addEventListener("click", function () {
+        const shell = button.closest(".abzemo-intelligence-search");
+        const field = shell ? shell.querySelector(".abzemo-intelligence-input") : null;
+        const query = field ? field.value.trim() : "";
+
+        if (!query) {
+          if (field) field.focus();
+          return;
+        }
+
+        openAI();
+        input.value = query;
+        autoResize();
+        setTimeout(function () {
+          sendMessage();
+        }, 100);
+      });
+    });
+
+    document.querySelectorAll(".abzemo-intelligence-input").forEach(function (field) {
+      field.addEventListener("keydown", function (event) {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          const button = field.closest(".abzemo-intelligence-search")?.querySelector(".abzemo-intelligence-submit");
+          if (button) button.click();
+        }
+      });
+    });
+
     launcher.addEventListener("click",openAI);
     if (voice) voice.addEventListener("click",toggleVoiceInput);
     if (speaker) {
