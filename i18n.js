@@ -1,4 +1,4 @@
-/* ABZEMO GLOBAL INTERNATIONALIZATION — production country/language refresh */
+/* ABZEMO GLOBAL INTERNATIONALIZATION — reliable country/language detection */
 (function () {
   "use strict";
   const STORAGE_KEY="abzemo_site_language", RTL=new Set(["ar","ur","fa","he"]);
@@ -40,14 +40,19 @@
   async function region(){
     try{
       const r=await fetch("/api/geo",{cache:"no-store"});
-      if(r.ok){const d=await r.json();if(d.countryCode){
-        try{return new Intl.DisplayNames([navigator.language||"en"],{type:"region"}).of(d.countryCode)||d.countryCode}catch(_){return d.countryCode}
-      }}
+      if(r.ok){
+        const d=await r.json();
+        if(d.countryCode){
+          try{return new Intl.DisplayNames(["en"],{type:"region"}).of(d.countryCode)||d.countryCode}catch(_){return d.countryCode}
+        }
+      }
     }catch(_){}
     try{
+      const tz=Intl.DateTimeFormat().resolvedOptions().timeZone||"";
+      if(tz==="Asia/Karachi")return"Pakistan";
       const r=new Intl.Locale(navigator.language||"en").region;
       if(!r)return"Global";
-      try{return new Intl.DisplayNames([navigator.language||"en"],{type:"region"}).of(r)||r}catch(_){return r}
+      try{return new Intl.DisplayNames(["en"],{type:"region"}).of(r)||r}catch(_){return r}
     }catch(_){return"Global"}
   }
   function buildSelector(){
@@ -58,7 +63,8 @@
     const select=wrap.querySelector("select");
     LANGUAGES.forEach(([code,label])=>{const o=document.createElement("option");o.value=code;o.textContent=code.toUpperCase();o.title=label;o.selected=code===current;select.appendChild(o)});
     select.addEventListener("change",()=>setLanguage(select.value));nav.appendChild(wrap);
-    const c=document.getElementById("abzemoCountryLabel");if(c)c.textContent=region();
+    const c=document.getElementById("abzemoCountryLabel");
+    if(c)region().then(name=>{c.textContent=name||"Global"});
   }
   function restore(){original.forEach((v,n)=>{if(n&&n.parentNode)n.nodeValue=v})}
   async function translatePage(lang){
