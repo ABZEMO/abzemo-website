@@ -134,6 +134,57 @@
     }
   }
 
+  const capabilityRegistry = document.getElementById("capabilityRegistry");
+  const capabilitySearch = document.getElementById("capabilitySearch");
+  const capabilitySummary = document.getElementById("capabilitySummary");
+  let capabilityCatalog = [];
+
+  function renderCapabilityRegistry(filter = "") {
+    if (!capabilityRegistry) return;
+    const query = filter.trim().toLowerCase();
+    const filtered = capabilityCatalog.map(domain => ({
+      ...domain,
+      capabilities: domain.capabilities.filter(item =>
+        !query ||
+        domain.name.toLowerCase().includes(query) ||
+        domain.assistant.toLowerCase().includes(query) ||
+        item.toLowerCase().includes(query)
+      )
+    })).filter(domain => domain.capabilities.length);
+
+    const total = filtered.reduce((sum, domain) => sum + domain.capabilities.length, 0);
+    capabilitySummary.textContent = query
+      ? total + " matching capabilities across " + filtered.length + " domains"
+      : capabilityCatalog.length + " domains · " + capabilityCatalog.reduce((sum, domain) => sum + domain.capabilities.length, 0) + " registered capabilities";
+
+    capabilityRegistry.innerHTML = filtered.length
+      ? filtered.map(domain =>
+          '<article class="capability-card">' +
+            '<div class="capability-card-head">' +
+              '<div><span class="capability-assistant">' + escapeHtml(domain.assistant) + '</span><h3>' + escapeHtml(domain.name) + '</h3></div>' +
+              '<span class="capability-count">' + domain.capabilities.length + '</span>' +
+            '</div>' +
+            '<ul>' + domain.capabilities.map(item => '<li>' + escapeHtml(item) + '</li>').join("") + '</ul>' +
+          '</article>'
+        ).join("")
+      : '<div class="capability-empty">No registered capability matches that search.</div>';
+  }
+
+  async function loadCapabilityCatalog() {
+    if (!capabilityRegistry) return;
+    try {
+      const response = await fetch("/api/uzmo/capability-catalog", { cache: "no-store" });
+      if (!response.ok) throw new Error("capability_catalog_unavailable");
+      const data = await response.json();
+      if (!data.ok || !Array.isArray(data.domains)) throw new Error("invalid_capability_catalog");
+      capabilityCatalog = data.domains;
+      renderCapabilityRegistry();
+    } catch (_) {
+      capabilitySummary.textContent = "Capability registry unavailable.";
+      capabilityRegistry.innerHTML = '<div class="capability-empty">UZMO could not load its capability registry. No external system was contacted.</div>';
+    }
+  }
+
   function downloadSanitizedManifest() {
     const manifest = {
       platform: "UZMO",
@@ -162,5 +213,7 @@
   document.querySelectorAll(".wizard-back").forEach(button => button.addEventListener("click", () => setStep(currentStep - 1)));
   testFlow.addEventListener("click", readinessCheck);
   downloadManifest.addEventListener("click", downloadSanitizedManifest);
+  capabilitySearch?.addEventListener("input", event => renderCapabilityRegistry(event.target.value));
+  loadCapabilityCatalog();
   renderFields();
 })();
