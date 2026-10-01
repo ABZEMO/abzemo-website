@@ -14,6 +14,7 @@ export function createPlanContract({ goal, intent, agents, tools, requiresApprov
     agents,
     tools,
     requiresApproval,
+    steps: tools.map((tool, index) => ({ id: `step_${index + 1}`, tool: tool.id, input: { action: tool.id === "frappe_crm" ? "health" : "inspect" } })),
     stages: [
       { id: "understand", status: "complete" },
       { id: "plan", status: "complete" },
