@@ -23,6 +23,7 @@ module.exports = async function handler(req, res) {
     for (const [key, value] of response.headers.entries()) res.setHeader(key, value);
     return res.send(text);
   } catch (error) {
+    console.error("UZMO runtime error", error);
     return res.status(500).json({ error: error?.message || "UZMO runtime failed" });
   }
 };
