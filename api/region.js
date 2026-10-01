@@ -1,0 +1,1 @@
+export default function handler(req,res){const country=(req.headers?.["x-vercel-ip-country"]||req.headers?.["x-country"]||"US").toUpperCase();const body={country:country.length===2?country:"US"};if(typeof res?.status==="function")return res.status(200).json(body);return new Response(JSON.stringify(body),{status:200,headers:{"Content-Type":"application/json"}})}
