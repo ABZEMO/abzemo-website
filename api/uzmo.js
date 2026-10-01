@@ -23,7 +23,11 @@ module.exports = async function handler(req, res) {
     for (const [key, value] of response.headers.entries()) res.setHeader(key, value);
     return res.send(text);
   } catch (error) {
-    console.error("UZMO runtime error", error);
+    console.error("UZMO runtime error", error, {
+      frappeUrlConfigured: Boolean(process.env.UZMO_FRAPPE_CRM_URL),
+      frappeApiKeyConfigured: Boolean(process.env.UZMO_FRAPPE_CRM_API_KEY),
+      frappeApiSecretConfigured: Boolean(process.env.UZMO_FRAPPE_CRM_API_SECRET)
+    });
     return res.status(500).json({ error: error?.message || "UZMO runtime failed" });
   }
 };
