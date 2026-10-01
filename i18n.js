@@ -1,4 +1,4 @@
-/* ABZEMO GLOBAL INTERNATIONALIZATION */
+/* ABZEMO GLOBAL INTERNATIONALIZATION — production country/language refresh */
 (function () {
   "use strict";
   const STORAGE_KEY="abzemo_site_language", RTL=new Set(["ar","ur","fa","he"]);
