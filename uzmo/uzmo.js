@@ -23,7 +23,7 @@
     ["Email Agent","Drafts, classifies, routes and executes email workflows with approval controls.","Communication"],
     ["Calendar Agent","Plans meetings, checks availability and coordinates calendar actions.","Productivity"],
     ["Finance Agent","Supports finance workflows, reporting, reconciliation and controlled approvals.","Finance"],
-    ["Procurement Agent","Coordinates requests, comparisons, approvals, purchase workflows and records.","Operations"],
+    ["Procurement Agent","Runs source-to-pay work: requisitions, sourcing, RFx, supplier comparison, purchase orders, invoice matching, compliance and audit controls.","Procurement"],
     ["Content Agent","Creates multi-channel content and prepares publishing workflows.","Growth"],
     ["Web Agent","Handles web research, extraction, navigation and approved web actions.","Web"],
     ["Automation Agent","Designs and manages reusable workflows, triggers, schedules and integrations.","Automation"]
