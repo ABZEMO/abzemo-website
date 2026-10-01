@@ -1,4 +1,5 @@
 // UZMO Vercel runtime endpoint
+// Production runtime validation trigger.
 let runtimePromise;
 
 async function getRuntime() {
