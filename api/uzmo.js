@@ -1,3 +1,4 @@
+// UZMO Vercel runtime endpoint
 let runtimePromise;
 
 async function getRuntime() {
