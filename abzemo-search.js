@@ -1,0 +1,201 @@
+/* ABZEMO AI Search
+   Separate experience from the ABZEMO AI visitor bot.
+   UI is production-ready; secure AI endpoint can be connected at /api/ai-search.
+*/
+(function(){
+  "use strict";
+
+  const SUPPORTED_LANGUAGES = [
+    "English","Arabic","Urdu","Roman Urdu","French","Italian","Spanish","German","Portuguese",
+    "Dutch","Turkish","Persian","Hindi","Bengali","Punjabi","Sindhi","Pashto","Malay","Indonesian",
+    "Chinese","Japanese","Korean","Vietnamese","Thai","Tamil","Telugu","Marathi","Gujarati","Kannada",
+    "Malayalam","Nepali","Russian","Ukrainian","Polish","Czech","Slovak","Hungarian","Romanian","Bulgarian",
+    "Greek","Hebrew","Swedish","Norwegian","Danish","Finnish","Icelandic","Swahili","Somali","Amharic",
+    "Zulu","Afrikaans","Filipino","Persian (Dari)"
+  ];
+
+  const pageLinks = [
+    ["Home","index.html"],["About ABZEMO","about.html"],["Mission","mission.html"],
+    ["Vision","vision.html"],["Director's Note","director-note.html"],["Solutions","solutions.html"],
+    ["Industries","industries.html"],["ABZEMO AI","abzemo-ai.html"],["Ventures","ventures.html"],
+    ["Contact","contact.html"],["Privacy Policy","privacy.html"],["Terms & Conditions","terms.html"]
+  ];
+
+  function icon(name){
+    const paths={
+      search:'<circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path>',
+      mic:'<rect x="8" y="3" width="8" height="12" rx="4"></rect><path d="M5 11a7 7 0 0 0 14 0M12 18v3M9 21h6"></path>',
+      arrow:'<path d="M4 12h15"></path><path d="m13 6 6 6-6 6"></path>'
+    };
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+paths[name]+'</svg>';
+  }
+
+  function normalize(value){return String(value||"").toLowerCase().replace(/\s+/g," ").trim()}
+
+  function localSearch(query){
+    const q=normalize(query);
+    if(!q) return [];
+    return pageLinks
+      .map(function(item){
+        const title=normalize(item[0]);
+        const score=title===q?100:(title.includes(q)?70:(q.split(" ").some(function(w){return w.length>2&&title.includes(w)})?35:0));
+        return {title:item[0],url:item[1],score};
+      })
+      .filter(function(item){return item.score>0})
+      .sort(function(a,b){return b.score-a.score})
+      .slice(0,6);
+  }
+
+  function detectLanguage(){
+    const lang=(navigator.language||"en").toLowerCase();
+    return lang;
+  }
+
+  function init(){
+    if(document.querySelector(".abzemo-search-trigger")) return;
+
+    const navbar=document.querySelector(".navbar");
+    if(!navbar) return;
+    const style=document.createElement("link");
+    style.rel="stylesheet";style.href="abzemo-search.css";
+    document.head.appendChild(style);
+
+    const trigger=document.createElement("button");
+    trigger.className="abzemo-search-trigger";
+    trigger.type="button";
+    trigger.setAttribute("aria-label","Open ABZEMO AI Search");
+    trigger.setAttribute("aria-controls","abzemoSearchPanel");
+    trigger.setAttribute("aria-expanded","false");
+    trigger.innerHTML=icon("search");
+
+    navbar.style.position="relative";
+    navbar.appendChild(trigger);
+
+    const backdrop=document.createElement("div");
+    backdrop.className="abzemo-search-backdrop";
+
+    const panel=document.createElement("section");
+    panel.className="abzemo-search-panel";
+    panel.id="abzemoSearchPanel";
+    panel.setAttribute("aria-label","ABZEMO AI Search");
+    panel.innerHTML=
+      '<div class="abzemo-search-inner">'+
+        '<div class="abzemo-search-top"><div class="abzemo-search-kicker">Search with ABZEMO AI</div><button class="abzemo-search-close" type="button" aria-label="Close search">×</button></div>'+
+        '<form class="abzemo-search-box">'+
+          '<input class="abzemo-search-input" autocomplete="off" placeholder="Search ABZEMO with natural language…" aria-label="Search ABZEMO">'+
+          '<button class="abzemo-search-icon-btn" type="button" aria-label="Search by voice" title="Voice search">'+icon("mic")+'</button>'+
+          '<button class="abzemo-search-submit" type="submit" aria-label="Search">'+icon("arrow")+'</button>'+
+        '</form>'+
+        '<div class="abzemo-search-hints">'+
+          '<button class="abzemo-search-hint" type="button">What does ABZEMO build?</button>'+
+          '<button class="abzemo-search-hint" type="button">Explore ABZEMO AI</button>'+
+          '<button class="abzemo-search-hint" type="button">What industries do we serve?</button>'+
+        '</div>'+
+        '<div class="abzemo-search-status"></div>'+
+        '<div class="abzemo-search-results"></div>'+
+        '<div class="abzemo-search-footnote">AI Search is separate from the ABZEMO AI visitor assistant. Supports 50+ language experiences.</div>'+
+      '</div>';
+
+    document.body.appendChild(backdrop);
+    document.body.appendChild(panel);
+
+    const input=panel.querySelector(".abzemo-search-input");
+    const form=panel.querySelector(".abzemo-search-box");
+    const status=panel.querySelector(".abzemo-search-status");
+    const results=panel.querySelector(".abzemo-search-results");
+    const close=panel.querySelector(".abzemo-search-close");
+    const mic=panel.querySelector(".abzemo-search-icon-btn");
+
+    function open(){
+      backdrop.classList.add("active");panel.classList.add("active");
+      trigger.setAttribute("aria-expanded","true");
+      document.body.style.overflow="hidden";
+      setTimeout(function(){input.focus()},80);
+    }
+    function shut(){
+      backdrop.classList.remove("active");panel.classList.remove("active");
+      trigger.setAttribute("aria-expanded","false");
+      document.body.style.overflow="";
+    }
+    function renderLocal(items){
+      results.innerHTML="";
+      items.forEach(function(item){
+        const a=document.createElement("a");a.className="abzemo-search-result";a.href=item.url;
+        a.innerHTML='<span class="abzemo-search-result-title"></span><span class="abzemo-search-result-url"></span><span class="abzemo-search-result-snippet">Open this ABZEMO section.</span>';
+        a.querySelector(".abzemo-search-result-title").textContent=item.title;
+        a.querySelector(".abzemo-search-result-url").textContent=item.url;
+        results.appendChild(a);
+      });
+    }
+
+    async function submit(query){
+      query=String(query||"").trim();
+      if(!query) return;
+      status.textContent="Understanding your request…";
+      results.innerHTML="";
+
+      try{
+        const response=await fetch("/api/ai-search",{
+          method:"POST",
+          headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({query,language:detectLanguage(),supported_languages:SUPPORTED_LANGUAGES,source:window.location.href})
+        });
+        if(!response.ok) throw new Error("AI search endpoint unavailable");
+        const data=await response.json();
+        if(data.answer){
+          const answer=document.createElement("div");
+          answer.className="abzemo-search-answer";
+          const strong=document.createElement("strong");strong.textContent="AI Search";
+          answer.appendChild(strong);
+          answer.appendChild(document.createTextNode(" — "+data.answer));
+          results.appendChild(answer);
+        }
+        if(Array.isArray(data.results)){
+          data.results.slice(0,8).forEach(function(item){
+            if(!item||!item.url)return;
+            const a=document.createElement("a");a.className="abzemo-search-result";a.href=item.url;
+            a.innerHTML='<span class="abzemo-search-result-title"></span><span class="abzemo-search-result-url"></span><span class="abzemo-search-result-snippet"></span>';
+            a.querySelector(".abzemo-search-result-title").textContent=item.title||"ABZEMO result";
+            a.querySelector(".abzemo-search-result-url").textContent=item.url;
+            a.querySelector(".abzemo-search-result-snippet").textContent=item.snippet||"";
+            results.appendChild(a);
+          });
+        }
+        status.textContent="Results ready.";
+      }catch(error){
+        const local=localSearch(query);
+        status.textContent=local.length?"AI Search is not connected yet — showing direct ABZEMO matches.":"No direct ABZEMO match found.";
+        renderLocal(local);
+      }
+    }
+
+    trigger.addEventListener("click",open);
+    close.addEventListener("click",shut);
+    backdrop.addEventListener("click",shut);
+    form.addEventListener("submit",function(e){e.preventDefault();submit(input.value)});
+    panel.querySelectorAll(".abzemo-search-hint").forEach(function(btn){
+      btn.addEventListener("click",function(){input.value=btn.textContent;submit(input.value)});
+    });
+    document.addEventListener("keydown",function(e){if(e.key==="Escape"&&panel.classList.contains("active"))shut()});
+
+    const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(!SpeechRecognition){mic.disabled=true;mic.title="Voice search is not supported by this browser";}
+    else{
+      const recognition=new SpeechRecognition();
+      recognition.continuous=false;recognition.interimResults=false;recognition.maxAlternatives=1;
+      mic.addEventListener("click",function(){
+        recognition.lang=detectLanguage();
+        try{recognition.start();status.textContent="Listening…";}catch(e){}
+      });
+      recognition.onresult=function(e){
+        input.value=(e.results[0][0].transcript||"").trim();
+        status.textContent="Voice captured — searching…";
+        submit(input.value);
+      };
+      recognition.onerror=function(){status.textContent="Microphone permission is required or voice input failed."};
+    }
+  }
+
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",init); else init();
+  window.ABZEMO_AI_SEARCH={supportedLanguages:SUPPORTED_LANGUAGES};
+})();
