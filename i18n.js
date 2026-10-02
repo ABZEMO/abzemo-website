@@ -97,7 +97,7 @@
     const select=document.getElementById("abzemoLanguageSelect");if(select)select.value=lang;await translatePage(lang);
     window.dispatchEvent(new CustomEvent("abzemo:languagechange",{detail:{language:lang}}));
   }
-  function init(){injectStyles();snapshot();setDirection(current);buildSelector();requestAnimationFrame(positionSelector);if(current!=="en")translatePage(current)}
+  function init(){injectStyles();snapshot();setDirection(current);buildSelector();requestAnimationFrame(positionSelector);setTimeout(positionSelector,150);setTimeout(positionSelector,500);if(current!=="en")translatePage(current)}
   window.addEventListener("resize",()=>requestAnimationFrame(positionSelector));
   window.ABZEMO_I18N={languages:LANGUAGES,getLanguage:()=>current,setLanguage};
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
