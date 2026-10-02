@@ -19,7 +19,7 @@
     if(document.getElementById("abzemo-i18n-styles")) return;
     const s=document.createElement("style"); s.id="abzemo-i18n-styles";
     s.textContent=`
-      .abzemo-language-control{position:absolute;right:54px;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:7px;height:40px;padding:0 10px;border:1px solid var(--line,#dce5f0);border-radius:999px;background:#fff;white-space:nowrap;font-size:12px;color:var(--navy,#071a35);z-index:1002}
+      .abzemo-language-control{position:absolute;left:0;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:7px;height:40px;padding:0 10px;border:1px solid var(--line,#dce5f0);border-radius:999px;background:#fff;white-space:nowrap;font-size:12px;color:var(--navy,#071a35);z-index:1002}
       .abzemo-globe{font-size:12px;color:var(--blue,#1264d8)} .abzemo-country{font-weight:700}.abzemo-divider{color:#b4bfcc}
       .abzemo-language-control select{border:0;outline:0;background:transparent;color:var(--navy,#071a35);font-size:12px;font-weight:700;cursor:pointer;max-width:105px}
       html[dir="rtl"] .abzemo-language-control{direction:ltr}
@@ -64,8 +64,18 @@
     LANGUAGES.forEach(([code,label])=>{const o=document.createElement("option");o.value=code;o.textContent=code.toUpperCase();o.title=label;o.selected=code===current;select.appendChild(o)});
     select.addEventListener("change",()=>setLanguage(select.value));nav.appendChild(wrap);
 
+    positionSelector();
     const c=document.getElementById("abzemoCountryLabel");
-    if(c)region().then(name=>{c.textContent=name||"Global"});
+    if(c)region().then(name=>{c.textContent=name||"Global";positionSelector()});
+  }
+  function positionSelector(){
+    const wrap=document.getElementById("abzemoLanguageControl"),nav=document.querySelector(".navbar"),contact=[...document.querySelectorAll(".nav-links a")].find(a=>a.textContent.trim().toLowerCase()==="contact"),search=document.querySelector(".abzemo-search-trigger");
+    if(!wrap||!nav||!contact||!search||window.innerWidth<=980){if(wrap&&window.innerWidth<=980){wrap.style.left="auto";wrap.style.right="52px"}return}
+    const nr=nav.getBoundingClientRect(),cr=contact.getBoundingClientRect(),sr=search.getBoundingClientRect(),gap=12;
+    const minLeft=cr.right+gap-nr.left, maxLeft=sr.left-gap-wrap.offsetWidth-nr.left;
+    if(maxLeft>=minLeft) wrap.style.left=(minLeft+((maxLeft-minLeft)/2))+"px";
+    else wrap.style.left=Math.max(8,maxLeft)+"px";
+    wrap.style.right="auto"; wrap.style.transform="translateY(-50%)";
   }
   function restore(){original.forEach((v,n)=>{if(n&&n.parentNode)n.nodeValue=v})}
   async function translatePage(lang){
@@ -84,7 +94,8 @@
     const select=document.getElementById("abzemoLanguageSelect");if(select)select.value=lang;await translatePage(lang);
     window.dispatchEvent(new CustomEvent("abzemo:languagechange",{detail:{language:lang}}));
   }
-  function init(){injectStyles();snapshot();setDirection(current);buildSelector();if(current!=="en")translatePage(current)}
+  function init(){injectStyles();snapshot();setDirection(current);buildSelector();requestAnimationFrame(positionSelector);if(current!=="en")translatePage(current)}
+  window.addEventListener("resize",()=>requestAnimationFrame(positionSelector));
   window.ABZEMO_I18N={languages:LANGUAGES,getLanguage:()=>current,setLanguage};
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
 })();
