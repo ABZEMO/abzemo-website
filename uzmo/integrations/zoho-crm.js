@@ -39,7 +39,9 @@ async function getAccessToken(fetchImpl, env) {
   });
   const body = await response.json().catch(() => ({}));
   if (!response.ok || !body.access_token) {
-    throw new Error("Zoho CRM authentication failed.");
+    const error = body?.error || body?.error_description || `HTTP ${response.status}`;
+    console.error("Zoho CRM OAuth token exchange failed:", error);
+    throw new Error(`Zoho CRM authentication failed: ${error}`);
   }
   accessTokenCache = { token: body.access_token, expiresAt: Date.now() + Number(body.expires_in || 3600) * 1000 };
   return accessTokenCache.token;
