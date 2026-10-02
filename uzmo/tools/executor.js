@@ -29,22 +29,17 @@ export function createToolExecutor({ fetchImpl = fetch } = {}) {
 
 async function executeZohoCrm(fetchImpl, input, context) {
   const env = context.env || {};
-  const client = createFrappeCrmClient({
-    baseUrl: env.UZMO_FRAPPE_CRM_URL,
-    apiKey: env.UZMO_FRAPPE_CRM_API_KEY,
-    apiSecret: env.UZMO_FRAPPE_CRM_API_SECRET,
-    fetchImpl
-  });
+  const client = createZohoCrmClient({ env, fetchImpl });
   const action = String(input.action || "health").toLowerCase();
   if (["create", "update"].includes(action) && !context.approved) {
-    return { status: "approval_required", tool: "frappe_crm", action };
+    return { status: "approval_required", tool: "zoho_crm", action };
   }
   if (action === "health") return client.health();
   if (action === "list") return client.list(String(input.doctype || "CRM Lead"), input.options || {});
   if (action === "get") return client.get(String(input.doctype || "CRM Lead"), input.name);
   if (action === "create") return client.create(String(input.doctype || "CRM Lead"), input.data, { approved: true });
   if (action === "update") return client.update(String(input.doctype || "CRM Lead"), input.name, input.data, { approved: true });
-  throw new Error("Unsupported Frappe CRM action: " + action);
+  throw new Error("Unsupported Zoho CRM action: " + action);
 }
 
 async function executeWebhook(fetchImpl, input) {
