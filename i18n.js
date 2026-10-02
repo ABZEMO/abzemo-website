@@ -19,14 +19,14 @@
     if(document.getElementById("abzemo-i18n-styles")) return;
     const s=document.createElement("style"); s.id="abzemo-i18n-styles";
     s.textContent=`
-      .abzemo-language-control{justify-self:end;display:flex;align-items:center;gap:7px;height:40px;padding:0 10px;border:1px solid var(--line,#dce5f0);border-radius:999px;background:#fff;white-space:nowrap;font-size:12px;color:var(--navy,#071a35);z-index:1002}
+      .abzemo-language-control{position:absolute;right:54px;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:7px;height:40px;padding:0 10px;border:1px solid var(--line,#dce5f0);border-radius:999px;background:#fff;white-space:nowrap;font-size:12px;color:var(--navy,#071a35);z-index:1002}
       .abzemo-globe{font-size:12px;color:var(--blue,#1264d8)} .abzemo-country{font-weight:700}.abzemo-divider{color:#b4bfcc}
       .abzemo-language-control select{border:0;outline:0;background:transparent;color:var(--navy,#071a35);font-size:12px;font-weight:700;cursor:pointer;max-width:105px}
       html[dir="rtl"] .abzemo-language-control{direction:ltr}
       html[dir="rtl"] .mega-menu{left:auto;right:0;transform:translateX(105%)} html[dir="rtl"] .mega-menu.active{transform:translateX(0)}
       html[dir="rtl"] .mega-section{text-align:right} html[dir="rtl"] .hero-text,html[dir="rtl"] .section-header,html[dir="rtl"] .section,html[dir="rtl"] footer{text-align:right}
-      @media(max-width:980px){.abzemo-language-control{position:absolute;right:16px;top:50%;transform:translateY(-50%);height:36px}.navbar{position:relative}}
-      @media(max-width:640px){.abzemo-language-control{right:10px;padding:0 7px;gap:4px}.abzemo-country{display:none}.abzemo-language-control select{max-width:82px}}
+      @media(max-width:980px){.abzemo-language-control{right:52px;height:36px}.navbar{position:relative}}
+      @media(max-width:640px){.abzemo-language-control{right:50px;padding:0 7px;gap:4px}.abzemo-country{display:none}.abzemo-language-control select{max-width:82px}}
     `;
     document.head.appendChild(s);
   }
