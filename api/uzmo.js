@@ -7,8 +7,6 @@ async function getRuntime() {
   return runtimePromise;
 }
 
-// Disable Vercel's automatic body parser so malformed/legacy client payloads
-// cannot fail before the UZMO runtime receives the request.
 module.exports.config = {
   api: { bodyParser: false }
 };
@@ -23,6 +21,21 @@ async function readJsonBody(req) {
 
 module.exports = async function handler(req, res) {
   try {
+    if (req.method === "GET" && req.query?.diagnostic === "zoho") {
+      const { createZohoCrmClient } = await import("../uzmo/integrations/zoho-crm.js");
+      const client = createZohoCrmClient({ env: process.env });
+      try {
+        const result = await client.health();
+        return res.status(200).json({ status: "connected", result });
+      } catch (error) {
+        console.error("UZMO Zoho diagnostic", error);
+        return res.status(502).json({
+          status: "failed",
+          error: error?.message || "Zoho diagnostic failed"
+        });
+      }
+    }
+
     const { handleRuntime } = await getRuntime();
     const body = req.method === "POST" ? await readJsonBody(req) : {};
     const request = new Request("https://www.abzemo.com/api/uzmo", {
