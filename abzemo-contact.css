@@ -80,8 +80,38 @@
   visibility:visible;
 }
 @media(max-width:600px){
-  .abzemo-contact-dock{width:48px}
-  .abzemo-contact-dock a{width:48px;height:48px;min-height:48px}
-  .abzemo-contact-dock .dock-label{right:48px}
+  .abzemo-contact-dock{
+    top:auto;
+    right:50%;
+    bottom:0;
+    left:50%;
+    transform:translateX(-50%);
+    width:max-content;
+    max-width:100%;
+    flex-direction:row;
+    border-left:0;
+    border-top:1px solid #e7edf5;
+    box-shadow:0 -6px 24px rgba(7,26,53,.12);
+    overflow:visible;
+  }
+  .abzemo-contact-dock a{
+    width:48px;
+    height:48px;
+    min-height:48px;
+    border-bottom:0;
+    border-right:1px solid #e7edf5;
+  }
+  .abzemo-contact-dock a:last-child{border-right:0}
+  .abzemo-contact-dock .dock-label{
+    right:auto;
+    left:50%;
+    top:auto;
+    bottom:48px;
+    transform:translateX(-50%);
+  }
+  .abzemo-contact-dock a:hover .dock-label,
+  .abzemo-contact-dock a:focus-visible .dock-label{
+    transform:translateX(-50%);
+  }
   .abzemo-contact-dock .dock-icon{font-size:14px}
 }
