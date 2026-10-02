@@ -72,8 +72,10 @@
     const wrap=document.getElementById("abzemoLanguageControl"),nav=document.querySelector(".navbar"),contact=[...document.querySelectorAll(".nav-links a")].find(a=>a.textContent.trim().toLowerCase()==="contact"),search=document.querySelector(".abzemo-search-trigger");
     if(!wrap||!nav||!contact||!search||window.innerWidth<=980){if(wrap&&window.innerWidth<=980){wrap.style.left="auto";wrap.style.right="52px"}return}
     if(document.documentElement.dir==="rtl"){
-      wrap.style.left="auto";
-      wrap.style.right="0px";
+      const rtlMinLeft=cr.right+gap-nr.left;
+      const rtlMaxLeft=sr.left-gap-wrap.offsetWidth-nr.left;
+      wrap.style.right="auto";
+      wrap.style.left=(rtlMaxLeft>=rtlMinLeft?rtlMinLeft+((rtlMaxLeft-rtlMinLeft)/2):Math.max(8,rtlMaxLeft))+"px";
       wrap.style.transform="translateY(-50%)";
       return;
     }
