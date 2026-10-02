@@ -71,6 +71,15 @@
   function positionSelector(){
     const wrap=document.getElementById("abzemoLanguageControl"),nav=document.querySelector(".navbar"),contact=[...document.querySelectorAll(".nav-links a")].find(a=>a.textContent.trim().toLowerCase()==="contact"),search=document.querySelector(".abzemo-search-trigger");
     if(!wrap||!nav||!contact||!search||window.innerWidth<=980){if(wrap&&window.innerWidth<=980){wrap.style.left="auto";wrap.style.right="52px"}return}
+    if(document.documentElement.dir==="rtl"){
+      const rtlMinLeft=cr.right+gap-nr.left;
+      const rtlMaxLeft=sr.left-gap-wrap.offsetWidth-nr.left;
+      wrap.style.right="auto";
+      wrap.style.left=(rtlMaxLeft>=rtlMinLeft?rtlMinLeft+((rtlMaxLeft-rtlMinLeft)/2):Math.max(8,rtlMaxLeft))+"px";
+      wrap.style.transform="translateY(-50%)";
+      return;
+    }
+    wrap.style.right="auto";
     const nr=nav.getBoundingClientRect(),cr=contact.getBoundingClientRect(),sr=search.getBoundingClientRect(),gap=12;
     const minLeft=cr.right+gap-nr.left, maxLeft=sr.left-gap-wrap.offsetWidth-nr.left;
     wrap.style.left=(maxLeft>=minLeft?minLeft+((maxLeft-minLeft)/2):Math.max(8,maxLeft))+"px";
@@ -94,7 +103,7 @@
   }
   async function setLanguage(lang){
     if(!LANGUAGES.some(x=>x[0]===lang))lang="en";current=lang;localStorage.setItem(STORAGE_KEY,lang);setDirection(lang);
-    const select=document.getElementById("abzemoLanguageSelect");if(select)select.value=lang;await translatePage(lang);
+    const select=document.getElementById("abzemoLanguageSelect");if(select)select.value=lang;positionSelector();requestAnimationFrame(positionSelector);await translatePage(lang);
     window.dispatchEvent(new CustomEvent("abzemo:languagechange",{detail:{language:lang}}));
   }
   function init(){injectStyles();snapshot();setDirection(current);buildSelector();requestAnimationFrame(positionSelector);setTimeout(positionSelector,150);setTimeout(positionSelector,500);if(current!=="en")translatePage(current)}
