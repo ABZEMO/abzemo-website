@@ -31,3 +31,8 @@
 .abzemo-search-footnote{margin-top:12px;color:#8a98aa;font-size:11px}
 @media(max-width:980px){.abzemo-search-trigger{right:54px}.abzemo-search-inner{width:min(100% - 28px,1120px)}}
 @media(max-width:640px){.abzemo-search-trigger{right:50px;width:42px;height:42px}.abzemo-search-box{min-height:58px;padding-left:14px}.abzemo-search-input{font-size:16px}.abzemo-search-icon-btn,.abzemo-search-submit{width:42px;height:42px}}
+
+/* RTL header: search moves to the left side */
+html[dir="rtl"] .abzemo-search-trigger{right:auto;left:0}
+@media(max-width:980px){html[dir="rtl"] .abzemo-search-trigger{right:auto;left:54px}}
+@media(max-width:640px){html[dir="rtl"] .abzemo-search-trigger{right:auto;left:50px}}

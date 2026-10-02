@@ -1371,3 +1371,13 @@ ol {
 .brand-name span {
   color: var(--blue) !important;
 }
+
+
+/* =========================================================
+   ABZEMO RTL HEADER — Arabic/RTL layout only
+   ========================================================= */
+html[dir="rtl"] .navbar{direction:rtl}
+html[dir="rtl"] .header-left{direction:ltr;justify-self:start}
+html[dir="rtl"] .brand{direction:ltr}
+html[dir="rtl"] .brand-name{direction:ltr}
+html[dir="rtl"] .nav-links{direction:rtl}
