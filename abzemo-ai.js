@@ -94,7 +94,7 @@
     style.textContent = `
       .abzemo-ai-launcher{width:min(390px,calc(100vw - 56px));height:52px;padding:5px 6px 5px 16px;border:1px solid rgba(18,100,216,.28);border-radius:999px;background:rgba(255,255,255,.98);font-family:Arial,Helvetica,sans-serif;z-index:9998;box-shadow:0 14px 38px rgba(7,26,53,.18);display:flex;align-items:center;gap:8px;box-sizing:border-box}
       .abzemo-ai-launcher:focus-within{border-color:rgba(18,100,216,.6);box-shadow:0 16px 42px rgba(18,100,216,.2),0 0 0 4px rgba(18,100,216,.08)}
-      .abzemo-ai-launcher-wrap{position:fixed;right:28px;bottom:28px;z-index:9998;display:flex;flex-direction:column;align-items:flex-end}
+      .abzemo-ai-launcher-wrap{position:fixed;right:28px;bottom:28px;z-index:9998;display:flex;flex-direction:column;align-items:flex-end}\n      .abzemo-ai-bot-stage{width:390px;height:330px;margin-bottom:-6px;display:flex;align-items:flex-end;justify-content:center;pointer-events:none}\n      .abzemo-ai-bot-image{display:block;width:330px;height:330px;object-fit:contain;filter:drop-shadow(0 18px 22px rgba(7,26,53,.18));animation:abzemoAiBotFloat 4s ease-in-out infinite}\n      @keyframes abzemoAiBotFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
       .abzemo-ai-launcher-input{flex:1;min-width:0;height:40px;border:0;outline:none;background:transparent;color:#17243a;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:40px}\n      .abzemo-ai-launcher-input::placeholder{color:#7a8798}\n      .abzemo-ai-launcher-send{width:40px;height:40px;border:0;border-radius:50%;background:linear-gradient(135deg,#1264d8,#168cff);color:#fff;cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0}\n      .abzemo-ai-launcher-send:hover{transform:translateY(-1px);box-shadow:0 7px 16px rgba(18,100,216,.28)}
       .abzemo-ai-launcher-tip{display:none}
       @keyframes abzemoAiTip{0%,100%{transform:translateY(0);opacity:.92}50%{transform:translateY(-3px);opacity:1}}
@@ -145,7 +145,7 @@
       .abzemo-ai-research-link:hover{text-decoration:underline}
       .abzemo-ai-location-note{padding:0 12px 9px;font-size:8px;line-height:1.3;color:#7b8798}
       .abzemo-ai-note{margin-top:8px;font-size:9px;line-height:1.3;color:#8a96a8;text-align:center;letter-spacing:.25px}
-      @media(max-width:600px){.abzemo-ai-launcher-wrap{right:12px;bottom:12px}.abzemo-ai-launcher{width:calc(100vw - 24px);height:50px;padding-left:14px}.abzemo-ai-launcher-input{font-size:12px}.abzemo-ai-chat{right:12px;bottom:74px;width:calc(100vw - 24px);height:min(590px,calc(100vh - 100px));border-radius:18px}.abzemo-ai-messages{padding:16px}.abzemo-ai-bubble{max-width:88%}}
+      @media(max-width:600px){.abzemo-ai-launcher-wrap{right:12px;bottom:12px}.abzemo-ai-bot-stage{width:calc(100vw - 24px);height:250px;margin-bottom:-4px}.abzemo-ai-bot-image{width:250px;height:250px}.abzemo-ai-launcher{width:calc(100vw - 24px);height:50px;padding-left:14px}.abzemo-ai-launcher-input{font-size:12px}.abzemo-ai-chat{right:12px;bottom:74px;width:calc(100vw - 24px);height:min(590px,calc(100vh - 100px));border-radius:18px}.abzemo-ai-messages{padding:16px}.abzemo-ai-bubble{max-width:88%}}
       @media(prefers-reduced-motion:reduce){.abzemo-ai-chat.active,.abzemo-ai-typing span{animation:none}}
     `;
 
@@ -235,7 +235,7 @@
       launcherWrap.className = "abzemo-ai-launcher-wrap";
       launcherWrap.id = "abzemoAiLauncherWrap";
 
-      launcher.className = "abzemo-ai-launcher";
+      const botStage = document.createElement("div");\n      botStage.className = "abzemo-ai-bot-stage";\n      botStage.setAttribute("aria-hidden","true");\n      botStage.innerHTML = `<img class="abzemo-ai-bot-image" src="/assets/abzemo-ai-bot.svg" alt="" />`;\n\n      launcher.className = "abzemo-ai-launcher";
       launcher.id = "abzemoAiLauncher";
       launcher.setAttribute("aria-label","Start a conversation with ABZEMO AI");
       launcher.innerHTML = `
@@ -293,7 +293,7 @@
         </div>
       `;
 
-      launcherWrap.appendChild(launcher);
+      launcherWrap.appendChild(botStage);\n      launcherWrap.appendChild(launcher);
       document.body.appendChild(launcherWrap);
       document.body.appendChild(chat);
     }
