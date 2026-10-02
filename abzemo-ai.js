@@ -235,7 +235,12 @@
       launcherWrap.className = "abzemo-ai-launcher-wrap";
       launcherWrap.id = "abzemoAiLauncherWrap";
 
-      const botStage = document.createElement("div");\n      botStage.className = "abzemo-ai-bot-stage";\n      botStage.setAttribute("aria-hidden","true");\n      botStage.innerHTML = `<img class="abzemo-ai-bot-image" src="/assets/abzemo-ai-bot.svg" alt="" />`;\n\n      launcher.className = "abzemo-ai-launcher";
+      const botStage = document.createElement("div");
+      botStage.className = "abzemo-ai-bot-stage";
+      botStage.setAttribute("aria-hidden","true");
+      botStage.innerHTML = `<img class="abzemo-ai-bot-image" src="/assets/abzemo-ai-bot.svg" alt="" />`;
+
+      launcher.className = "abzemo-ai-launcher";
       launcher.id = "abzemoAiLauncher";
       launcher.setAttribute("aria-label","Start a conversation with ABZEMO AI");
       launcher.innerHTML = `
@@ -293,7 +298,8 @@
         </div>
       `;
 
-      launcherWrap.appendChild(botStage);\n      launcherWrap.appendChild(launcher);
+      launcherWrap.appendChild(botStage);
+      launcherWrap.appendChild(launcher);
       document.body.appendChild(launcherWrap);
       document.body.appendChild(chat);
     }
