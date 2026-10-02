@@ -71,6 +71,12 @@
   function positionSelector(){
     const wrap=document.getElementById("abzemoLanguageControl"),nav=document.querySelector(".navbar"),contact=[...document.querySelectorAll(".nav-links a")].find(a=>a.textContent.trim().toLowerCase()==="contact"),search=document.querySelector(".abzemo-search-trigger");
     if(!wrap||!nav||!contact||!search||window.innerWidth<=980){if(wrap&&window.innerWidth<=980){wrap.style.left="auto";wrap.style.right="52px"}return}
+    if(document.documentElement.dir==="rtl"){
+      wrap.style.left="auto";
+      wrap.style.right="0px";
+      wrap.style.transform="translateY(-50%)";
+      return;
+    }
     const nr=nav.getBoundingClientRect(),cr=contact.getBoundingClientRect(),sr=search.getBoundingClientRect(),gap=12;
     const minLeft=cr.right+gap-nr.left, maxLeft=sr.left-gap-wrap.offsetWidth-nr.left;
     wrap.style.left=(maxLeft>=minLeft?minLeft+((maxLeft-minLeft)/2):Math.max(8,maxLeft))+"px";
