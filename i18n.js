@@ -64,6 +64,19 @@
     LANGUAGES.forEach(([code,label])=>{const o=document.createElement("option");o.value=code;o.textContent=code.toUpperCase();o.title=label;o.selected=code===current;select.appendChild(o)});
     select.addEventListener("change",()=>setLanguage(select.value));nav.appendChild(wrap);
 
+    function positionBetweenContactAndSearch(){
+      if(window.innerWidth<=980)return;
+      const contact=[...nav.querySelectorAll("a")].find(a=>a.textContent.trim().toLowerCase()==="contact");
+      const search=document.querySelector(".abzemo-search-trigger");
+      if(!contact||!search)return;
+      const nr=nav.getBoundingClientRect(), cr=contact.getBoundingClientRect(), sr=search.getBoundingClientRect();
+      const midpoint=((cr.right+sr.left)/2)-nr.left;
+      wrap.style.left=(midpoint-(wrap.offsetWidth/2))+"px";
+      wrap.style.right="auto";
+    }
+    requestAnimationFrame(positionBetweenContactAndSearch);
+    window.addEventListener("resize",positionBetweenContactAndSearch);
+
     const c=document.getElementById("abzemoCountryLabel");
     if(c)region().then(name=>{c.textContent=name||"Global"});
   }
