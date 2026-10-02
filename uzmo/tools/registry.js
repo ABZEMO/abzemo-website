@@ -4,7 +4,7 @@ const TOOLS = [
   { id: "gmail", name: "Gmail", description: "Read and send email through an authorized Google Workspace connection.", capabilities: ["email", "mail"], integration: "google_workspace", requiresApproval: true },
   { id: "google_calendar", name: "Google Calendar", description: "Read and manage calendar events through an authorized Google Workspace connection.", capabilities: ["calendar", "meeting", "schedule"], integration: "google_workspace", requiresApproval: true },
   { id: "microsoft_365", name: "Microsoft 365", description: "Work with Outlook, Excel, OneDrive and Teams through an authorized connection.", capabilities: ["office", "excel", "word", "outlook", "teams"], integration: "microsoft_365" },
-  { id: "frappe_crm", name: "Frappe CRM", description: "Read and manage leads, deals, customers and pipeline data through an authorized Frappe CRM connection.", capabilities: ["crm", "frappe", "lead", "deal", "customer", "pipeline"], integration: "frappe_crm" },
+  { id: "zoho_crm", name: "Zoho CRM", description: "Read and manage leads, contacts, accounts and deals through an authorized Zoho CRM connection.", capabilities: ["crm", "zoho", "lead", "contact", "account", "deal", "customer", "pipeline"], integration: "zoho_crm" },
   { id: "webhook", name: "Webhook", description: "Call an HTTP webhook.", capabilities: ["webhook", "trigger", "api"], requiresApproval: true },
   { id: "http", name: "HTTP API", description: "Call an external HTTP API.", capabilities: ["api", "rest", "http"] },
   { id: "database", name: "Database", description: "Query an authorized database connection.", capabilities: ["database", "sql", "data"], integration: "database" },
