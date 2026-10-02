@@ -77,6 +77,7 @@
       wrap.style.transform="translateY(-50%)";
       return;
     }
+    wrap.style.right="auto";
     const nr=nav.getBoundingClientRect(),cr=contact.getBoundingClientRect(),sr=search.getBoundingClientRect(),gap=12;
     const minLeft=cr.right+gap-nr.left, maxLeft=sr.left-gap-wrap.offsetWidth-nr.left;
     wrap.style.left=(maxLeft>=minLeft?minLeft+((maxLeft-minLeft)/2):Math.max(8,maxLeft))+"px";
