@@ -1,0 +1,31 @@
+{
+  "version": "1.0.0",
+  "purpose": "UZMO fit-for-purpose methodology and framework registry",
+  "selection_modes": ["predictive", "adaptive", "hybrid", "continuous_improvement"],
+  "methodologies": [
+    {"id":"pmbok","name":"PMBOK / PMI Standards","domain":"project-management","type":"standard","status":"reference"},
+    {"id":"predictive","name":"Predictive / Waterfall","domain":"project-management","type":"delivery-approach","status":"active"},
+    {"id":"agile","name":"Agile","domain":"project-management","type":"delivery-approach","status":"active"},
+    {"id":"scrum","name":"Scrum","domain":"project-management","type":"framework","status":"active","official_reference":"Scrum Guide 2020"},
+    {"id":"kanban","name":"Kanban","domain":"project-management","type":"method","status":"active","official_reference":"The Kanban Guide May 2025"},
+    {"id":"scrumban","name":"Scrumban","domain":"project-management","type":"hybrid-method","status":"active"},
+    {"id":"lean","name":"Lean","domain":"project-management,operations","type":"management-system","status":"active"},
+    {"id":"six-sigma","name":"Six Sigma","domain":"operations,quality","type":"improvement-method","status":"active"},
+    {"id":"lean-six-sigma","name":"Lean Six Sigma","domain":"operations,quality","type":"improvement-method","status":"active"},
+    {"id":"kaizen","name":"Kaizen","domain":"operations","type":"continuous-improvement","status":"active"},
+    {"id":"pdca","name":"PDCA","domain":"operations,quality","type":"improvement-cycle","status":"active"},
+    {"id":"dmaic","name":"DMAIC","domain":"operations,quality","type":"improvement-method","status":"active"},
+    {"id":"toc","name":"Theory of Constraints","domain":"project-management,operations","type":"constraint-management","status":"active"},
+    {"id":"cpm","name":"Critical Path Method","domain":"project-management","type":"scheduling-technique","status":"active"},
+    {"id":"ccpm","name":"Critical Chain Project Management","domain":"project-management","type":"scheduling-method","status":"active"},
+    {"id":"prince2","name":"PRINCE2","domain":"project-management","type":"methodology","status":"active"},
+    {"id":"prince2-agile","name":"PRINCE2 Agile","domain":"project-management","type":"hybrid-framework","status":"active"},
+    {"id":"safe","name":"SAFe","domain":"project-management,product","type":"scaling-framework","status":"active"},
+    {"id":"less","name":"LeSS","domain":"project-management,product","type":"scaling-framework","status":"active"},
+    {"id":"disciplined-agile","name":"Disciplined Agile","domain":"project-management","type":"toolkit","status":"active"},
+    {"id":"xp","name":"Extreme Programming","domain":"project-management,software","type":"agile-framework","status":"active"},
+    {"id":"design-thinking","name":"Design Thinking","domain":"project-management,product","type":"innovation-method","status":"active"},
+    {"id":"lean-startup","name":"Lean Startup","domain":"product,innovation","type":"innovation-method","status":"active"},
+    {"id":"stage-gate","name":"Stage-Gate / Phase-Gate","domain":"project-management,product","type":"governance-model","status":"active"}
+  ]
+}

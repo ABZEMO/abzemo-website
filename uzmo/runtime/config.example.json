@@ -1,0 +1,67 @@
+{
+  "server": {
+    "host": "127.0.0.1",
+    "port": 8787
+  },
+  "webResearch": {
+    "enabled": true,
+    "endpoint": "",
+    "apiKeyEnv": "UZMO_WEB_API_KEY"
+  },
+  "model": {
+    "endpoint": "",
+    "apiKeyEnv": "UZMO_MODEL_API_KEY",
+    "model": ""
+  },
+  "sources": [
+    {
+      "id": "finance-files",
+      "type": "file",
+      "path": "./data/finance",
+      "domain": "Finance",
+      "mode": "observe"
+    },
+    {
+      "id": "erp-api",
+      "type": "http-json",
+      "url": "https://your-erp.example/api/changes",
+      "intervalMs": 30000,
+      "domain": "Finance",
+      "mode": "observe",
+      "authEnv": "ERP_API_TOKEN"
+    },
+    {
+      "id": "google-sheet",
+      "type": "http-json",
+      "url": "https://sheets.googleapis.com/v4/spreadsheets/REPLACE/values/REPLACE",
+      "intervalMs": 30000,
+      "domain": "Finance",
+      "mode": "observe",
+      "authEnv": "GOOGLE_ACCESS_TOKEN"
+    },
+    {
+      "id": "google-doc",
+      "type": "http-json",
+      "url": "https://docs.googleapis.com/v1/documents/REPLACE",
+      "intervalMs": 30000,
+      "domain": "Operations",
+      "mode": "observe",
+      "authEnv": "GOOGLE_ACCESS_TOKEN"
+    }
+  ],
+  "crm": {
+    "type": "json-store",
+    "path": "./data/uzmo-crm.json"
+  },
+  "agents": {
+    "approvalRequiredByDefault": true,
+    "autonomousActions": [
+      "read",
+      "analyze",
+      "summarize",
+      "classify",
+      "create_internal_record",
+      "update_dashboard"
+    ]
+  }
+}
