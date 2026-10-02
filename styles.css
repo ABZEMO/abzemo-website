@@ -429,7 +429,7 @@ ol {
 
   color: var(--blue);
 
-  font-size: 18px;
+  font-size: 18px !important;
   font-weight: 800;
 
   letter-spacing: 0.16em;
