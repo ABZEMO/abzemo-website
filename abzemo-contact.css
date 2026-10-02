@@ -1,8 +1,87 @@
-/* ABZEMO floating contact bar — Yutong-style quick contact */
-.abzemo-contact-dock{position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:9990;display:flex;flex-direction:column;align-items:stretch;overflow:hidden;border:1px solid rgba(18,100,216,.18);border-right:0;border-radius:12px 0 0 12px;background:rgba(255,255,255,.98);box-shadow:0 12px 35px rgba(7,26,53,.16);font-family:Arial,Helvetica,sans-serif}
-.abzemo-contact-dock a{width:58px;min-height:58px;display:flex;align-items:center;justify-content:center;color:#071a35;text-decoration:none;border-bottom:1px solid #e4ebf4;transition:.2s ease}
-.abzemo-contact-dock a:last-child{border-bottom:0}.abzemo-contact-dock a:hover{width:66px;color:#1264d8;background:#f5f8fc}
-.abzemo-contact-dock .dock-icon{font-size:20px;line-height:1;font-weight:800}
-.abzemo-contact-dock .dock-label{position:absolute;right:58px;white-space:nowrap;padding:9px 12px;border-radius:7px;background:#071a35;color:#fff;font-size:12px;font-weight:700;opacity:0;pointer-events:none;transform:translateX(6px);transition:.2s ease}
-.abzemo-contact-dock a:hover .dock-label{opacity:1;transform:translateX(0)}
-@media(max-width:600px){.abzemo-contact-dock a{width:50px;min-height:50px}.abzemo-contact-dock a:hover{width:56px}.abzemo-contact-dock .dock-label{right:50px}}
+/* ABZEMO quick-contact dock — visual layout aligned to Yutong Pakistan's right-side quick-contact pattern */
+.abzemo-contact-dock{
+  position:fixed;
+  right:0;
+  top:50%;
+  transform:translateY(-50%);
+  z-index:9990;
+  display:flex;
+  flex-direction:column;
+  width:56px;
+  margin:0;
+  padding:0;
+  background:#fff;
+  border:0;
+  border-left:1px solid #e7edf5;
+  border-radius:0;
+  box-shadow:-6px 8px 24px rgba(7,26,53,.12);
+  overflow:visible;
+  font-family:Arial,Helvetica,sans-serif;
+}
+.abzemo-contact-dock a{
+  position:relative;
+  width:56px;
+  height:56px;
+  min-height:56px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-sizing:border-box;
+  color:#1264d8;
+  background:#fff;
+  text-decoration:none;
+  border-bottom:1px solid #e7edf5;
+  transition:background-color .18s ease,color .18s ease;
+}
+.abzemo-contact-dock a:first-child{
+  border-top-left-radius:0;
+}
+.abzemo-contact-dock a:last-child{
+  border-bottom:0;
+}
+.abzemo-contact-dock a:hover,
+.abzemo-contact-dock a:focus-visible{
+  color:#fff;
+  background:#1264d8;
+  outline:none;
+}
+.abzemo-contact-dock .dock-icon{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:24px;
+  height:24px;
+  font-size:16px;
+  line-height:1;
+  font-weight:800;
+  letter-spacing:-.2px;
+}
+.abzemo-contact-dock .dock-label{
+  position:absolute;
+  right:56px;
+  top:50%;
+  transform:translateY(-50%);
+  white-space:nowrap;
+  padding:10px 14px;
+  background:#1264d8;
+  color:#fff;
+  font-size:13px;
+  line-height:1;
+  font-weight:700;
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transition:opacity .18s ease,visibility .18s ease;
+  box-shadow:0 5px 16px rgba(7,26,53,.16);
+}
+.abzemo-contact-dock a:hover .dock-label,
+.abzemo-contact-dock a:focus-visible .dock-label{
+  opacity:1;
+  visibility:visible;
+}
+@media(max-width:600px){
+  .abzemo-contact-dock{width:48px}
+  .abzemo-contact-dock a{width:48px;height:48px;min-height:48px}
+  .abzemo-contact-dock .dock-label{right:48px}
+  .abzemo-contact-dock .dock-icon{font-size:14px}
+}
