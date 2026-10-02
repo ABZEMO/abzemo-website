@@ -1,5 +1,5 @@
 import { getTool } from "./registry.js";
-import { createFrappeCrmClient } from "../integrations/frappe-crm.js";
+import { createZohoCrmClient } from "../integrations/zoho-crm.js";
 
 const SAFE_METHODS = new Set(["GET", "HEAD", "OPTIONS"]);
 
@@ -9,7 +9,7 @@ export function createToolExecutor({ fetchImpl = fetch } = {}) {
       const tool = getTool(toolId);
       if (!tool) throw new Error(`Unknown UZMO tool: ${toolId}`);
 
-      if (toolId === "frappe_crm") return executeFrappeCrm(fetchImpl, input, context);
+      if (toolId === "zoho_crm") return executeZohoCrm(fetchImpl, input, context);
       if (tool.requiresApproval && !context.approved) {
         return { status: "approval_required", tool: toolId, message: "Human approval is required before this side effect can run." };
       }
@@ -27,7 +27,7 @@ export function createToolExecutor({ fetchImpl = fetch } = {}) {
   };
 }
 
-async function executeFrappeCrm(fetchImpl, input, context) {
+async function executeZohoCrm(fetchImpl, input, context) {
   const env = context.env || {};
   const client = createFrappeCrmClient({
     baseUrl: env.UZMO_FRAPPE_CRM_URL,
