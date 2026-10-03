@@ -24,7 +24,12 @@ const AGENTS = [
   { id: "automation", name: "Automation Agent", capabilities: ["automation", "workflow", "trigger", "schedule", "recurring"] }
 ];
 
-function matchesTerm(text, term) {\n  const escaped = term.replace(/[.*+?^${}()|[\\]\\\\]/g, "\\\\const KEYWORDS = {");\n  return new RegExp(`\\\\b${escaped}\\\\b`, "i").test(text);\n}\n\nconst KEYWORDS = {
+function matchesTerm(text, term) {
+  const escaped = term.replace(/[.*+?^$()|[\]\\]/g, "\\function matchesTerm(text, term) {\n  const escaped = term.replace(/[.*+?^${}()|[\\]\\\\]/g, "\\\\const KEYWORDS = {");
+  return new RegExp("\\b" + escaped + "\\b", "i").test(text);
+}
+
+const KEYWORDS = {");\n  return new RegExp(`\\\\b${escaped}\\\\b`, "i").test(text);\n}\n\nconst KEYWORDS = {
   executive: ["executive", "management", "ceo", "decision", "briefing"],
   project: ["project", "task", "milestone", "risk", "dependency"],
   research: ["research", "source", "investigate", "compare", "find"],
