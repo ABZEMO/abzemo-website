@@ -9,6 +9,7 @@ export function createAgentRuntime({ modelGateway, toolExecutor = createToolExec
   return {
     async run({ goal, plan, context = {}, env = {}, onEvent = () => {} }) {
       const gateway = modelGateway || createModelGateway(env);
+      const executionContext = { ...context, env };
       const events = [];
       const emit = event => { const value = { timestamp: new Date().toISOString(), ...event }; events.push(value); onEvent(value); };
       emit({ type: "runtime.started", goal });
@@ -43,7 +44,7 @@ export function createAgentRuntime({ modelGateway, toolExecutor = createToolExec
         for (const call of calls) {
           if (!call?.name) continue;
           emit({ type: "tool.requested", step: step + 1, tool: call.name, call_id: call.id || null });
-          const result = await toolExecutor.execute(call.name, call.arguments || {}, context);
+          const result = await toolExecutor.execute(call.name, call.arguments || {}, executionContext);
           results.push({ step: step + 1, call_id: call.id || null, tool: call.name, input: call.arguments || {}, result });
           emit({ type: "tool.completed", step: step + 1, tool: call.name, status: result.status, call_id: call.id || null });
 
