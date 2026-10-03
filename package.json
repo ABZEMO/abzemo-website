@@ -4,8 +4,5 @@
   "version": "1.0.0",
   "scripts": {
     "test:uzmo-memory": "node --test test/uzmo-memory.test.mjs"
-  },
-  "dependencies": {
-    "@neondatabase/serverless": "^1.0.2"
   }
 }
