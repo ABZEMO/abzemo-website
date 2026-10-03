@@ -109,7 +109,7 @@ export default {
       new Request("https://uzmo.internal/api/scheduler", {
         method: "POST",
         body: JSON.stringify({ now: new Date(event.scheduledTime).toISOString() }),
-        headers: { "content-type": "application/json" }
+        headers: { "content-type": "application/json", "x-uzmo-scheduler-secret": env.UZMO_SCHEDULER_SECRET || "" }
       }),
       env
     );
