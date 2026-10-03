@@ -1,0 +1,1 @@
+import test from "node:test";import assert from "node:assert/strict";import {chunkText} from "../uzmo/memory/chunker.js";test("chunkText normalizes whitespace",()=>assert.deepEqual(chunkText("alpha\n\nbeta\t gamma",{size:200,overlap:20}),["alpha beta gamma"]));
