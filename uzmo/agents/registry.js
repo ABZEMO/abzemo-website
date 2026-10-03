@@ -25,11 +25,11 @@ const AGENTS = [
 ];
 
 function matchesTerm(text, term) {
-  const escaped = term.replace(/[.*+?^$()|[\]\\]/g, "\\function matchesTerm(text, term) {\n  const escaped = term.replace(/[.*+?^${}()|[\\]\\\\]/g, "\\\\const KEYWORDS = {");
+  const escaped = term.replace(/[.*+?^$()|[\]\\]/g, "\\const KEYWORDS = {");
   return new RegExp("\\b" + escaped + "\\b", "i").test(text);
 }
 
-const KEYWORDS = {");\n  return new RegExp(`\\\\b${escaped}\\\\b`, "i").test(text);\n}\n\nconst KEYWORDS = {
+const KEYWORDS = {
   executive: ["executive", "management", "ceo", "decision", "briefing"],
   project: ["project", "task", "milestone", "risk", "dependency"],
   research: ["research", "source", "investigate", "compare", "find"],
