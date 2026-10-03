@@ -68,7 +68,7 @@ export default {
       catch (error) { return json({ error: error.message || "Automation request failed" }, 500); }
     }
     if (url.pathname === "/api/integrations" && request.method === "GET") {
-      return withCors(await handleIntegrations(request));
+      return withCors(await handleIntegrations(request, env));
     }
     if (url.pathname === "/api/knowledge") {
       try { return withCors(await handleKnowledge(request, env)); }
