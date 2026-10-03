@@ -1,53 +1,60 @@
+import { createDatabase } from "../db/client.js";
+
 const memory = new Map();
 
 export function createJobStore(env = {}) {
-  const db = env?.UZMO_DB;
+  const sql = createDatabase(env);
   return {
-    configured: Boolean(db),
+    configured: Boolean(sql),
 
     async put(job) {
-      if (!db) {
+      if (!sql) {
         memory.set(job.id, structuredClone(job));
         return job;
       }
-      await db.prepare(
-        "INSERT OR REPLACE INTO uzmo_jobs (id, workflow_id, input_json, scheduled_for, status, attempts, result_json, error, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-      ).bind(
-        job.id,
-        job.workflowId,
-        JSON.stringify(job.input || {}),
-        job.scheduledFor || null,
-        job.status,
-        Number(job.attempts || 0),
-        job.result === undefined ? null : JSON.stringify(job.result),
-        job.error || null,
-        job.createdAt,
-        job.updatedAt
-      ).run();
+      await sql`
+        INSERT INTO uzmo_jobs
+          (id, workflow_id, input_json, scheduled_for, status, attempts, result_json, error, created_at, updated_at)
+        VALUES
+          (${job.id}, ${job.workflowId}, ${JSON.stringify(job.input || {})}, ${job.scheduledFor || null},
+           ${job.status}, ${Number(job.attempts || 0)},
+           ${job.result === undefined ? null : JSON.stringify(job.result)},
+           ${job.error || null}, ${job.createdAt}, ${job.updatedAt})
+        ON CONFLICT (id) DO UPDATE SET
+          workflow_id = EXCLUDED.workflow_id,
+          input_json = EXCLUDED.input_json,
+          scheduled_for = EXCLUDED.scheduled_for,
+          status = EXCLUDED.status,
+          attempts = EXCLUDED.attempts,
+          result_json = EXCLUDED.result_json,
+          error = EXCLUDED.error,
+          updated_at = EXCLUDED.updated_at
+      `;
       return job;
     },
 
     async get(id) {
-      if (!db) return memory.get(id) || null;
-      const result = await db.prepare(
-        "SELECT id, workflow_id, input_json, scheduled_for, status, attempts, result_json, error, created_at, updated_at FROM uzmo_jobs WHERE id = ?"
-      ).bind(id).all();
-      const row = result.results?.[0];
-      return row ? deserialize(row) : null;
+      if (!sql) return memory.get(id) || null;
+      const result = await sql`
+        SELECT id, workflow_id, input_json, scheduled_for, status, attempts, result_json, error, created_at, updated_at
+        FROM uzmo_jobs WHERE id = ${id} LIMIT 1
+      `;
+      return result[0] ? deserialize(result[0]) : null;
     },
 
     async list() {
-      if (!db) return [...memory.values()];
-      const result = await db.prepare(
-        "SELECT id, workflow_id, input_json, scheduled_for, status, attempts, result_json, error, created_at, updated_at FROM uzmo_jobs ORDER BY created_at DESC"
-      ).all();
-      return (result.results || []).map(deserialize);
+      if (!sql) return [...memory.values()];
+      const result = await sql`
+        SELECT id, workflow_id, input_json, scheduled_for, status, attempts, result_json, error, created_at, updated_at
+        FROM uzmo_jobs ORDER BY created_at DESC
+      `;
+      return result.map(deserialize);
     },
 
     async remove(id) {
-      if (!db) return memory.delete(id);
-      const result = await db.prepare("DELETE FROM uzmo_jobs WHERE id = ?").bind(id).run();
-      return Boolean(result.meta?.changes);
+      if (!sql) return memory.delete(id);
+      const result = await sql`DELETE FROM uzmo_jobs WHERE id = ${id}`;
+      return result.length > 0;
     }
   };
 }
