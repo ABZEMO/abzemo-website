@@ -3,6 +3,7 @@ import { createZohoCrmClient } from "../integrations/zoho-crm.js";
 import { validateOutboundUrl } from "../security/url.js";
 
 const SAFE_METHODS = new Set(["GET", "HEAD", "OPTIONS"]);
+const DEFAULT_ZOHO_MODULE = "Leads";
 
 export function createToolExecutor({ fetchImpl = fetch } = {}) {
   return {
@@ -36,10 +37,10 @@ async function executeZohoCrm(fetchImpl, input, context) {
     return { status: "approval_required", tool: "zoho_crm", action };
   }
   if (action === "health") return client.health();
-  if (action === "list") return client.list(String(input.doctype || "CRM Lead"), input.options || {});
-  if (action === "get") return client.get(String(input.doctype || "CRM Lead"), input.name);
-  if (action === "create") return client.create(String(input.doctype || "CRM Lead"), input.data, { approved: true });
-  if (action === "update") return client.update(String(input.doctype || "CRM Lead"), input.name, input.data, { approved: true });
+  if (action === "list") return client.list(String(input.doctype || DEFAULT_ZOHO_MODULE), input.options || {});
+  if (action === "get") return client.get(String(input.doctype || DEFAULT_ZOHO_MODULE), input.name);
+  if (action === "create") return client.create(String(input.doctype || DEFAULT_ZOHO_MODULE), input.data);
+  if (action === "update") return client.update(String(input.doctype || DEFAULT_ZOHO_MODULE), input.name, input.data);
   throw new Error("Unsupported Zoho CRM action: " + action);
 }
 
