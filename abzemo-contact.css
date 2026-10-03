@@ -1,9 +1,9 @@
 /* ABZEMO quick-contact dock — match Yutong Pakistan quick-contact output */
-.abzemo-contact-dock{position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:9990;display:flex;flex-direction:column;align-items:center;width:58px;margin:0;padding:15px 0;background:#0757c9;border:0;border-radius:30px 0 0 30px;box-shadow:none;overflow:visible;font-family:Arial,Helvetica,sans-serif}
+.abzemo-contact-dock{position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:9990;display:flex;flex-direction:column;align-items:center;width:58px;margin:0;padding:15px 0;background:#004ea2;border:0;border-radius:30px 0 0 30px;box-shadow:none;overflow:visible;font-family:Arial,Helvetica,sans-serif}
 .abzemo-contact-dock a{position:relative;width:58px;height:58px;min-height:58px;display:flex;align-items:center;justify-content:center;box-sizing:border-box;color:#fff;background:transparent;text-decoration:none;border:0;transition:none}
 .abzemo-contact-dock a:hover,.abzemo-contact-dock a:focus-visible{background:transparent;color:#fff;outline:none}
 .abzemo-contact-dock .dock-icon{display:flex;align-items:center;justify-content:center;width:28px;height:28px}
 .abzemo-contact-dock .dock-icon img{display:block;width:28px;height:28px;object-fit:contain}
-.abzemo-contact-dock .dock-label{position:absolute;right:58px;top:50%;transform:translateY(-50%);white-space:nowrap;padding:10px 14px;background:#0757c9;color:#fff;font-size:13px;line-height:1;font-weight:400;opacity:0;visibility:hidden;pointer-events:none}
+.abzemo-contact-dock .dock-label{position:absolute;right:58px;top:50%;transform:translateY(-50%);white-space:nowrap;padding:10px 14px;background:#004ea2;color:#fff;font-size:13px;line-height:1;font-weight:400;opacity:0;visibility:hidden;pointer-events:none}
 .abzemo-contact-dock a:hover .dock-label,.abzemo-contact-dock a:focus-visible .dock-label{opacity:1;visibility:visible}
 @media(max-width:600px){.abzemo-contact-dock{top:auto;right:50%;bottom:10px;left:auto;transform:translateX(50%);width:auto;height:58px;padding:0 10px;flex-direction:row;border-radius:30px}.abzemo-contact-dock a{width:58px;height:58px;min-height:58px}.abzemo-contact-dock .dock-icon{width:26px;height:26px}.abzemo-contact-dock .dock-icon img{width:26px;height:26px}.abzemo-contact-dock .dock-label{right:auto;left:50%;top:auto;bottom:58px;transform:translateX(-50%)}}
