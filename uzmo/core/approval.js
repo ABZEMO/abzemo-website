@@ -1,14 +1,7 @@
 const SIDE_EFFECTS = new Set(["send", "publish", "delete", "purchase", "pay", "post", "approve", "deploy"]);
 
 export function requiresHumanApproval(plan) {
-  return Boolean(
-    plan?.requiresApproval ||
-    plan?.requires_approval ||
-    plan?.steps?.some(step =>
-      SIDE_EFFECTS.has(step?.action) ||
-      SIDE_EFFECTS.has(step?.input?.action)
-    )
-  );
+  return Boolean(plan?.requires_approval || plan?.steps?.some(step => SIDE_EFFECTS.has(step.action)));
 }
 
 export function createApprovalRequest(plan, userId = "anonymous") {
