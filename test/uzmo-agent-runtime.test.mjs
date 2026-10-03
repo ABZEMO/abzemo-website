@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { createAgentRuntime } from "../uzmo/agents/runtime.js";
+import { requiresHumanApproval } from "../uzmo/core/approval.js";
 
 test("agent runtime passes deployment environment to tool execution", async () => {
   let receivedContext;
@@ -93,7 +94,6 @@ test("agent runtime does not report pending adapters as completed", async () => 
   assert.equal(result.verification.verified, false);
 });
 
-import { requiresHumanApproval } from "../uzmo/core/approval.js";
 
 test("approval detection honors canonical and legacy plan fields and step actions", () => {
   assert.equal(requiresHumanApproval({ requiresApproval: true }), true);
