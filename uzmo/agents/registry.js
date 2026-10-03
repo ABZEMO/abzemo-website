@@ -25,8 +25,11 @@ const AGENTS = [
 ];
 
 function matchesTerm(text, term) {
-  const escaped = term.replace(/[.*+?^$()|[\]\\]/g, "\\function matchesTerm(text, term) {
-  const escaped = term.replace(/[.*+?^$()|[\]\\]/g, "\\const KEYWORDS = {");
+  const escaped = term.replace(/[.*+?^$()|[\]\\]/g, "\\$&");
+  return new RegExp("\\b" + escaped + "\\b", "i").test(text);
+}
+
+const KEYWORDS = {");
   return new RegExp("\\b" + escaped + "\\b", "i").test(text);
 }");
   return new RegExp("\\b" + escaped + "\\b", "i").test(text);
