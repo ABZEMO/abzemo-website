@@ -14,7 +14,8 @@ export async function handleSecurity(request, env) {
   if (action === "check") return json({ allowed: can(role, body.permission || "read") });
 
   if (action === "memory.list") {
-    const auth = requirePermission(session, "read", can);\n    if (!auth.ok) return json({ error: auth.error }, auth.status);
+    const auth = requirePermission(session, "read", can);
+    if (!auth.ok) return json({ error: auth.error }, auth.status);
     return json({ items: await createPersistentMemory(env).list({ userId: body.userId, orgId: body.orgId }) });
   }
 
