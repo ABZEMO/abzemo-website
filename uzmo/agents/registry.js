@@ -29,12 +29,6 @@ function matchesTerm(text, term) {
   return new RegExp("\\b" + escaped + "\\b", "i").test(text);
 }
 
-const KEYWORDS = {");
-  return new RegExp("\\b" + escaped + "\\b", "i").test(text);
-}");
-  return new RegExp("\\b" + escaped + "\\b", "i").test(text);
-}
-
 const KEYWORDS = {
   executive: ["executive", "management", "ceo", "decision", "briefing"],
   project: ["project", "task", "milestone", "risk", "dependency"],
