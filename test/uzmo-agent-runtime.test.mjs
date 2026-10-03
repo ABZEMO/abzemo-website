@@ -92,7 +92,6 @@ test("agent runtime does not report pending adapters as completed", async () => 
   assert.equal(result.status, "adapter_pending");
   assert.equal(result.verification.verified, false);
 });
-});
 
 import { requiresHumanApproval } from "../uzmo/core/approval.js";
 
