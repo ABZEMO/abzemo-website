@@ -17,6 +17,12 @@ export const CONNECTOR_MANIFEST = {
     capabilities: ["crm", "leads", "contacts", "accounts", "deals"],
     env: ["UZMO_ZOHO_CLIENT_ID", "UZMO_ZOHO_CLIENT_SECRET", "UZMO_ZOHO_REFRESH_TOKEN"]
   },
+  zoho_crm: {
+    name: "Zoho CRM",
+    auth: "oauth2_refresh_token",
+    capabilities: ["crm", "leads", "contacts", "accounts", "deals"],
+    env: ["UZMO_ZOHO_CLIENT_ID", "UZMO_ZOHO_CLIENT_SECRET", "UZMO_ZOHO_REFRESH_TOKEN"]
+  },
   sap: {
     name: "SAP",
     auth: "oauth2_or_service",
