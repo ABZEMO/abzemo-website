@@ -92,7 +92,18 @@ export default {
       try { return json(await createModelGateway(env).complete(body.messages, body.options || {})); }
       catch (error) { return json({ error: error.message || "Model request failed" }, 502); }
     }
-    return json({ error: "Not found" }, 404);\n  },\n  async scheduled(event, env, ctx) {\n    // Cron dispatch is intentionally delegated through the same scheduler API path.\n    await handleScheduler(new Request("https://uzmo.internal/api/scheduler", { method: "POST", body: JSON.stringify({ now: new Date(event.scheduledTime).toISOString() }), headers: { "content-type": "application/json" } }), env);\n  }
+    return json({ error: "Not found" }, 404);
+  },
+
+  async scheduled(event, env, ctx) {
+    await handleScheduler(
+      new Request("https://uzmo.internal/api/scheduler", {
+        method: "POST",
+        body: JSON.stringify({ now: new Date(event.scheduledTime).toISOString() }),
+        headers: { "content-type": "application/json" }
+      }),
+      env
+    );
   }
 };
 
@@ -101,6 +112,7 @@ function withCors(response) {
   Object.entries(corsHeaders).forEach(([key, value]) => headers.set(key, value));
   return new Response(response.body, { status: response.status, headers });
 }
+
 function json(payload, status = 200) {
   return new Response(JSON.stringify(payload), { status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 }
