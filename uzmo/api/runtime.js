@@ -2,31 +2,11 @@ import { buildPlan } from "../orchestrator/planner.js";
 import { createAgentRuntime } from "../agents/runtime.js";
 import { createModelGateway } from "../core/model-gateway.js";
 import { createApprovalRequest, requiresHumanApproval } from "../core/approval.js";
+import { createApprovalToken, verifyApprovalToken } from "../core/approval-token.js";
 import { createMemoryStore } from "../memory/store.js";
 import { guard } from "../auth/runtime-guard.js";
 
 const memory = createMemoryStore();
-const APPROVAL_TTL_MS = 10 * 60 * 1000;
-function b64url(value) { return btoa(String.fromCharCode(...new Uint8Array(value))).replace(/\\+/g, "-").replace(/\\//g, "_").replace(/=+$/g, ""); }
-function bytes(value) { return new TextEncoder().encode(value); }
-async function sign(value, secret) {
-  const key = await crypto.subtle.importKey("raw", bytes(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
-  return b64url(await crypto.subtle.sign("HMAC", key, bytes(value)));
-}
-async function makeToken(record, secret) {
-  const payload = btoa(JSON.stringify(record)).replace(/\\+/g, "-").replace(/\\//g, "_").replace(/=+$/g, "");
-  return payload + "." + await sign(payload, secret);
-}
-async function verifyToken(token, secret, userId, orgId, plan) {
-  if (!secret || typeof token !== "string") return null;
-  const [payload, signature] = token.split(".");
-  if (!payload || !signature || signature !== await sign(payload, secret)) return null;
-  try {
-    const record = JSON.parse(atob(payload.replace(/-/g, "+").replace(/_/g, "/")));
-    if (record.expiresAt <= Date.now() || record.userId !== userId || record.orgId !== orgId) return null;
-    return JSON.stringify(record.plan) === JSON.stringify(plan) ? record : null;
-  } catch { return null; }
-}
 
 export async function handleRuntime(request, env = {}) {
   if (request.method !== "POST") return json({ error: "POST required" }, 405);
@@ -52,7 +32,7 @@ export async function handleRuntime(request, env = {}) {
     const plan = body.plan || buildPlan(goal);
     if (!goal && !body.plan) return json({ error: "goal or plan is required" }, 400);
 
-    const approval = await verifyToken(body.approvalToken, env.UZMO_APPROVAL_SECRET, userId, orgId, plan);
+    const approval = await verifyApprovalToken(body.approvalToken, env.UZMO_APPROVAL_SECRET, userId, orgId, plan);
     if (requiresHumanApproval(plan) && !approval) {
       return json({ status: "approval_required", approval: { required: true } }, 200);
     }
@@ -79,16 +59,20 @@ export async function handleRuntime(request, env = {}) {
     if (!requiresHumanApproval(plan)) return json({ error: "Approval is not required for this plan." }, 400);
     if (!env.UZMO_APPROVAL_SECRET) return json({ error: "UZMO approval secret is not configured." }, 503);
     const approval = createApprovalRequest(plan, userId);
-    const record = { id: approval.id, userId, orgId, plan, expiresAt: Date.now() + APPROVAL_TTL_MS };
-    const approvalToken = await makeToken(record, env.UZMO_APPROVAL_SECRET);
+    const { token, expiresAt } = await createApprovalToken({
+      id: approval.id,
+      userId,
+      orgId,
+      plan
+    }, env.UZMO_APPROVAL_SECRET);
     return json({
       status: "approved",
       approval: {
         id: approval.id,
-        token: approvalToken,
+        token,
         status: "approved",
         created_at: approval.created_at,
-        expires_at: new Date(record.expiresAt).toISOString()
+        expires_at: new Date(expiresAt).toISOString()
       }
     });
   }
