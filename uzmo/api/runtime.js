@@ -1,10 +1,11 @@
 import { buildPlan } from "../orchestrator/planner.js";
-import { createWorkflowRunner } from "../workflows/runner.js";
+import { createAgentRuntime } from "../agents/runtime.js";
+import { createModelGateway } from "../core/model-gateway.js";
 import { createApprovalRequest } from "../core/approval.js";
 import { createMemoryStore } from "../memory/store.js";
+import { guard } from "../auth/runtime-guard.js";
 
 const memory = createMemoryStore();
-const runner = createWorkflowRunner();
 
 export async function handleRuntime(request, env = {}) {
   if (request.method !== "POST") return json({ error: "POST required" }, 405);
@@ -12,31 +13,53 @@ export async function handleRuntime(request, env = {}) {
   const body = await request.json().catch(() => ({}));
   const action = body.action || "plan";
 
+  const access = await guard(request, env);
+  if (!access.ok) return access.response;
+
+  const userId = access.session.userId;
+  const orgId = access.session.orgId;
+
   if (action === "plan") {
-    const plan = buildPlan(body.goal || "");
+    if (!body.goal || typeof body.goal !== "string") return json({ error: "goal is required" }, 400);
+    const plan = buildPlan(body.goal);
     return json({ status: "planned", plan });
   }
 
   if (action === "execute") {
-    const plan = body.plan || buildPlan(body.goal || "");
-    const result = await runner.run(plan, { approved: body.approved === true, userId: body.userId || "anonymous", env });
-    return json(result);
+    const goal = typeof body.goal === "string" ? body.goal : "";
+    const plan = body.plan || buildPlan(goal);
+    if (!goal && !body.plan) return json({ error: "goal or plan is required" }, 400);
+
+    const result = await createAgentRuntime({
+      modelGateway: createModelGateway(env)
+    }).run({
+      goal: goal || plan.goal || "",
+      plan,
+      context: {
+        ...(body.context || {}),
+        userId,
+        orgId,
+        approved: body.approved === true
+      },
+      env
+    });
+    return json({ product: "UZMO", plan, ...result });
   }
 
   if (action === "approve") {
     const plan = body.plan;
     if (!plan) return json({ error: "plan is required" }, 400);
-    const approval = createApprovalRequest(plan, body.userId || "anonymous");
+    const approval = createApprovalRequest(plan, userId);
     return json({ status: "approved", approval });
   }
 
   if (action === "memory.add") {
-    const item = memory.add(body.item || {});
+    const item = memory.add({ ...(body.item || {}), userId, orgId });
     return json({ status: "stored", item });
   }
 
   if (action === "memory.list") {
-    return json({ status: "ok", items: memory.list() });
+    return json({ status: "ok", items: memory.list().filter(item => item.userId === userId && item.orgId === orgId) });
   }
 
   if (action === "memory.clear") {
