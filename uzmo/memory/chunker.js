@@ -2,7 +2,7 @@ const DEFAULT_CHUNK_SIZE = 1200;
 const DEFAULT_OVERLAP = 150;
 
 export function chunkText(text, { size = DEFAULT_CHUNK_SIZE, overlap = DEFAULT_OVERLAP } = {}) {
-  const value = String(text || "").replace(/\\s+/g, " ").trim();
+  const value = String(text || "").replace(/\s+/g, " ").trim();
   if (!value) return [];
   const safeSize = Math.max(200, Number(size) || DEFAULT_CHUNK_SIZE);
   const safeOverlap = Math.min(Math.max(0, Number(overlap) || DEFAULT_OVERLAP), safeSize - 1);
