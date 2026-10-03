@@ -10,10 +10,8 @@ const memory = createMemoryStore();
 
 export async function handleRuntime(request, env = {}) {
   if (request.method !== "POST") return json({ error: "POST required" }, 405);
-
   const body = await request.json().catch(() => ({}));
   const action = body.action || "plan";
-
   const permission = action === "approve" ? "approve" : "execute_safe";
   const access = await guard(request, env, permission);
   if (!access.ok) return access.response;
@@ -23,31 +21,19 @@ export async function handleRuntime(request, env = {}) {
 
   if (action === "plan") {
     if (!body.goal || typeof body.goal !== "string") return json({ error: "goal is required" }, 400);
-    const plan = buildPlan(body.goal);
-    return json({ status: "planned", plan });
+    return json({ status: "planned", plan: buildPlan(body.goal) });
   }
 
   if (action === "execute") {
     const goal = typeof body.goal === "string" ? body.goal : "";
     const plan = body.plan || buildPlan(goal);
     if (!goal && !body.plan) return json({ error: "goal or plan is required" }, 400);
-
     const approval = await verifyApprovalToken(body.approvalToken, env.UZMO_APPROVAL_SECRET, userId, orgId, plan);
-    if (requiresHumanApproval(plan) && !approval) {
-      return json({ status: "approval_required", approval: { required: true } }, 200);
-    }
-
-    const result = await createAgentRuntime({
-      modelGateway: createModelGateway(env)
-    }).run({
+    if (requiresHumanApproval(plan) && !approval) return json({ status: "approval_required", approval: { required: true } }, 200);
+    const result = await createAgentRuntime({ modelGateway: createModelGateway(env) }).run({
       goal: goal || plan.goal || "",
       plan,
-      context: {
-        ...(body.context || {}),
-        userId,
-        orgId,
-        approved: Boolean(approval)
-      },
+      context: { ...(body.context || {}), userId, orgId, approved: Boolean(approval) },
       env
     });
     return json({ product: "UZMO", plan, ...result });
@@ -59,44 +45,19 @@ export async function handleRuntime(request, env = {}) {
     if (!requiresHumanApproval(plan)) return json({ error: "Approval is not required for this plan." }, 400);
     if (!env.UZMO_APPROVAL_SECRET) return json({ error: "UZMO approval secret is not configured." }, 503);
     const approval = createApprovalRequest(plan, userId);
-    const { token, expiresAt } = await createApprovalToken({
-      id: approval.id,
-      userId,
-      orgId,
-      plan
-    }, env.UZMO_APPROVAL_SECRET);
-    return json({
-      status: "approved",
-      approval: {
-        id: approval.id,
-        token,
-        status: "approved",
-        created_at: approval.created_at,
-        expires_at: new Date(expiresAt).toISOString()
-      }
-    });
+    const { token, expiresAt } = await createApprovalToken({ id: approval.id, userId, orgId, plan }, env.UZMO_APPROVAL_SECRET);
+    return json({ status: "approved", approval: { id: approval.id, token, status: "approved", created_at: approval.created_at, expires_at: new Date(expiresAt).toISOString() } });
   }
 
-  if (action === "memory.add") {
-    const item = memory.add({ ...(body.item || {}), userId, orgId });
-    return json({ status: "stored", item });
-  }
-
-  if (action === "memory.list") {
-    return json({ status: "ok", items: memory.list().filter(item => item.userId === userId && item.orgId === orgId) });
-  }
-
+  if (action === "memory.add") return json({ status: "stored", item: memory.add({ ...(body.item || {}), userId, orgId }) });
+  if (action === "memory.list") return json({ status: "ok", items: memory.list().filter(item => item.userId === userId && item.orgId === orgId) });
   if (action === "memory.clear") {
     memory.clear(item => item.userId === userId && item.orgId === orgId);
     return json({ status: "cleared" });
   }
-
   return json({ error: "Unknown runtime action" }, 400);
 }
 
 function json(data, status = 200) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: { "content-type": "application/json; charset=utf-8" }
-  });
+  return new Response(JSON.stringify(data), { status, headers: { "content-type": "application/json; charset=utf-8" } });
 }
