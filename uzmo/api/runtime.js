@@ -6,7 +6,27 @@ import { createMemoryStore } from "../memory/store.js";
 import { guard } from "../auth/runtime-guard.js";
 
 const memory = createMemoryStore();
-const approvals = new Map();
+const APPROVAL_TTL_MS = 10 * 60 * 1000;
+function b64url(value) { return btoa(String.fromCharCode(...new Uint8Array(value))).replace(/\\+/g, "-").replace(/\\//g, "_").replace(/=+$/g, ""); }
+function bytes(value) { return new TextEncoder().encode(value); }
+async function sign(value, secret) {
+  const key = await crypto.subtle.importKey("raw", bytes(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+  return b64url(await crypto.subtle.sign("HMAC", key, bytes(value)));
+}
+async function makeToken(record, secret) {
+  const payload = btoa(JSON.stringify(record)).replace(/\\+/g, "-").replace(/\\//g, "_").replace(/=+$/g, "");
+  return payload + "." + await sign(payload, secret);
+}
+async function verifyToken(token, secret, userId, orgId, plan) {
+  if (!secret || typeof token !== "string") return null;
+  const [payload, signature] = token.split(".");
+  if (!payload || !signature || signature !== await sign(payload, secret)) return null;
+  try {
+    const record = JSON.parse(atob(payload.replace(/-/g, "+").replace(/_/g, "/")));
+    if (record.expiresAt <= Date.now() || record.userId !== userId || record.orgId !== orgId) return null;
+    return JSON.stringify(record.plan) === JSON.stringify(plan) ? record : null;
+  } catch { return null; }
+}
 
 export async function handleRuntime(request, env = {}) {
   if (request.method !== "POST") return json({ error: "POST required" }, 405);
@@ -32,7 +52,7 @@ export async function handleRuntime(request, env = {}) {
     const plan = body.plan || buildPlan(goal);
     if (!goal && !body.plan) return json({ error: "goal or plan is required" }, 400);
 
-    const approval = getApproval(body.approvalId, userId, orgId, plan);
+    const approval = await verifyToken(body.approvalToken, env.UZMO_APPROVAL_SECRET, userId, orgId, plan);
     if (requiresHumanApproval(plan) && !approval) {
       return json({ status: "approval_required", approval: { required: true } }, 200);
     }
@@ -57,14 +77,16 @@ export async function handleRuntime(request, env = {}) {
     const plan = body.plan;
     if (!plan) return json({ error: "plan is required" }, 400);
     if (!requiresHumanApproval(plan)) return json({ error: "Approval is not required for this plan." }, 400);
+    if (!env.UZMO_APPROVAL_SECRET) return json({ error: "UZMO approval secret is not configured." }, 503);
     const approval = createApprovalRequest(plan, userId);
-    const record = { ...approval, orgId, status: "approved", expiresAt: Date.now() + 10 * 60 * 1000 };
-    approvals.set(approval.id, record);
+    const record = { id: approval.id, userId, orgId, plan, expiresAt: Date.now() + APPROVAL_TTL_MS };
+    const approvalToken = await makeToken(record, env.UZMO_APPROVAL_SECRET);
     return json({
       status: "approved",
       approval: {
         id: approval.id,
-        status: record.status,
+        token: approvalToken,
+        status: "approved",
         created_at: approval.created_at,
         expires_at: new Date(record.expiresAt).toISOString()
       }
@@ -86,18 +108,6 @@ export async function handleRuntime(request, env = {}) {
   }
 
   return json({ error: "Unknown runtime action" }, 400);
-}
-
-function getApproval(id, userId, orgId, plan) {
-  if (!id) return null;
-  const record = approvals.get(id);
-  if (!record || record.expiresAt <= Date.now()) {
-    if (record) approvals.delete(id);
-    return null;
-  }
-  if (record.user_id !== userId || record.orgId !== orgId) return null;
-  if (JSON.stringify(record.plan) !== JSON.stringify(plan)) return null;
-  return record;
 }
 
 function json(data, status = 200) {
