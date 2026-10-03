@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { createAgentRuntime } from "../uzmo/agents/runtime.js";
+import { requiresHumanApproval } from "../uzmo/core/approval.js";
 
 test("agent runtime passes deployment environment to tool execution", async () => {
   let receivedContext;
@@ -71,7 +72,28 @@ test("agent runtime stops on tool approval requirement", async () => {
   assert.equal(result.events.some(event => event.type === "runtime.stopped"), true);
 });
 
-import { requiresHumanApproval } from "../uzmo/core/approval.js";
+test("agent runtime enforces approval from side-effect step actions", async () => {
+  let executed = false;
+  const runtime = createAgentRuntime({
+    modelGateway: { configured: true, async complete() { executed = true; return { provider: "test", model: "test", text: "", tool_calls: [] }; } },
+    toolExecutor: { async execute() { throw new Error("must not execute"); } }
+  });
+  const result = await runtime.run({ goal: "send message", plan: { steps: [{ input: { action: "send" } }] }, context: {}, env: {} });
+  assert.equal(result.status, "approval_required");
+  assert.equal(executed, false);
+});
+
+test("agent runtime does not report pending adapters as completed", async () => {
+  const runtime = createAgentRuntime({
+    modelGateway: { configured: true, async complete() { return { provider: "test", model: "test", text: "", tool_calls: [{ id: "pending-1", name: "database", arguments: {} }] }; } },
+    toolExecutor: { async execute() { return { status: "adapter_pending", tool: "database" }; } },
+    maxSteps: 1
+  });
+  const result = await runtime.run({ goal: "inspect database", plan: {}, context: {}, env: {} });
+  assert.equal(result.status, "adapter_pending");
+  assert.equal(result.verification.verified, false);
+});
+
 
 test("approval detection honors canonical and legacy plan fields and step actions", () => {
   assert.equal(requiresHumanApproval({ requiresApproval: true }), true);
