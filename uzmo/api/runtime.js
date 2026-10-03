@@ -63,7 +63,7 @@ export async function handleRuntime(request, env = {}) {
   }
 
   if (action === "memory.clear") {
-    memory.clear();
+    memory.clear(item => item.userId === userId && item.orgId === orgId);
     return json({ status: "cleared" });
   }
 
