@@ -70,3 +70,13 @@ test("agent runtime stops on tool approval requirement", async () => {
   assert.equal(result.verification.verified, false);
   assert.equal(result.events.some(event => event.type === "runtime.stopped"), true);
 });
+
+import { requiresHumanApproval } from "../uzmo/core/approval.js";
+
+test("approval detection honors canonical and legacy plan fields and step actions", () => {
+  assert.equal(requiresHumanApproval({ requiresApproval: true }), true);
+  assert.equal(requiresHumanApproval({ requires_approval: true }), true);
+  assert.equal(requiresHumanApproval({ steps: [{ action: "send" }] }), true);
+  assert.equal(requiresHumanApproval({ steps: [{ input: { action: "purchase" } }] }), true);
+  assert.equal(requiresHumanApproval({ steps: [{ action: "inspect" }] }), false);
+});
