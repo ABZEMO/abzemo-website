@@ -24,7 +24,7 @@ const AGENTS = [
   { id: "automation", name: "Automation Agent", capabilities: ["automation", "workflow", "trigger", "schedule", "recurring"] }
 ];
 
-const KEYWORDS = {
+function matchesTerm(text, term) {\n  const escaped = term.replace(/[.*+?^${}()|[\\]\\\\]/g, "\\\\const KEYWORDS = {");\n  return new RegExp(`\\\\b${escaped}\\\\b`, "i").test(text);\n}\n\nconst KEYWORDS = {
   executive: ["executive", "management", "ceo", "decision", "briefing"],
   project: ["project", "task", "milestone", "risk", "dependency"],
   research: ["research", "source", "investigate", "compare", "find"],
@@ -58,7 +58,7 @@ export function selectAgents(goal) {
   const text = goal.toLowerCase();
   const ranked = AGENTS.map(agent => ({
     agent,
-    score: (KEYWORDS[agent.id] || []).reduce((n, word) => n + (text.includes(word) ? 1 : 0), 0)
+    score: (KEYWORDS[agent.id] || []).reduce((n, word) => n + (matchesTerm(text, word) ? 1 : 0), 0)
   })).filter(item => item.score > 0).sort((a, b) => b.score - a.score);
 
   return (ranked.length ? ranked.slice(0, 4) : [{ agent: AGENTS[0], score: 0 }]).map(item => item.agent);
