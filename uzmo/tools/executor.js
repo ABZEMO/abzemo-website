@@ -1,5 +1,6 @@
 import { getTool } from "./registry.js";
 import { createZohoCrmClient } from "../integrations/zoho-crm.js";
+import { validateOutboundUrl } from "../security/url.js";
 
 const SAFE_METHODS = new Set(["GET", "HEAD", "OPTIONS"]);
 
@@ -14,7 +15,7 @@ export function createToolExecutor({ fetchImpl = fetch } = {}) {
         return { status: "approval_required", tool: toolId, message: "Human approval is required before this side effect can run." };
       }
 
-      if (toolId === "webhook") return executeWebhook(fetchImpl, input);
+      if (toolId === "webhook") return executeWebhook(fetchImpl, input, context);
       if (toolId === "http") return executeHttpApi(fetchImpl, input, context);
 
       return {
@@ -42,18 +43,32 @@ async function executeZohoCrm(fetchImpl, input, context) {
   throw new Error("Unsupported Zoho CRM action: " + action);
 }
 
-async function executeWebhook(fetchImpl, input) {
-  const url = String(input.url || "");
-  if (!/^https?:\/\//i.test(url)) throw new Error("A valid webhook URL is required.");
-  const response = await fetchImpl(url, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(input.body ?? {}) });
+async function executeWebhook(fetchImpl, input, context) {
+  const url = validateOutboundUrl(input.url, { allowedHosts: parseAllowedHosts(context.env) });
+  const response = await fetchImpl(url.toString(), {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(input.body ?? {})
+  });
   return { status: response.ok ? "completed" : "failed", tool: "webhook", http_status: response.status };
 }
 
 async function executeHttpApi(fetchImpl, input, context) {
-  const url = String(input.url || "");
-  if (!/^https?:\/\//i.test(url)) throw new Error("A valid HTTP API URL is required.");
+  const url = validateOutboundUrl(input.url, { allowedHosts: parseAllowedHosts(context.env) });
   const method = String(input.method || "GET").toUpperCase();
+  if (!/^[A-Z]+$/.test(method)) throw new Error("Invalid HTTP method.");
   if (!SAFE_METHODS.has(method) && !context.approved) return { status: "approval_required", tool: "http", message: "Approval required for a state-changing HTTP request." };
-  const response = await fetchImpl(url, { method, headers: input.headers || {}, body: SAFE_METHODS.has(method) ? undefined : JSON.stringify(input.body ?? {}) });
+  const headers = input.headers && typeof input.headers === "object" ? input.headers : {};
+  const response = await fetchImpl(url.toString(), {
+    method,
+    headers,
+    body: SAFE_METHODS.has(method) ? undefined : JSON.stringify(input.body ?? {})
+  });
   return { status: response.ok ? "completed" : "failed", tool: "http", http_status: response.status };
+}
+
+function parseAllowedHosts(env = {}) {
+  const raw = env.UZMO_ALLOWED_HTTP_HOSTS;
+  if (!raw) return undefined;
+  return String(raw).split(",").map(value => value.trim()).filter(Boolean);
 }
