@@ -15,7 +15,7 @@ module.exports.config = {
 
 async function readJsonBody(req) {
   const chunks = [];
-  for await (const chunk of chunks) chunks.push(Buffer.from(chunk));
+  for await (const chunk of req) chunks.push(Buffer.from(chunk));
   const raw = Buffer.concat(chunks).toString("utf8").replace(/^\\uFEFF/, "").trim();
   if (!raw) return {};
   return JSON.parse(raw);
