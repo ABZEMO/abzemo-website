@@ -13,6 +13,7 @@ import { handleScheduler } from "./scheduler.js";
 import { handleJobs } from "./jobs.js";
 import { handleJobRun } from "./job-run.js";
 import { handleTriggers } from "./triggers.js";
+import { guard } from "../auth/runtime-guard.js";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -27,7 +28,10 @@ export default {
     if (url.pathname === "/health") return json({ ok: true, service: "uzmo-api", version: "0.1.0" });
 
     if (url.pathname === "/api/plan" && request.method === "POST") {
+      const access = await guard(request, env, "execute_safe");
+      if (!access.ok) return access.response;
       const body = await request.json().catch(() => ({}));
+      if (!body.goal || typeof body.goal !== "string") return json({ error: "goal is required" }, 400);
       try { return json({ status: "planned", ...buildPlan(body.goal) }); }
       catch (error) { return json({ error: error.message || "Unable to build plan" }, 400); }
     }
@@ -36,7 +40,7 @@ export default {
       catch (error) { return json({ error: error.message || "Agent request failed" }, 500); }
     }
     if (url.pathname === "/api/triggers") {
-      try { return withCors(await handleTriggers(request)); }
+      try { return withCors(await handleTriggers(request, env)); }
       catch (error) { return json({ error: error.message || "Trigger request failed" }, 500); }
     }
     if (url.pathname === "/api/job-run") {
@@ -48,7 +52,7 @@ export default {
       catch (error) { return json({ error: error.message || "Job request failed" }, 500); }
     }
     if (url.pathname === "/api/scheduler") {
-      try { return withCors(await handleScheduler(request)); }
+      try { return withCors(await handleScheduler(request, env)); }
       catch (error) { return json({ error: error.message || "Scheduler failed" }, 500); }
     }
     if (url.pathname === "/api/studio/run") {
@@ -56,11 +60,11 @@ export default {
       catch (error) { return json({ error: error.message || "Studio run failed" }, 500); }
     }
     if (url.pathname === "/api/studio") {
-      try { return withCors(await handleStudio(request)); }
+      try { return withCors(await handleStudio(request, env)); }
       catch (error) { return json({ error: error.message || "Studio request failed" }, 500); }
     }
     if (url.pathname === "/api/automations") {
-      try { return withCors(await handleAutomations(request)); }
+      try { return withCors(await handleAutomations(request, env)); }
       catch (error) { return json({ error: error.message || "Automation request failed" }, 500); }
     }
     if (url.pathname === "/api/integrations" && request.method === "GET") {
@@ -83,12 +87,17 @@ export default {
       catch (error) { return json({ error: error.message || "Security request failed" }, 500); }
     }
     if (url.pathname === "/api/model/status" && request.method === "GET") {
+      const access = await guard(request, env, "execute_safe");
+      if (!access.ok) return access.response;
       const gateway = createModelGateway(env);
       return json({ product: "UZMO", configured: gateway.configured, providers: gateway.providers });
     }
     if (url.pathname === "/api/model/complete" && request.method === "POST") {
+      const access = await guard(request, env, "execute_safe");
+      if (!access.ok) return access.response;
       const body = await request.json().catch(() => ({}));
       if (!Array.isArray(body.messages) || !body.messages.length) return json({ error: "messages is required" }, 400);
+      if (body.messages.length > 100) return json({ error: "Too many messages." }, 413);
       try { return json(await createModelGateway(env).complete(body.messages, body.options || {})); }
       catch (error) { return json({ error: error.message || "Model request failed" }, 502); }
     }
