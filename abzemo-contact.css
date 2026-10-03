@@ -1,8 +1,10 @@
-/* ABZEMO floating contact bar — Yutong-style quick contact */
-.abzemo-contact-dock{position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:9990;display:flex;flex-direction:column;align-items:stretch;overflow:hidden;border:1px solid rgba(18,100,216,.18);border-right:0;border-radius:12px 0 0 12px;background:rgba(255,255,255,.98);box-shadow:0 12px 35px rgba(7,26,53,.16);font-family:Arial,Helvetica,sans-serif}
-.abzemo-contact-dock a{width:58px;min-height:58px;display:flex;align-items:center;justify-content:center;color:#071a35;text-decoration:none;border-bottom:1px solid #e4ebf4;transition:.2s ease}
-.abzemo-contact-dock a:last-child{border-bottom:0}.abzemo-contact-dock a:hover{width:66px;color:#1264d8;background:#f5f8fc}
-.abzemo-contact-dock .dock-icon{font-size:20px;line-height:1;font-weight:800}
-.abzemo-contact-dock .dock-label{position:absolute;right:58px;white-space:nowrap;padding:9px 12px;border-radius:7px;background:#071a35;color:#fff;font-size:12px;font-weight:700;opacity:0;pointer-events:none;transform:translateX(6px);transition:.2s ease}
-.abzemo-contact-dock a:hover .dock-label{opacity:1;transform:translateX(0)}
-@media(max-width:600px){.abzemo-contact-dock a{width:50px;min-height:50px}.abzemo-contact-dock a:hover{width:56px}.abzemo-contact-dock .dock-label{right:50px}}
+/* ABZEMO quick-contact dock — Yutong visual treatment */
+.abzemo-contact-dock{position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:9990;display:flex;flex-direction:column;width:58px;margin:0;padding:0;background:#004ea2;border:0;box-shadow:none;overflow:visible;font-family:Arial,Helvetica,sans-serif}
+.abzemo-contact-dock a{position:relative;width:58px;height:58px;min-height:58px;display:flex;align-items:center;justify-content:center;box-sizing:border-box;color:#fff;background:#004ea2;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.18);transition:background-color .2s ease,color .2s ease}
+.abzemo-contact-dock a:last-child{border-bottom:0}
+.abzemo-contact-dock a:hover,.abzemo-contact-dock a:focus-visible{color:#004ea2;background:#fff;outline:none}
+.abzemo-contact-dock .dock-icon{display:flex;align-items:center;justify-content:center;width:24px;height:24px}
+.abzemo-contact-dock .dock-icon img{display:block;width:24px;height:24px;object-fit:contain}
+.abzemo-contact-dock .dock-label{position:absolute;right:58px;top:50%;transform:translateY(-50%);white-space:nowrap;padding:12px 16px;background:#004ea2;color:#fff;font-size:14px;line-height:1;font-weight:400;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .2s ease,visibility .2s ease}
+.abzemo-contact-dock a:hover .dock-label,.abzemo-contact-dock a:focus-visible .dock-label{opacity:1;visibility:visible}
+@media(max-width:600px){.abzemo-contact-dock{top:auto;right:50%;bottom:0;left:50%;transform:translateX(-50%);width:max-content;max-width:100%;flex-direction:row;background:#004ea2;border:0}.abzemo-contact-dock a{width:58px;height:58px;min-height:58px;border-bottom:0;border-right:1px solid rgba(255,255,255,.18)}.abzemo-contact-dock a:last-child{border-right:0}.abzemo-contact-dock .dock-icon{width:23px;height:23px}.abzemo-contact-dock .dock-icon img{width:23px;height:23px}.abzemo-contact-dock .dock-label{right:auto;left:50%;top:auto;bottom:58px;transform:translateX(-50%)}.abzemo-contact-dock a:hover .dock-label,.abzemo-contact-dock a:focus-visible .dock-label{transform:translateX(-50%)}}

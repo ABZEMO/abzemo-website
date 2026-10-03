@@ -1,9 +1,7 @@
 import { getTool } from "./registry.js";
 import { createZohoCrmClient } from "../integrations/zoho-crm.js";
-import { validateOutboundUrl } from "../security/url.js";
 
 const SAFE_METHODS = new Set(["GET", "HEAD", "OPTIONS"]);
-const DEFAULT_ZOHO_MODULE = "Leads";
 
 export function createToolExecutor({ fetchImpl = fetch } = {}) {
   return {
@@ -16,7 +14,7 @@ export function createToolExecutor({ fetchImpl = fetch } = {}) {
         return { status: "approval_required", tool: toolId, message: "Human approval is required before this side effect can run." };
       }
 
-      if (toolId === "webhook") return executeWebhook(fetchImpl, input, context);
+      if (toolId === "webhook") return executeWebhook(fetchImpl, input);
       if (toolId === "http") return executeHttpApi(fetchImpl, input, context);
 
       return {
@@ -37,39 +35,25 @@ async function executeZohoCrm(fetchImpl, input, context) {
     return { status: "approval_required", tool: "zoho_crm", action };
   }
   if (action === "health") return client.health();
-  if (action === "list") return client.list(String(input.doctype || DEFAULT_ZOHO_MODULE), input.options || {});
-  if (action === "get") return client.get(String(input.doctype || DEFAULT_ZOHO_MODULE), input.name);
-  if (action === "create") return client.create(String(input.doctype || DEFAULT_ZOHO_MODULE), input.data);
-  if (action === "update") return client.update(String(input.doctype || DEFAULT_ZOHO_MODULE), input.name, input.data);
+  if (action === "list") return client.list(String(input.doctype || "CRM Lead"), input.options || {});
+  if (action === "get") return client.get(String(input.doctype || "CRM Lead"), input.name);
+  if (action === "create") return client.create(String(input.doctype || "CRM Lead"), input.data, { approved: true });
+  if (action === "update") return client.update(String(input.doctype || "CRM Lead"), input.name, input.data, { approved: true });
   throw new Error("Unsupported Zoho CRM action: " + action);
 }
 
-async function executeWebhook(fetchImpl, input, context) {
-  const url = validateOutboundUrl(input.url, { allowedHosts: parseAllowedHosts(context.env) });
-  const response = await fetchImpl(url.toString(), {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify(input.body ?? {})
-  });
+async function executeWebhook(fetchImpl, input) {
+  const url = String(input.url || "");
+  if (!/^https?:\/\//i.test(url)) throw new Error("A valid webhook URL is required.");
+  const response = await fetchImpl(url, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(input.body ?? {}) });
   return { status: response.ok ? "completed" : "failed", tool: "webhook", http_status: response.status };
 }
 
 async function executeHttpApi(fetchImpl, input, context) {
-  const url = validateOutboundUrl(input.url, { allowedHosts: parseAllowedHosts(context.env) });
+  const url = String(input.url || "");
+  if (!/^https?:\/\//i.test(url)) throw new Error("A valid HTTP API URL is required.");
   const method = String(input.method || "GET").toUpperCase();
-  if (!/^[A-Z]+$/.test(method)) throw new Error("Invalid HTTP method.");
   if (!SAFE_METHODS.has(method) && !context.approved) return { status: "approval_required", tool: "http", message: "Approval required for a state-changing HTTP request." };
-  const headers = input.headers && typeof input.headers === "object" ? input.headers : {};
-  const response = await fetchImpl(url.toString(), {
-    method,
-    headers,
-    body: SAFE_METHODS.has(method) ? undefined : JSON.stringify(input.body ?? {})
-  });
+  const response = await fetchImpl(url, { method, headers: input.headers || {}, body: SAFE_METHODS.has(method) ? undefined : JSON.stringify(input.body ?? {}) });
   return { status: response.ok ? "completed" : "failed", tool: "http", http_status: response.status };
-}
-
-function parseAllowedHosts(env = {}) {
-  const raw = env.UZMO_ALLOWED_HTTP_HOSTS;
-  if (!raw) return undefined;
-  return String(raw).split(",").map(value => value.trim()).filter(Boolean);
 }
