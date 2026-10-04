@@ -75,6 +75,6 @@ function deserialize(row) {
 }
 
 function parse(value, fallback) {
-  try { return value == null ? fallback : JSON.parse(value); }
+  try { return value == null ? fallback : typeof value === "string" ? JSON.parse(value) : value; }
   catch { return fallback; }
 }
