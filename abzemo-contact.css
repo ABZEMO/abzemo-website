@@ -92,15 +92,17 @@
   display:block;
   margin-bottom:6px;
   color:#071a35;
-  font-size:15px;
-  font-weight:800;
-  line-height:1.25;
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:14px;
+  font-weight:700;
+  line-height:1.5;
 }
 .abzemo-contact-dock .dock-panel-detail{
   display:block;
   margin-bottom:12px;
   color:#6f7f95;
-  font-size:13px;
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:14px;
   line-height:1.5;
   word-break:break-word;
 }
@@ -112,8 +114,9 @@
   border-radius:7px;
   background:#1264d8;
   color:#fff;
-  font-size:12px;
-  font-weight:800;
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:14px;
+  font-weight:700;
 }
 @media(max-width:600px){
   .abzemo-contact-dock{
