@@ -58,6 +58,8 @@ export async function handleRuntime(request, env = {}) {
       await jobStore.put(failedJob);
       throw error;
     }
+  }
+
   if (action === "approve") {
     const plan = body.plan;
     if (!plan) return json({ error: "plan is required" }, 400);
