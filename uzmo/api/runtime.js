@@ -5,6 +5,8 @@ import { createApprovalRequest, requiresHumanApproval } from "../core/approval.j
 import { createApprovalToken, verifyApprovalToken } from "../core/approval-token.js";
 import { createMemoryStore } from "../memory/store.js";
 import { guard } from "../auth/runtime-guard.js";
+import { createJob, transitionJob } from "../workflows/jobs.js";
+import { createJobStore } from "../workflows/job-store.js";
 
 const memory = createMemoryStore();
 
@@ -30,13 +32,34 @@ export async function handleRuntime(request, env = {}) {
     if (!goal && !body.plan) return json({ error: "goal or plan is required" }, 400);
     const approval = await verifyApprovalToken(body.approvalToken, env.UZMO_APPROVAL_SECRET, userId, orgId, plan);
     if (requiresHumanApproval(plan) && !approval) return json({ status: "approval_required", approval: { required: true } }, 200);
+    const jobStore = createJobStore(env);
+    const job = createJob({
+      workflowId: body.workflowId || "uzmo.execute",
+      input: { goal: goal || plan.goal || "", plan, context: body.context || {}, userId, orgId }
+    });
+    await jobStore.put(job);
+    await jobStore.put(transitionJob(job, "running", { attempts: 1 }));
+
     const result = await createAgentRuntime({ modelGateway: createModelGateway(env) }).run({
       goal: goal || plan.goal || "",
       plan,
       context: { ...(body.context || {}), userId, orgId, approved: Boolean(approval) },
       env
     });
-    return json({ product: "UZMO", plan, ...result });
+    const status = result.status === "approval_required" ? "paused" : result.status === "failed" ? "failed" : "completed";
+    const completedJob = transitionJob({ ...job, status: "running", attempts: 1 }, status, { result });
+    await jobStore.put(completedJob);
+    return json({ product: "UZMO", jobId: job.id, durablePersistence: jobStore.configured, plan, ...result });
+  }
+
+  if (action === "job.get") {
+    if (!body.jobId || typeof body.jobId !== "string") return json({ error: "jobId is required" }, 400);
+    const job = await createJobStore(env).get(body.jobId);
+    return json({ status: job ? "ok" : "not_found", job });
+  }
+
+  if (action === "job.list") {
+    return json({ status: "ok", jobs: await createJobStore(env).list() });
   }
 
   if (action === "approve") {
