@@ -40,28 +40,24 @@ export async function handleRuntime(request, env = {}) {
     await jobStore.put(job);
     await jobStore.put(transitionJob(job, "running", { attempts: 1 }));
 
-    const result = await createAgentRuntime({ modelGateway: createModelGateway(env) }).run({
-      goal: goal || plan.goal || "",
-      plan,
-      context: { ...(body.context || {}), userId, orgId, approved: Boolean(approval) },
-      env
-    });
-    const status = result.status === "approval_required" ? "paused" : result.status === "failed" ? "failed" : "completed";
-    const completedJob = transitionJob({ ...job, status: "running", attempts: 1 }, status, { result });
-    await jobStore.put(completedJob);
-    return json({ product: "UZMO", jobId: job.id, durablePersistence: jobStore.configured, plan, ...result });
-  }
-
-  if (action === "job.get") {
-    if (!body.jobId || typeof body.jobId !== "string") return json({ error: "jobId is required" }, 400);
-    const job = await createJobStore(env).get(body.jobId);
-    return json({ status: job ? "ok" : "not_found", job });
-  }
-
-  if (action === "job.list") {
-    return json({ status: "ok", jobs: await createJobStore(env).list() });
-  }
-
+    try {
+      const result = await createAgentRuntime({ modelGateway: createModelGateway(env) }).run({
+        goal: goal || plan.goal || "",
+        plan,
+        context: { ...(body.context || {}), userId, orgId, approved: Boolean(approval) },
+        env
+      });
+      const status = result.status === "approval_required" ? "paused" : result.status === "failed" ? "failed" : "completed";
+      const completedJob = transitionJob({ ...job, status: "running", attempts: 1 }, status, { result });
+      await jobStore.put(completedJob);
+      return json({ product: "UZMO", jobId: job.id, durablePersistence: jobStore.configured, plan, ...result });
+    } catch (error) {
+      const failedJob = transitionJob({ ...job, status: "running", attempts: 1 }, "failed", {
+        error: error?.message || "Job execution failed"
+      });
+      await jobStore.put(failedJob);
+      throw error;
+    }
   if (action === "approve") {
     const plan = body.plan;
     if (!plan) return json({ error: "plan is required" }, 400);
