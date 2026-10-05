@@ -57,33 +57,37 @@
       margin: 0 auto;
     }
 
-    /* HEADER */
+        /* HEADER */
 
     .site-header {
       position: fixed;
-      inset: 0 0 auto 0;
+      inset: 0 0 auto;
       z-index: 1000;
-      height: 78px;
+      min-height: 78px;
       background: rgba(255,255,255,.94);
-      border-bottom: 1px solid rgba(220,229,240,.8);
       backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(220,229,240,.85);
     }
 
     .navbar {
-      height: 100%;
+      min-height: 78px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 24px;
     }
 
-    .logo {
-      font-size: 24px;
-      font-weight: 800;
-      letter-spacing: -.04em;
+    .brand {
+      display: inline-flex;
+      align-items: center;
       color: var(--navy);
+      font-size: 30px;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: -1.8px;
     }
 
-    .logo span {
+    .brand span {
       color: var(--blue);
     }
 
@@ -91,135 +95,167 @@
       display: flex;
       align-items: center;
       gap: 30px;
+      margin: 0;
+      padding: 0;
       list-style: none;
     }
 
     .nav-links a {
+      color: var(--navy);
       font-size: 14px;
-      font-weight: 600;
-      color: var(--text);
+      font-weight: 700;
       transition: color .2s ease;
     }
 
-    .nav-links a:hover {
+    .nav-links a:hover,
+    .nav-links a.active {
       color: var(--blue);
     }
 
-    .menu-toggle {
+    .nav-button {
+      padding: 11px 18px;
+      color: #fff !important;
+      background: var(--navy);
+      border-radius: 9px;
+    }
+
+    .nav-button:hover {
+      background: var(--blue);
+    }
+
+    .menu-button {
       width: 46px;
       height: 46px;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      background: var(--white);
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
       gap: 5px;
-      cursor: pointer;
-    }
-
-    .menu-toggle span {
-      width: 18px;
-      height: 2px;
-      background: var(--navy);
-      border-radius: 2px;
-    }
-
-    /* MEGA MENU */
-
-    .mega-menu {
-      position: fixed;
-      top: 0;
-      left: -460px;
-      width: min(460px, 90vw);
-      height: 100vh;
-      z-index: 1200;
-      background: var(--white);
-      box-shadow: 20px 0 60px rgba(7,26,53,.15);
-      transition: left .3s ease;
-      overflow-y: auto;
-    }
-
-    .mega-menu.active {
-      left: 0;
-    }
-
-    .mega-menu-inner {
-      padding: 34px;
-      position: relative;
-    }
-
-    .menu-close {
-      position: absolute;
-      top: 22px;
-      right: 22px;
-      width: 42px;
-      height: 42px;
       border: 1px solid var(--line);
       border-radius: 10px;
-      background: var(--white);
-      font-size: 28px;
-      line-height: 1;
+      background: #fff;
       cursor: pointer;
-      color: var(--navy);
+      box-shadow: 0 6px 22px rgba(7,26,53,.06);
     }
 
-    .mega-menu-brand {
-      margin: 25px 0 40px;
+    .menu-button span {
+      width: 20px;
+      height: 2px;
+      border-radius: 2px;
+      background: var(--navy);
     }
 
-    .mega-menu-brand span {
-      display: block;
-      font-size: 26px;
-      font-weight: 800;
-      color: var(--navy);
-    }
+    /* MENU */
 
-    .mega-menu-brand small {
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .mega-menu-section {
-      margin-bottom: 28px;
-    }
-
-    .mega-menu-label {
-      margin-bottom: 10px;
-      color: var(--blue);
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: .14em;
-      text-transform: uppercase;
-    }
-
-    .mega-menu-section a {
-      display: block;
-      padding: 5px 0;
-      color: var(--text);
-      font-size: 14px;
-    }
-
-    .mega-menu-section a:hover {
-      color: var(--blue);
-    }
-
-    .menu-overlay {
+    .mega-overlay {
       position: fixed;
       inset: 0;
-      z-index: 1100;
+      z-index: 1090;
       background: rgba(7,26,53,.42);
+      backdrop-filter: blur(5px);
       opacity: 0;
       visibility: hidden;
-      transition: opacity .3s ease;
+      transition: .3s ease;
     }
 
-    .menu-overlay.active {
+    .mega-overlay.active {
       opacity: 1;
       visibility: visible;
     }
 
+    .mega-menu {
+      position: fixed;
+      inset: 0 auto 0 0;
+      z-index: 1100;
+      width: min(460px, 88vw);
+      overflow-y: auto;
+      background: #fff;
+      transform: translateX(-105%);
+      transition: transform .38s cubic-bezier(.77,0,.18,1);
+      box-shadow: 20px 0 70px rgba(7,26,53,.2);
+    }
+
+    .mega-menu.active {
+      transform: translateX(0);
+    }
+
+    .mega-top {
+      min-height: 82px;
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: rgba(255,255,255,.96);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .mega-brand {
+      color: var(--navy);
+      font-size: 27px;
+      font-weight: 900;
+      letter-spacing: -1px;
+    }
+
+    .mega-brand span {
+      color: var(--blue);
+    }
+
+    .mega-close {
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: #fff;
+      color: var(--navy);
+      font-size: 27px;
+      cursor: pointer;
+    }
+
+    .mega-content {
+      padding: 30px 28px 42px;
+    }
+
+    .mega-section {
+      margin-bottom: 32px;
+    }
+
+    .mega-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .mega-section-title {
+      margin-bottom: 12px;
+      color: var(--blue);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .mega-section a {
+      display: block;
+      padding: 7px 0;
+      color: var(--navy);
+      font-size: 15px;
+      font-weight: 700;
+      transition: .2s ease;
+    }
+
+    .mega-section a:hover {
+      color: var(--blue);
+      transform: translateX(4px);
+    }
+
+    .mega-section .sub-link {
+      padding-left: 10px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 500;
+    }
     /* HERO */
 
     .page-hero {
