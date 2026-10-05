@@ -11,6 +11,7 @@ function init(){
  if(document.querySelector(".abzemo-search-trigger"))return;
  const navbar=document.querySelector(".navbar");if(!navbar)return;
  const build=function(){
+  navbar.querySelectorAll(".nav-links a").forEach(function(link){if(!link.getAttribute("title"))link.setAttribute("title",(link.textContent||"").trim())});
   if(document.querySelector(".abzemo-search-trigger"))return;
   const trigger=document.createElement("button");trigger.className="abzemo-search-trigger";trigger.type="button";trigger.setAttribute("aria-label","Open ABZEMO AI Search");trigger.setAttribute("aria-controls","abzemoSearchPanel");trigger.setAttribute("aria-expanded","false");trigger.innerHTML=icon("search");navbar.style.position="relative";navbar.appendChild(trigger);
  const backdrop=document.createElement("div");backdrop.className="abzemo-search-backdrop";
