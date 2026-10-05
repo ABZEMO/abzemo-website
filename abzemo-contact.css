@@ -2,7 +2,7 @@
 .abzemo-contact-dock{
   position:fixed;
   right:18px;
-  top:50%;
+  top:45%;
   transform:translateY(-50%);
   z-index:9990;
   display:flex;
