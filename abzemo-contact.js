@@ -28,7 +28,7 @@
     item("https://wa.me/923337108770","WhatsApp","+92 333 7108770","Open WhatsApp",icons.whatsapp,'target="_blank" rel="noopener noreferrer"')
     +item("tel:+923337108770","Hotline","+92 333 7108770","Call Hotline",icons.phone)
     +item("mailto:info@abzemo.com","E-mail","info@abzemo.com","Send E-mail",icons.mail)
-    +item("contact-us.html","Contact Us","Talk to the ABZEMO team","Open Contact Us",icons.contact)
+    +item("contact.html","Contact Us","Talk to the ABZEMO team","Open Contact Us",icons.contact)
     +item("online-message.html","Online Message","Send us your message","Open Online Message",icons.message);
 
   document.body.appendChild(dock);
