@@ -54,7 +54,7 @@
 }
 .abzemo-contact-dock .dock-panel{
   position:absolute;
-  right:calc(100% + 12px);
+  right:100%;
   top:50%;
   transform:translateY(-50%) translateX(8px);
   width:250px;
