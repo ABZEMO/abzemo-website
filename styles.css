@@ -1482,12 +1482,12 @@ h1 {
    ABZEMO — Future Directions / Future Ecosystem
    ========================================================= */
 .ecosystem.navy-box-theme > *,
-.ventures-grid.navy-box-theme > * {
+.ventures-grid.navy-box-theme > .venture {
   height: 180px !important;
   min-height: 180px !important;
 }
 
-/* Keep every Future Ecosystem number on the exact same top line. */
+/* Future Ecosystem: all 8 numbers stay on one exact top line. */
 .ecosystem.navy-box-theme > * {
   justify-content: flex-start !important;
 }
@@ -1497,12 +1497,63 @@ h1 {
   margin-bottom: 16px !important;
 }
 
-.ventures-grid.navy-box-theme > * h3 {
+/* Home — Future Directions: same 8 boxes and same dimensions as Vision. */
+.ventures-grid.navy-box-theme > .venture {
+  justify-content: flex-start !important;
+}
+
+.ventures-grid.navy-box-theme > .venture h3 {
   min-height: 50px !important;
   display: flex;
   align-items: flex-start;
 }
 
-.ventures-grid.navy-box-theme > * p {
-  min-height: 72px !important;
+.ventures-grid.navy-box-theme > .venture span {
+  margin-top: auto;
+}
+
+/* Ventures — Venture Directions: keep the real numbers + descriptions visible.
+   All 8 cards use one fixed size large enough for the longest content. */
+.ventures-grid.navy-box-theme > .venture-card {
+  height: 300px !important;
+  min-height: 300px !important;
+  justify-content: flex-start !important;
+}
+
+.ventures-grid.navy-box-theme > .venture-card::before {
+  content: none !important;
+}
+
+.ventures-grid.navy-box-theme > .venture-card .venture-number {
+  display: block !important;
+  margin: 0 0 16px !important;
+  color: #70a9ff !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  letter-spacing: .08em !important;
+}
+
+.ventures-grid.navy-box-theme > .venture-card h3 {
+  min-height: 54px !important;
+  margin: 0 !important;
+  display: flex;
+  align-items: flex-start;
+}
+
+.ventures-grid.navy-box-theme > .venture-card p {
+  min-height: 96px !important;
+  margin: 12px 0 0 !important;
+}
+
+.ventures-grid.navy-box-theme > .venture-card .venture-status {
+  display: block !important;
+  margin-top: auto !important;
+  color: rgba(255,255,255,.72) !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-size: 11px !important;
+  line-height: 1.4 !important;
+  letter-spacing: 1.3px !important;
+  text-transform: uppercase !important;
 }
