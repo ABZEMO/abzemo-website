@@ -41,3 +41,11 @@ html[dir="rtl"] .abzemo-search-trigger{right:auto;left:0}
 /* Navigation hover bubble */
 .nav-links a{border-radius:999px;padding:9px 14px;transition:color .2s ease,background-color .2s ease,box-shadow .2s ease}
 .nav-links a:hover,.nav-links a:focus-visible{color:var(--blue);background:rgba(112,169,255,.12);box-shadow:0 5px 16px rgba(7,26,53,.08);outline:none}
+
+
+/* Current-page navigation highlight uses the same pill treatment as hover. */
+.nav-links a.active:not([href="contact.html"]){
+  color:var(--blue);
+  background:rgba(112,169,255,.12);
+  box-shadow:0 5px 16px rgba(7,26,53,.08);
+}
