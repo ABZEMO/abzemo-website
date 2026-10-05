@@ -1478,23 +1478,31 @@ h1 {
     grid-template-columns: 1fr;
   }
 }
-
-
 /* =========================================================
-   ABZEMO — equalize requested box dimensions
+   ABZEMO — Future Directions / Future Ecosystem
    ========================================================= */
-.ecosystem.navy-box-theme > * {
+.ecosystem.navy-box-theme > *,
+.ventures-grid.navy-box-theme > * {
   height: 180px !important;
   min-height: 180px !important;
 }
-.ventures-grid.navy-box-theme > * {
-  min-height: 300px !important;
+
+/* Keep every Future Ecosystem number on the exact same top line. */
+.ecosystem.navy-box-theme > * {
+  justify-content: flex-start !important;
 }
+
+.ecosystem.navy-box-theme > *::before {
+  flex: 0 0 auto;
+  margin-bottom: 16px !important;
+}
+
 .ventures-grid.navy-box-theme > * h3 {
   min-height: 50px !important;
   display: flex;
   align-items: flex-start;
 }
+
 .ventures-grid.navy-box-theme > * p {
   min-height: 72px !important;
 }
