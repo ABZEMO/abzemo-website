@@ -41,6 +41,20 @@
       color: var(--blue);
     }
 
+    /* Keep ABZEMO brand text exactly aligned with Home. */
+    .brand-name {
+      font-size: 30px;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: -1.8px;
+      color: var(--navy) !important;
+      white-space: nowrap;
+    }
+
+    .brand-name span {
+      color: var(--blue) !important;
+    }
+
     .nav-links {
       display: flex;
       align-items: center;
@@ -102,7 +116,7 @@
 .mega-section a:hover{color:var(--blue);transform:translateX(4px)}
 .mega-section .sub-link{padding-left:10px;color:var(--muted);font-size:14px;font-weight:500}
 @media(max-width:980px){.nav-links{display:none}}
-@media(max-width:640px){.navbar{min-height:70px}.brand{height:52px}.brand img{width:125px;max-height:52px}.mega-menu{width:min(460px,88vw)}}
+@media(max-width:640px){.navbar{min-height:70px}.mega-menu{width:min(460px,88vw)}}
 </style>
 <style>
 .msg-page{min-height:100vh;padding:150px 24px 90px;background:linear-gradient(135deg,#fff,#f5f8fc)}
