@@ -1388,3 +1388,113 @@ html[dir="rtl"] .nav-links{direction:rtl}
 h1 {
   font-size: clamp(38px, 5vw, 66px) !important;
 }
+
+/* =========================================================
+   NAVY BOX THEME — unified box treatment
+   ========================================================= */
+
+.navy-box-theme {
+  counter-reset: navy-box;
+}
+
+.navy-box-theme > * {
+  counter-increment: navy-box;
+  position: relative;
+  box-sizing: border-box;
+  color: #ffffff !important;
+  background: var(--navy) !important;
+  border: 1px solid rgba(255, 255, 255, 0.13) !important;
+  border-radius: 18px !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  padding: 28px !important;
+}
+
+.navy-box-theme > *::before {
+  content: counter(navy-box, decimal-leading-zero);
+  display: block;
+  margin: 0 0 16px;
+  color: #70a9ff !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  letter-spacing: .08em;
+}
+
+.navy-box-theme > * h3,
+.navy-box-theme > * h4 {
+  color: #ffffff !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  line-height: 1.25 !important;
+}
+
+.navy-box-theme > * p,
+.navy-box-theme > * span,
+.navy-box-theme > * li {
+  color: rgba(255, 255, 255, 0.72) !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-size: 14px !important;
+  line-height: 1.7 !important;
+}
+
+.navy-box-theme > * strong {
+  color: #ffffff !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  line-height: 1.25 !important;
+}
+
+.navy-box-theme > * .card-icon,
+.navy-box-theme > * .card-number,
+.navy-box-theme > * .possibility-number,
+.navy-box-theme > * .venture-number,
+.navy-box-theme > * .venture-status,
+.navy-box-theme > * .approach-number,
+.navy-box-theme > * .roadmap-number,
+.navy-box-theme > * .process-number,
+.navy-box-theme > * .solution-number {
+  display: none !important;
+}
+
+.navy-box-theme > * .feature-list li::before,
+.navy-box-theme > * .solution-list li::before {
+  color: #70a9ff !important;
+}
+
+/* ABZEMO AI — Multilingual Intelligence: three equal-size boxes */
+#multilingual .card-grid.navy-box-theme {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+#multilingual .card-grid.navy-box-theme > * {
+  min-height: 250px !important;
+}
+
+@media (max-width: 800px) {
+  #multilingual .card-grid.navy-box-theme {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* =========================================================
+   ABZEMO — equalize requested box dimensions
+   ========================================================= */
+.ecosystem.navy-box-theme > * {
+  height: 180px !important;
+  min-height: 180px !important;
+}
+.ventures-grid.navy-box-theme > * {
+  min-height: 300px !important;
+}
+.ventures-grid.navy-box-theme > * h3 {
+  min-height: 50px !important;
+  display: flex;
+  align-items: flex-start;
+}
+.ventures-grid.navy-box-theme > * p {
+  min-height: 72px !important;
+}
