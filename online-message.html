@@ -1,1 +1,154 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Online Message | ABZEMO</title><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="abzemo-contact.css"><style>.site-header{position:fixed;top:0;left:0;right:0;z-index:9980}</style><style>.msg-page{min-height:100vh;padding:150px 24px 90px;background:linear-gradient(135deg,#fff,#f5f8fc)}.msg-wrap{width:min(900px,100%);margin:auto}.msg-wrap h1{margin:0 0 18px;color:#071a35;font-size:clamp(38px,5vw,66px);line-height:1;letter-spacing:-3px}.msg-wrap>p{color:#6f7f95;font-size:18px;line-height:1.8}.msg-form{margin-top:40px;padding:32px;border:1px solid #dce5f0;background:#fff;display:grid;gap:16px}.msg-form label{color:#071a35;font-size:13px;font-weight:700}.msg-form input,.msg-form textarea{width:100%;margin-top:7px;padding:13px 14px;border:1px solid #dce5f0;border-radius:8px;outline:none}.msg-form textarea{min-height:170px;resize:vertical}.msg-form button{width:max-content;padding:13px 22px;border:0;border-radius:9px;background:#1264d8;color:#fff;font-weight:800;cursor:pointer}</style></head><body><main class="msg-page"><div class="msg-wrap"><div class="section-label">Online Message</div><h1>Tell us what you need.</h1><p>Send ABZEMO a message and our team can review your enquiry.</p><form class="msg-form" action="mailto:info@abzemo.com" method="post" enctype="text/plain"><label>Name<input name="Name" required></label><label>Email<input name="Email" type="email" required></label><label>Phone<input name="Phone" type="tel"></label><label>Message<textarea name="Message" required></textarea></label><button type="submit">Submit Message</button></form></div></main><script src="abzemo-contact.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Online Message | ABZEMO</title>
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="abzemo-contact.css">
+<style>
+.site-header{position:fixed;inset:0 0 auto;z-index:1000;background:rgba(255,255,255,.94);backdrop-filter:blur(18px);border-bottom:1px solid rgba(220,229,240,.85)}
+.navbar{min-height:78px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:24px}
+.brand{display:flex;align-items:center;width:auto;height:58px;overflow:visible;gap:2px;color:var(--navy)}
+.brand img{display:block;width:150px;height:auto;max-height:58px;object-fit:contain;object-position:center}.brand-name{margin-left:-10px;color:var(--navy)!important;font-weight:900;white-space:nowrap}.brand-name span{color:var(--blue)!important}
+.nav-links{display:flex;align-items:center;justify-content:center;gap:30px;list-style:none;margin:0;padding:0}
+.nav-links a{color:var(--navy);font-size:14px;font-weight:700;transition:color .2s ease;white-space:nowrap}
+.nav-links a:hover{color:var(--blue)}
+.menu-button{justify-self:start;width:46px;height:46px;border:1px solid var(--line);border-radius:10px;background:#fff;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;cursor:pointer;box-shadow:0 6px 22px rgba(7,26,53,.06)}
+.menu-button span{width:20px;height:2px;border-radius:2px;background:var(--navy)}
+.mega-overlay{position:fixed;inset:0;z-index:1090;background:rgba(7,26,53,.42);backdrop-filter:blur(5px);opacity:0;visibility:hidden;transition:.3s ease}
+.mega-overlay.active{opacity:1;visibility:visible}
+.mega-menu{position:fixed;inset:0 auto 0 0;width:min(460px,88vw);z-index:1100;background:#fff;transform:translateX(-105%);transition:transform .38s cubic-bezier(.77,0,.18,1);box-shadow:20px 0 70px rgba(7,26,53,.2);overflow-y:auto}
+.mega-menu.active{transform:translateX(0)}
+.mega-top{min-height:82px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);z-index:2}
+.mega-brand{font-size:27px;font-weight:900;letter-spacing:-1px;color:var(--navy)}
+.mega-brand span{color:var(--blue)}
+.mega-close{width:42px;height:42px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--navy);font-size:27px;cursor:pointer}
+.mega-content{padding:30px 28px 42px}
+.mega-section{margin-bottom:32px}
+.mega-section:last-child{margin-bottom:0}
+.mega-section-title{margin-bottom:12px;color:var(--blue);font-size:11px;font-weight:900;letter-spacing:2px;text-transform:uppercase}
+.mega-section a{display:block;padding:7px 0;color:var(--navy);font-size:15px;font-weight:700;transition:.2s ease}
+.mega-section a:hover{color:var(--blue);transform:translateX(4px)}
+.mega-section .sub-link{padding-left:10px;color:var(--muted);font-size:14px;font-weight:500}
+@media(max-width:980px){.nav-links{display:none}}
+@media(max-width:640px){.navbar{min-height:70px}.brand{height:52px}.brand img{width:125px;max-height:52px}.mega-menu{width:min(460px,88vw)}}
+</style>
+<style>
+.msg-page{min-height:100vh;padding:150px 24px 90px;background:linear-gradient(135deg,#fff,#f5f8fc)}
+.msg-wrap{width:min(900px,100%);margin:auto}
+.msg-wrap h1{margin:0 0 18px;color:#071a35;font-size:clamp(38px,5vw,66px);line-height:1;letter-spacing:-3px;font-weight:900}
+.msg-wrap>p{color:#6f7f95;font-size:18px;line-height:1.8}
+.msg-form{margin-top:40px;padding:32px;border:1px solid #dce5f0;background:#fff;display:grid;gap:16px}
+.msg-form label{color:#071a35;font-size:13px;font-weight:700}
+.msg-form input,.msg-form textarea{width:100%;margin-top:7px;padding:13px 14px;border:1px solid #dce5f0;border-radius:8px;outline:none}
+.msg-form textarea{min-height:170px;resize:vertical}
+.msg-form button{width:max-content;padding:13px 22px;border:0;border-radius:9px;background:#1264d8;color:#fff;font-weight:800;cursor:pointer}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container navbar">
+    <div class="header-left">
+      <button class="menu-button" id="menuButton" type="button" aria-label="Open navigation menu" aria-controls="megaMenu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <a href="index.html" class="brand" aria-label="ABZEMO Home">
+        <img src="abzemo-logo-blue.png" alt="ABZEMO — Building What's Next.">
+        <span class="brand-name">ABZEM<span>O</span></span>
+      </a>
+    </div>
+    <nav aria-label="Primary navigation">
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="mission.html">Mission</a></li>
+        <li><a href="vision.html">Vision</a></li>
+        <li><a href="ventures.html">Ventures</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<div class="mega-overlay" id="megaOverlay"></div>
+<aside class="mega-menu" id="megaMenu" aria-label="ABZEMO navigation">
+  <div class="mega-top">
+    <div class="mega-brand">ABZEM<span>O</span></div>
+    <button class="mega-close" id="megaClose" type="button" aria-label="Close navigation menu">×</button>
+  </div>
+  <div class="mega-content">
+    <div class="mega-section">
+      <div class="mega-section-title">ABZEMO</div>
+      <a href="index.html">Home</a>
+      <a href="about.html">About ABZEMO</a>
+      <a href="mission.html">Mission</a>
+      <a href="vision.html">Vision</a>
+      <a href="director-note.html">Director's Note</a>
+    </div>
+    <div class="mega-section">
+      <div class="mega-section-title">Capabilities</div>
+      <a href="industries.html">Industries</a>
+      <a href="solutions.html">Solutions</a>
+      <a href="abzemo-ai.html">ABZEMO AI</a>
+    </div>
+    <div class="mega-section">
+      <div class="mega-section-title">Ventures</div>
+      <a href="ventures.html">All Ventures</a>
+      <a class="sub-link" href="ventures.html#ai">ABZEMO AI</a>
+      <a class="sub-link" href="ventures.html#medical">ABZEMO Medical</a>
+      <a class="sub-link" href="ventures.html#trade">ABZEMO Trade</a>
+      <a class="sub-link" href="ventures.html#education">ABZEMO Smart Schooling</a>
+      <a class="sub-link" href="ventures.html#fashions">ABZEMO Fashions</a>
+      <a class="sub-link" href="ventures.html#realestate">ABZEMO Real Estate</a>
+      <a class="sub-link" href="ventures.html#logistics">ABZEMO Logistics</a>
+      <a class="sub-link" href="ventures.html#finance">ABZEMO Finance</a>
+    </div>
+    <div class="mega-section">
+      <div class="mega-section-title">Connect</div>
+      <a href="contact.html">Contact ABZEMO</a>
+    </div>
+    <div class="mega-section">
+      <div class="mega-section-title">Legal</div>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms &amp; Conditions</a>
+    </div>
+  </div>
+</aside>
+
+<main class="msg-page">
+  <div class="msg-wrap">
+    <div class="section-label">Online Message</div>
+    <h1>Tell us what you need.</h1>
+    <p>Send ABZEMO a message and our team can review your enquiry.</p>
+    <form class="msg-form" action="mailto:info@abzemo.com" method="post" enctype="text/plain">
+      <label>Name<input name="Name" required></label>
+      <label>Email<input name="Email" type="email" required></label>
+      <label>Phone<input name="Phone" type="tel"></label>
+      <label>Message<textarea name="Message" required></textarea></label>
+      <button type="submit">Submit Message</button>
+    </form>
+  </div>
+</main>
+
+<script>
+const menuButton=document.getElementById("menuButton");
+const megaMenu=document.getElementById("megaMenu");
+const megaOverlay=document.getElementById("megaOverlay");
+const megaClose=document.getElementById("megaClose");
+function openMegaMenu(){megaMenu.classList.add("active");megaOverlay.classList.add("active");document.body.classList.add("menu-open");menuButton.setAttribute("aria-expanded","true")}
+function closeMegaMenu(){megaMenu.classList.remove("active");megaOverlay.classList.remove("active");document.body.classList.remove("menu-open");menuButton.setAttribute("aria-expanded","false")}
+menuButton.addEventListener("click",openMegaMenu);
+megaClose.addEventListener("click",closeMegaMenu);
+megaOverlay.addEventListener("click",closeMegaMenu);
+document.addEventListener("keydown",function(event){if(event.key==="Escape")closeMegaMenu()});
+megaMenu.querySelectorAll("a").forEach(function(link){link.addEventListener("click",closeMegaMenu)});
+</script>
+<script src="i18n.js"></script>
+<script src="header-tools.js"></script>
+<script src="abzemo-ai.js"></script>
+<script src="abzemo-search.js"></script>
+<script src="abzemo-contact.js"></script>
+</body>
+</html>

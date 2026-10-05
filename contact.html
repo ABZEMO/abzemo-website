@@ -3,1129 +3,140 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Contact | ABZEMO</title>
-
-  <meta
-    name="description"
-    content="Contact ABZEMO to discuss AI, automation, digital transformation, business solutions, partnerships, and future opportunities."
-  >
-
+  <meta name="description" content="Contact ABZEMO for AI, agentic automation, business solutions, digital transformation and partnerships.">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="abzemo-contact.css">
-
   <style>
-    :root {
-      --blue: #1264d8;
-      --blue-dark: #084a9e;
-      --navy: #071a35;
-      --text: #24344d;
-      --muted: #6f7f95;
-      --light: #f5f8fc;
-      --white: #fff;
-      --line: #dce5f0;
-      --shadow: 0 22px 65px rgba(7, 26, 53, .10);
-    }
-
-    * { box-sizing: border-box; }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      color: var(--text);
-      background: var(--white);
-      line-height: 1.6;
-    }
-
-    body.menu-open { overflow: hidden; }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    button { font: inherit; }
-
-    .container {
-      width: min(1180px, calc(100% - 48px));
-      margin-inline: auto;
-    }
-
-    /* HEADER */
-
-    .site-header {
-      position: fixed;
-      inset: 0 0 auto;
-      z-index: 1000;
-      min-height: 78px;
-      background: rgba(255,255,255,.94);
-      backdrop-filter: blur(18px);
-      border-bottom: 1px solid rgba(220,229,240,.85);
-    }
-
-    .navbar {
-      min-height: 78px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 24px;
-    }
-
-    .brand {
-      display: inline-flex;
-      align-items: center;
-      color: var(--navy);
-      font-size: 30px;
-      line-height: 1;
-      font-weight: 900;
-      letter-spacing: -1.8px;
-    }
-
-    .brand span { color: var(--blue); }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 30px;
-      margin: 0;
-      padding: 0;
-      list-style: none;
-    }
-
-    .nav-links a {
-      color: var(--navy);
-      font-size: 14px;
-      font-weight: 700;
-      transition: color .2s ease;
-    }
-
-    .nav-links a:hover,
-    .nav-links a.active {
-      color: var(--blue);
-    }
-
-    .nav-button {
-      padding: 11px 18px;
-      color: #fff !important;
-      background: var(--navy);
-      border-radius: 9px;
-    }
-
-    .nav-button:hover { background: var(--blue); }
-
-    .menu-button {
-      width: 46px;
-      height: 46px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      background: #fff;
-      cursor: pointer;
-      box-shadow: 0 6px 22px rgba(7,26,53,.06);
-    }
-
-    .menu-button span {
-      width: 20px;
-      height: 2px;
-      border-radius: 2px;
-      background: var(--navy);
-    }
-
-    /* MENU */
-
-    .mega-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 1090;
-      background: rgba(7,26,53,.42);
-      backdrop-filter: blur(5px);
-      opacity: 0;
-      visibility: hidden;
-      transition: .3s ease;
-    }
-
-    .mega-overlay.active {
-      opacity: 1;
-      visibility: visible;
-    }
-
-    .mega-menu {
-      position: fixed;
-      inset: 0 auto 0 0;
-      z-index: 1100;
-      width: min(460px, 88vw);
-      overflow-y: auto;
-      background: #fff;
-      transform: translateX(-105%);
-      transition: transform .38s cubic-bezier(.77,0,.18,1);
-      box-shadow: 20px 0 70px rgba(7,26,53,.2);
-    }
-
-    .mega-menu.active { transform: translateX(0); }
-
-    .mega-top {
-      min-height: 82px;
-      padding: 0 28px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 2;
-      background: rgba(255,255,255,.96);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--line);
-    }
-
-    .mega-brand {
-      color: var(--navy);
-      font-size: 27px;
-      font-weight: 900;
-      letter-spacing: -1px;
-    }
-
-    .mega-brand span { color: var(--blue); }
-
-    .mega-close {
-      width: 42px;
-      height: 42px;
-      border: 1px solid var(--line);
-      border-radius: 9px;
-      background: #fff;
-      color: var(--navy);
-      font-size: 27px;
-      cursor: pointer;
-    }
-
-    .mega-content { padding: 30px 28px 42px; }
-
-    .mega-section { margin-bottom: 32px; }
-
-    .mega-section:last-child { margin-bottom: 0; }
-
-    .mega-section-title {
-      margin-bottom: 12px;
-      color: var(--blue);
-      font-size: 11px;
-      font-weight: 900;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
-
-    .mega-section a {
-      display: block;
-      padding: 7px 0;
-      color: var(--navy);
-      font-size: 15px;
-      font-weight: 700;
-      transition: .2s ease;
-    }
-
-    .mega-section a:hover {
-      color: var(--blue);
-      transform: translateX(4px);
-    }
-
-    .mega-section .sub-link {
-      padding-left: 10px;
-      color: var(--muted);
-      font-size: 14px;
-      font-weight: 500;
-    }
-
-    /* HERO */
-
-    .page-hero {
-      min-height: 72vh;
-      padding-top: 78px;
-      display: flex;
-      align-items: center;
-      position: relative;
-      overflow: hidden;
-      background:
-        radial-gradient(circle at 82% 40%, rgba(18,100,216,.13), transparent 30%),
-        linear-gradient(135deg, #fff 0%, #f5f8fc 100%);
-    }
-
-    .page-hero::after {
-      content: "";
-      position: absolute;
-      width: 430px;
-      height: 430px;
-      right: -150px;
-      bottom: -190px;
-      border: 1px solid rgba(18,100,216,.14);
-      border-radius: 50%;
-      box-shadow:
-        0 0 0 55px rgba(18,100,216,.035),
-        0 0 0 110px rgba(18,100,216,.025);
-    }
-
-    .hero-content {
-      position: relative;
-      z-index: 1;
-      max-width: 850px;
-      padding: 100px 0;
-    }
-
-    .hero-label,
-    .section-label {
-      margin-bottom: 15px;
-      color: var(--blue);
-      font-size: 12px;
-      font-weight: 900;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
-
-    .page-hero h1 {
-      max-width: 850px;
-      margin: 0 0 25px;
-      color: var(--navy);
-      font-size: clamp(52px, 7vw, 88px);
-      line-height: .98;
-      letter-spacing: -4px;
-    }
-
-    .page-hero p {
-      max-width: 760px;
-      margin: 0;
-      color: var(--muted);
-      font-size: 19px;
-      line-height: 1.8;
-    }
-
-    /* SECTIONS */
-
-    .section {
-      padding: 115px 0;
-    }
-
-    .section-light { background: var(--light); }
-
-    .section-header {
-      max-width: 760px;
-      margin-bottom: 52px;
-    }
-
-    .section h2 {
-      margin: 0 0 20px;
-      color: var(--navy);
-      font-size: clamp(38px, 5vw, 66px);
-      line-height: 1.02;
-      letter-spacing: -3px;
-    }
-
-    .section-header p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 18px;
-      line-height: 1.8;
-    }
-
-    .two-column {
-      display: grid;
-      grid-template-columns: .9fr 1.1fr;
-      gap: 80px;
-      align-items: start;
-    }
-
-    .two-column > div > p {
-      margin: 0 0 22px;
-      color: var(--muted);
-      font-size: 17px;
-      line-height: 1.85;
-    }
-
-    .two-column > div > p:last-child {
-      margin-bottom: 0;
-    }
-
-    /* CONTACT DETAILS */
-
-    .contact-details {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-
-    .contact-item {
-      min-height: 165px;
-      padding: 28px;
-      border: 1px solid var(--line);
-      background: #fff;
-      transition: .25s ease;
-    }
-
-    .contact-item:hover {
-      border-color: rgba(18,100,216,.4);
-      transform: translateY(-3px);
-      box-shadow: var(--shadow);
-    }
-
-    .contact-item h3 {
-      margin: 0 0 12px;
-      color: var(--navy);
-      font-size: 18px;
-    }
-
-    .contact-item p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.7;
-    }
-
-    .contact-item a {
-      color: var(--blue);
-      font-weight: 700;
-      overflow-wrap: anywhere;
-    }
-
-    .contact-item a:hover {
-      color: var(--blue-dark);
-    }
-
-    /* DISCUSSION CARDS */
-
-    .card-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 14px;
-    }
-
-    .card {
-      min-height: 245px;
-      padding: 30px;
-      border: 1px solid var(--line);
-      background: #fff;
-      transition: .25s ease;
-    }
-
-    .card:hover {
-      border-color: rgba(18,100,216,.4);
-      transform: translateY(-4px);
-      box-shadow: var(--shadow);
-    }
-
-    .card-icon {
-      width: 44px;
-      height: 44px;
-      margin-bottom: 28px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid rgba(18,100,216,.2);
-      border-radius: 10px;
-      color: var(--blue);
-      font-size: 12px;
-      font-weight: 900;
-    }
-
-    .card h3 {
-      margin: 0 0 12px;
-      color: var(--navy);
-      font-size: 20px;
-      line-height: 1.25;
-    }
-
-    .card p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.75;
-    }
-
-    /* NEXT STEPS */
-
-    .steps {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 14px;
-    }
-
-    .step {
-      padding: 32px;
-      border-top: 3px solid var(--blue);
-      background: var(--light);
-    }
-
-    .step-number {
-      display: block;
-      margin-bottom: 28px;
-      color: var(--blue);
-      font-size: 13px;
-      font-weight: 900;
-      letter-spacing: 1px;
-    }
-
-    .step span {
-      display: block;
-      color: var(--navy);
-      font-size: 15px;
-      font-weight: 700;
-      line-height: 1.65;
-    }
-
-    /* CTA */
-
-    .cta-section {
-      padding: 105px 0;
-      background: linear-gradient(135deg, var(--blue), var(--blue-dark));
-    }
-
-    .cta-section .section-label { color: #9fc4ff; }
-
-    .cta-section h2 { color: #fff; }
-
-    .cta-section p {
-      max-width: 680px;
-      color: rgba(255,255,255,.76);
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 48px;
-      padding: 13px 22px;
-      border-radius: 9px;
-      font-size: 14px;
-      font-weight: 800;
-      transition: .25s ease;
-    }
-
-    .btn-primary {
-      color: #fff;
-      background: var(--blue);
-    }
-
-    .btn-primary:hover {
-      background: var(--blue-dark);
-      transform: translateY(-2px);
-    }
-
-    .cta-section .btn-primary {
-      margin-top: 8px;
-      color: var(--blue);
-      background: #fff;
-    }
-
-    /* FOOTER */
-
-    .site-footer {
-      padding: 65px 0 25px;
-      color: #fff;
-      background: #041225;
-    }
-
-    .footer-top {
-      display: flex;
-      justify-content: space-between;
-      gap: 50px;
-      padding-bottom: 45px;
-      border-bottom: 1px solid rgba(255,255,255,.1);
-    }
-
-    .footer-brand { max-width: 420px; }
-
-    .footer-logo {
-      margin-bottom: 15px;
-      color: #fff;
-      font-size: 29px;
-      font-weight: 900;
-    }
-
-    .footer-logo span { color: #5c9cff; }
-
-    .footer-brand p {
-      margin: 0;
-      color: rgba(255,255,255,.55);
-      line-height: 1.8;
-    }
-
-    .footer-links {
-      display: flex;
-      gap: 70px;
-    }
-
-    .footer-column h4 {
-      margin: 0 0 16px;
-      color: rgba(255,255,255,.75);
-      font-size: 12px;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-    }
-
-    .footer-column a {
-      display: block;
-      margin-bottom: 9px;
-      color: rgba(255,255,255,.55);
-      font-size: 13px;
-    }
-
-    .footer-column a:hover { color: #fff; }
-
-    .footer-bottom {
-      padding-top: 22px;
-      display: flex;
-      justify-content: space-between;
-      gap: 20px;
-      color: rgba(255,255,255,.38);
-      font-size: 11px;
-    }
-
-    /* RESPONSIVE */
-
-    @media (max-width: 980px) {
-      .nav-links { display: none; }
-
-      .two-column {
-        grid-template-columns: 1fr;
-        gap: 45px;
-      }
-
-      .card-grid,
-      .steps {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .footer-top {
-        flex-direction: column;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .container {
-        width: min(100% - 32px, 1180px);
-      }
-
-      .navbar {
-        min-height: 70px;
-      }
-
-      .page-hero {
-        padding-top: 70px;
-        min-height: auto;
-      }
-
-      .hero-content {
-        padding: 80px 0;
-      }
-
-      .page-hero h1 {
-        font-size: clamp(48px, 14vw, 70px);
-        letter-spacing: -3px;
-      }
-
-      .page-hero p {
-        font-size: 16px;
-      }
-
-      .section {
-        padding: 80px 0;
-      }
-
-      .section h2 {
-        letter-spacing: -2px;
-      }
-
-      .contact-details,
-      .card-grid,
-      .steps {
-        grid-template-columns: 1fr;
-      }
-
-      .footer-links {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 30px;
-      }
-
-      .footer-bottom {
-        flex-direction: column;
-      }
-    }
+    :root{--blue:#1264d8;--blue-dark:#084a9e;--navy:#071a35;--text:#24344d;--muted:#6f7f95;--light:#f5f8fc;--white:#fff;--line:#dce5f0;--shadow:0 22px 65px rgba(7,26,53,.10)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--text);background:#fff;line-height:1.6}body.menu-open{overflow:hidden}a{color:inherit;text-decoration:none}button,input,select,textarea{font:inherit}.container{width:min(1180px,calc(100% - 48px));margin-inline:auto}
+    .site-header{position:fixed;inset:0 0 auto;z-index:1000;min-height:78px;background:rgba(255,255,255,.94);backdrop-filter:blur(18px);border-bottom:1px solid rgba(220,229,240,.85)}
+    .navbar{min-height:78px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:24px}.header-left{justify-self:start;display:flex;align-items:center;gap:16px}.brand{display:flex;align-items:center;width:auto;height:58px;overflow:visible;gap:2px;color:var(--navy)}.brand img{display:block;width:150px;height:auto;max-height:58px;object-fit:contain;object-position:center}.brand-name{margin-left:-10px;color:var(--navy)!important;font-weight:900;white-space:nowrap}.brand-name span{color:var(--blue)!important}
+    .nav-links{display:flex;align-items:center;justify-content:center;gap:30px;margin:0;padding:0;list-style:none}.nav-links a{color:var(--navy);font-size:14px;font-weight:700;transition:color .2s ease;white-space:nowrap}.nav-links a:hover,.nav-links a.active{color:var(--blue)}
+    .menu-button{width:46px;height:46px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border:1px solid var(--line);border-radius:10px;background:#fff;cursor:pointer;box-shadow:0 6px 22px rgba(7,26,53,.06)}.menu-button span{width:20px;height:2px;border-radius:2px;background:var(--navy)}
+    .mega-overlay{position:fixed;inset:0;z-index:1090;background:rgba(7,26,53,.42);backdrop-filter:blur(5px);opacity:0;visibility:hidden;transition:.3s ease}.mega-overlay.active{opacity:1;visibility:visible}.mega-menu{position:fixed;inset:0 auto 0 0;z-index:1100;width:min(460px,88vw);overflow-y:auto;background:#fff;transform:translateX(-105%);transition:transform .38s cubic-bezier(.77,0,.18,1);box-shadow:20px 0 70px rgba(7,26,53,.2)}.mega-menu.active{transform:translateX(0)}.mega-top{min-height:82px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:2;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}.mega-brand{color:var(--navy);font-size:27px;font-weight:900;letter-spacing:-1px}.mega-brand span{color:var(--blue)}.mega-close{width:42px;height:42px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--navy);font-size:27px;cursor:pointer}.mega-content{padding:30px 28px 42px}.mega-section{margin-bottom:32px}.mega-section-title{margin-bottom:12px;color:var(--blue);font-size:11px;font-weight:900;letter-spacing:2px;text-transform:uppercase}.mega-section a{display:block;padding:7px 0;color:var(--navy);font-size:15px;font-weight:700;transition:.2s}.mega-section a:hover{color:var(--blue);transform:translateX(4px)}.mega-section .sub-link{padding-left:10px;color:var(--muted);font-size:14px;font-weight:500}
+    .contact-hero{min-height:78vh;padding:78px 0 70px;display:flex;align-items:center;position:relative;overflow:hidden;background:linear-gradient(135deg,#fff 0%,#f3f7fd 100%)}.contact-hero:after{content:"";position:absolute;width:620px;height:620px;right:-260px;top:-220px;border:1px solid rgba(18,100,216,.13);border-radius:50%;box-shadow:0 0 0 70px rgba(18,100,216,.035),0 0 0 140px rgba(18,100,216,.02)}.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:70px;align-items:center;position:relative;z-index:1}.eyebrow{margin-bottom:18px;color:var(--blue);font-size:12px;font-weight:900;letter-spacing:2.2px;text-transform:uppercase}.hero-copy h1{max-width:850px;margin:0 0 25px;color:var(--navy);font-size:clamp(52px,7vw,88px);line-height:.96;letter-spacing:-4px;font-weight:900}.hero-copy p{max-width:720px;margin:0;color:var(--muted);font-size:19px;line-height:1.8}.hero-card{padding:38px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);position:relative}.hero-card:before{content:"";position:absolute;left:0;top:0;width:6px;height:100%;background:var(--blue)}.hero-card .eyebrow{margin-bottom:12px}.hero-card h2{margin:0 0 10px;color:var(--navy);font-size:34px;line-height:1.05;letter-spacing:-1.5px}.hero-card p{margin:0 0 22px;color:var(--muted);font-size:14px;line-height:1.7}.quick-links{display:grid;gap:1px;background:var(--line);border:1px solid var(--line)}.quick-links a{display:flex;justify-content:space-between;gap:18px;padding:15px;background:#fff}.quick-links strong{color:var(--navy);font-size:13px}.quick-links span{color:var(--blue);font-size:13px;text-align:right}
+    .section{padding:105px 0}.section-light{background:var(--light)}.section-head{max-width:780px;margin-bottom:50px}.section-head .eyebrow{margin-bottom:14px}.section-head h2,.presence h2{margin:0 0 18px;color:var(--navy);font-size:clamp(40px,5vw,66px);line-height:1;letter-spacing:-3px}.section-head p,.presence p{margin:0;color:var(--muted);font-size:17px;line-height:1.8}
+    .enquiry-grid{display:grid;grid-template-columns:.82fr 1.18fr;gap:65px;align-items:start}.topics{border-top:1px solid var(--line)}.topic{display:grid;grid-template-columns:50px 1fr;gap:18px;padding:25px 0;border-bottom:1px solid var(--line)}.topic>span{color:var(--blue);font-size:12px;font-weight:900;letter-spacing:1px}.topic h3{margin:0 0 7px;color:var(--navy);font-size:20px}.topic p{margin:0;color:var(--muted);font-size:14px;line-height:1.7}
+    .form-card{padding:38px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow)}.form-kicker{display:block;margin-bottom:10px;color:var(--blue);font-size:11px;font-weight:900;letter-spacing:1.8px}.form-card h3{margin:0 0 25px;color:var(--navy);font-size:30px;letter-spacing:-1px}.form{display:grid;gap:16px}.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}.form label{display:block;color:var(--navy);font-size:12px;font-weight:800}.form input,.form select,.form textarea{width:100%;margin-top:7px;padding:14px;border:1px solid var(--line);border-radius:7px;outline:none;color:var(--text);background:#fff;font:14px Arial,Helvetica,sans-serif}.form textarea{min-height:150px;resize:vertical}.form input:focus,.form select:focus,.form textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(18,100,216,.08)}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:13px 23px;border:0;border-radius:8px;font-size:14px;font-weight:800;cursor:pointer;transition:.25s ease}.btn-primary{color:#fff;background:var(--navy)}.btn-primary:hover{background:var(--blue);transform:translateY(-2px)}
+    .presence-grid{display:grid;grid-template-columns:1fr .8fr;gap:80px;align-items:center}.presence-card{padding:36px;background:#fff;border:1px solid var(--line);box-shadow:0 15px 45px rgba(7,26,53,.07)}.presence-card .eyebrow{margin-bottom:8px}.presence-card h3{margin:0 0 10px;color:var(--navy);font-size:27px}.presence-card p{margin:0 0 18px}.presence-card a{display:block;margin-top:7px;color:var(--blue);font-weight:700}
+    .cta{padding:100px 0;background:linear-gradient(135deg,var(--blue),var(--blue-dark))}.cta .section-head{margin-bottom:28px}.cta .section-head .eyebrow{color:#a8caff}.cta .section-head h2{color:#fff}.cta .section-head p{color:rgba(255,255,255,.78)}.cta .btn{color:var(--blue);background:#fff}
+    footer{padding:65px 0 25px;color:#fff;background:#041225}.footer-top{display:flex;justify-content:space-between;gap:50px;padding-bottom:45px;border-bottom:1px solid rgba(255,255,255,.1)}.footer-brand{max-width:420px}.footer-logo{margin-bottom:15px;color:#fff;font-size:29px;font-weight:900}.footer-logo span{color:#5c9cff}.footer-brand p{margin:0;color:rgba(255,255,255,.55);line-height:1.8}.footer-links{display:flex;gap:70px}.footer-column h4{margin:0 0 16px;color:rgba(255,255,255,.75);font-size:12px;letter-spacing:1.5px;text-transform:uppercase}.footer-column a{display:block;margin-bottom:9px;color:rgba(255,255,255,.55);font-size:13px}.footer-column a:hover{color:#fff}.footer-bottom{padding-top:22px;display:flex;justify-content:space-between;gap:20px;color:rgba(255,255,255,.38);font-size:11px}
+    @media(max-width:980px){.nav-links{display:none}.hero-grid,.enquiry-grid,.presence-grid{grid-template-columns:1fr;gap:42px}.hero-copy{padding:45px 0}.card-grid,.steps{grid-template-columns:repeat(2,1fr)}.footer-top{flex-direction:column}}
+    @media(max-width:640px){.container{width:min(100% - 32px,1180px)}.navbar{min-height:70px}.contact-hero{padding-top:70px;min-height:auto}.brand{height:52px}.brand img{width:125px;max-height:52px}.hero-copy h1{font-size:clamp(48px,14vw,70px);letter-spacing:-3px}.hero-copy p{font-size:16px}.section{padding:80px 0}.form-row{grid-template-columns:1fr}.quick-links a{display:block}.quick-links span{display:block;text-align:left;margin-top:4px}.footer-links{display:grid;grid-template-columns:1fr 1fr;gap:30px}.footer-bottom{flex-direction:column}}
   </style>
 </head>
-
 <body>
-
-  <!-- HEADER -->
-
   <header class="site-header">
-  <div class="container navbar">
-
-    <div class="header-left">
-
-      <button
-        class="menu-button"
-        id="menuButton"
-        type="button"
-        aria-label="Open navigation menu"
-        aria-controls="megaMenu"
-        aria-expanded="false"
-      >
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-
-      <a href="index.html" class="brand" aria-label="ABZEMO Home">
-        <img
-          src="abzemo-logo-blue.png"
-          alt="ABZEMO — Building What's Next."
-        >
-        <span class="brand-name">ABZEM<span>O</span></span>
-      </a>
-
+    <div class="container navbar">
+      <div class="header-left">
+        <button class="menu-button" id="menuButton" type="button" aria-label="Open navigation menu" aria-controls="megaMenu" aria-expanded="false"><span></span><span></span><span></span></button>
+        <a href="index.html" class="brand" aria-label="ABZEMO Home"><img src="abzemo-logo-blue.png" alt="ABZEMO — Building What's Next."><span class="brand-name">ABZEM<span>O</span></span></a>
+      </div>
+      <nav aria-label="Primary navigation">
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li><li><a href="about.html">About</a></li><li><a href="mission.html">Mission</a></li><li><a href="vision.html">Vision</a></li><li><a href="ventures.html">Ventures</a></li><li><a class="active" href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div aria-hidden="true"></div>
     </div>
-
-    <nav aria-label="Primary navigation">
-      <ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="mission.html">Mission</a></li>
-        <li><a href="vision.html">Vision</a></li>
-        <li><a href="ventures.html">Ventures</a></li>
-        <li><a href="contact.html">Contact</a></li>
-      </ul>
-    </nav>
-
-  </div>
-</header>
-
-  <!-- MENU -->
-
+  </header>
   <div class="mega-overlay" id="megaOverlay"></div>
-
   <aside class="mega-menu" id="megaMenu" aria-label="ABZEMO navigation">
-
-    <div class="mega-top">
-      <div class="mega-brand">ABZEM<span>O</span></div>
-
-      <button
-        class="mega-close"
-        id="megaClose"
-        type="button"
-        aria-label="Close navigation menu"
-      >
-        ×
-      </button>
-    </div>
-
+    <div class="mega-top"><div class="mega-brand">ABZEM<span>O</span></div><button class="mega-close" id="megaClose" type="button" aria-label="Close navigation menu">×</button></div>
     <div class="mega-content">
-
-      <div class="mega-section">
-        <div class="mega-section-title">ABZEMO</div>
-        <a href="index.html">Home</a>
-        <a href="about.html">About ABZEMO</a>
-        <a href="mission.html">Mission</a>
-        <a href="vision.html">Vision</a>
-        <a href="director-note.html">Director's Note</a>
-      </div>
-
-      <div class="mega-section">
-        <div class="mega-section-title">Capabilities</div>
-        <a href="industries.html">Industries</a>
-        <a href="solutions.html">Solutions</a>
-        <a href="abzemo-ai.html">ABZEMO AI</a>
-      </div>
-
-      <div class="mega-section">
-        <div class="mega-section-title">Ventures</div>
-        <a href="ventures.html">All Ventures</a>
-        <a class="sub-link" href="ventures.html#ai">ABZEMO AI</a>
-        <a class="sub-link" href="ventures.html#medical">ABZEMO Medical</a>
-        <a class="sub-link" href="ventures.html#trade">ABZEMO Trade</a>
-        <a class="sub-link" href="ventures.html#education">ABZEMO Smart Schooling</a>
-        <a class="sub-link" href="ventures.html#fashions">ABZEMO Fashions</a>
-        <a class="sub-link" href="ventures.html#realestate">ABZEMO Real Estate</a>
-        <a class="sub-link" href="ventures.html#logistics">ABZEMO Logistics</a>
-        <a class="sub-link" href="ventures.html#finance">ABZEMO Finance</a>
-      </div>
-
-      <div class="mega-section">
-        <div class="mega-section-title">Connect</div>
-        <a href="contact.html">Contact ABZEMO</a>
-      </div>
-
-      <div class="mega-section">
-        <div class="mega-section-title">Legal</div>
-        <a href="privacy.html">Privacy Policy</a>
-        <a href="terms.html">Terms & Conditions</a>
-      </div>
-
+      <div class="mega-section"><div class="mega-section-title">ABZEMO</div><a href="index.html">Home</a><a href="about.html">About ABZEMO</a><a href="mission.html">Mission</a><a href="vision.html">Vision</a><a href="director-note.html">Director's Note</a></div>
+      <div class="mega-section"><div class="mega-section-title">Capabilities</div><a href="industries.html">Industries</a><a href="solutions.html">Solutions</a><a href="abzemo-ai.html">ABZEMO AI</a></div>
+      <div class="mega-section"><div class="mega-section-title">Ventures</div><a href="ventures.html">All Ventures</a><a class="sub-link" href="ventures.html#ai">ABZEMO AI</a><a class="sub-link" href="ventures.html#medical">ABZEMO Medical</a><a class="sub-link" href="ventures.html#trade">ABZEMO Trade</a><a class="sub-link" href="ventures.html#education">ABZEMO Smart Schooling</a><a class="sub-link" href="ventures.html#fashions">ABZEMO Fashions</a><a class="sub-link" href="ventures.html#realestate">ABZEMO Real Estate</a><a class="sub-link" href="ventures.html#logistics">ABZEMO Logistics</a><a class="sub-link" href="ventures.html#finance">ABZEMO Finance</a></div>
+      <div class="mega-section"><div class="mega-section-title">Connect</div><a href="contact.html">Contact ABZEMO</a></div>
+      <div class="mega-section"><div class="mega-section-title">Legal</div><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms &amp; Conditions</a></div>
     </div>
   </aside>
 
   <main>
-
-    <!-- HERO -->
-
-    <section class="page-hero">
-      <div class="container">
-
-        <div class="hero-content">
-
-          <div class="hero-label">
-            Contact ABZEMO
-          </div>
-
-          <h1>
-            Let's build what<br>
-            comes next.
-          </h1>
-
-          <p>
-            Whether you are exploring AI, automation, digital
-            transformation, business solutions, or a new opportunity,
-            we would like to hear from you.
-          </p>
-
+    <section class="contact-hero">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <div class="eyebrow">LET US HELP YOU WITH YOUR ENQUIRY</div>
+          <h1>How can ABZEMO help you build what’s next?</h1>
+          <p>Whether you have a business challenge, an automation opportunity, a technology requirement or a partnership idea, start with the context. We’ll help turn the conversation into a practical next step.</p>
         </div>
-
+        <div class="hero-card">
+          <div class="eyebrow">CONNECT WITH ABZEMO</div>
+          <h2>Choose your way in.</h2>
+          <p>Reach the right ABZEMO channel directly or send your requirement through the enquiry form.</p>
+          <div class="quick-links">
+            <a href="mailto:info@abzemo.com"><strong>General</strong><span>info@abzemo.com</span></a>
+            <a href="mailto:sales@abzemo.com"><strong>Business &amp; Sales</strong><span>sales@abzemo.com</span></a>
+            <a href="https://wa.me/923337108770" target="_blank" rel="noopener noreferrer"><strong>WhatsApp</strong><span>+92 333 7108770</span></a>
+            <a href="tel:+923337108770"><strong>Hotline</strong><span>+92 333 7108770</span></a>
+          </div>
+        </div>
       </div>
     </section>
-
-    <!-- START A CONVERSATION -->
 
     <section class="section">
       <div class="container">
-
-        <div class="two-column">
-
-          <div>
-
-            <div class="section-label">
-              Start A Conversation
-            </div>
-
-            <h2>
-              Tell us what<br>
-              you're building.
-            </h2>
-
-            <p>
-              Share your business challenge, technology requirement,
-              project idea, partnership opportunity, or growth
-              objective. Our team can understand the requirement
-              and identify an appropriate next step.
-            </p>
-
-            <p>
-              ABZEMO is building its technology and business
-              ecosystem from Pakistan with a global outlook.
-            </p>
-
-          </div>
-
-          <div class="contact-details">
-
-            <div class="contact-item">
-              <h3>General Inquiries</h3>
-              <p>
-                <a href="mailto:info@abzemo.com">
-                  info@abzemo.com
-                </a>
-              </p>
-            </div>
-
-            <div class="contact-item">
-              <h3>Business & Sales</h3>
-              <p>
-                <a href="mailto:sales@abzemo.com">
-                  sales@abzemo.com
-                </a>
-              </p>
-            </div>
-
-            <div class="contact-item">
-              <h3>Support</h3>
-              <p>
-                <a href="mailto:support@abzemo.com">
-                  support@abzemo.com
-                </a>
-              </p>
-            </div>
-
-            <div class="contact-item">
-              <h3>Location</h3>
-              <p>
-                Karachi, Pakistan
-              </p>
-            </div>
-
-          </div>
-
+        <div class="section-head">
+          <div class="eyebrow">WHAT CAN WE WORK ON?</div>
+          <h2>Bring us the challenge. We’ll explore the opportunity.</h2>
+          <p>ABZEMO combines AI, agentic automation, business solutions and digital transformation to address practical business needs.</p>
         </div>
-
+        <div class="enquiry-grid">
+          <div class="topics">
+            <div class="topic"><span>01</span><div><h3>AI &amp; Agentic Automation</h3><p>AI agents, intelligent workflows, multilingual experiences and automation designed around real business processes.</p></div></div>
+            <div class="topic"><span>02</span><div><h3>Business Solutions</h3><p>Technology-led solutions shaped around an operational requirement, customer journey or growth opportunity.</p></div></div>
+            <div class="topic"><span>03</span><div><h3>Digital Transformation</h3><p>Modernise processes, systems and operations with a practical technology roadmap.</p></div></div>
+            <div class="topic"><span>04</span><div><h3>Partnerships &amp; Opportunities</h3><p>Explore strategic partnerships, technology collaborations, market opportunities and future ventures.</p></div></div>
+          </div>
+          <div class="form-card">
+            <span class="form-kicker">ONLINE ENQUIRY</span>
+            <h3>Tell us what you’re building.</h3>
+            <form class="form" action="mailto:info@abzemo.com" method="post" enctype="text/plain">
+              <div class="form-row"><label>First Name<input name="First Name" required></label><label>Last Name<input name="Last Name" required></label></div>
+              <div class="form-row"><label>Email Address<input name="Email Address" type="email" required></label><label>Contact / WhatsApp<input name="Contact / WhatsApp" type="tel"></label></div>
+              <label>What are you enquiring about?<select name="Enquiry Type"><option>AI &amp; Agentic Automation</option><option>Business Solutions</option><option>Digital Transformation</option><option>Partnerships &amp; Opportunities</option><option>Other</option></select></label>
+              <label>Tell us about your requirement<textarea name="Requirement" required placeholder="Briefly describe your challenge, idea or requirement..."></textarea></label>
+              <button type="submit" class="btn btn-primary">Send Enquiry</button>
+            </form>
+          </div>
+        </div>
       </div>
     </section>
-
-    <!-- WHAT CAN WE DISCUSS -->
 
     <section class="section section-light">
-      <div class="container">
-
-        <div class="section-header">
-
-          <div class="section-label">
-            What Can We Discuss?
-          </div>
-
-          <h2>
-            Start with a problem.<br>
-            Explore the possibilities.
-          </h2>
-
-        </div>
-
-        <div class="card-grid">
-
-          <article class="card">
-            <div class="card-icon">01</div>
-
-            <h3>
-              AI & Automation
-            </h3>
-
-            <p>
-              Explore AI agents, multilingual intelligence,
-              intelligent workflows, and business process
-              automation.
-            </p>
-          </article>
-
-          <article class="card">
-            <div class="card-icon">02</div>
-
-            <h3>
-              Digital Transformation
-            </h3>
-
-            <p>
-              Discuss modernization of business processes,
-              systems, workflows, and operations.
-            </p>
-          </article>
-
-          <article class="card">
-            <div class="card-icon">03</div>
-
-            <h3>
-              Business Solutions
-            </h3>
-
-            <p>
-              Share a business challenge that requires a
-              technology-driven solution.
-            </p>
-          </article>
-
-          <article class="card">
-            <div class="card-icon">04</div>
-
-            <h3>
-              Partnerships
-            </h3>
-
-            <p>
-              Connect with ABZEMO regarding partnerships,
-              collaborations, technology, or market
-              opportunities.
-            </p>
-          </article>
-
-        </div>
-
+      <div class="container presence-grid">
+        <div class="presence"><div class="eyebrow">CONNECT WITH US</div><h2>From Pakistan.<br>Built for what’s next.</h2><p>ABZEMO starts from Pakistan with a global outlook across technology, business and emerging opportunities.</p></div>
+        <div class="presence-card"><div class="eyebrow">ABZEMO</div><h3>Karachi, Pakistan</h3><p>For general enquiries, business discussions, partnerships and support:</p><a href="mailto:info@abzemo.com">info@abzemo.com</a><a href="mailto:sales@abzemo.com">sales@abzemo.com</a><a href="mailto:support@abzemo.com">support@abzemo.com</a></div>
       </div>
     </section>
 
-    <!-- WHAT HAPPENS NEXT -->
-
-    <section class="section">
-      <div class="container">
-
-        <div class="section-header">
-
-          <div class="section-label">
-            What Happens Next?
-          </div>
-
-          <h2>
-            A simple<br>
-            starting point.
-          </h2>
-
-        </div>
-
-        <div class="steps">
-
-          <div class="step">
-            <span class="step-number">01</span>
-            <span>
-              You share your requirement or idea.
-            </span>
-          </div>
-
-          <div class="step">
-            <span class="step-number">02</span>
-            <span>
-              We understand the problem and objectives.
-            </span>
-          </div>
-
-          <div class="step">
-            <span class="step-number">03</span>
-            <span>
-              We explore the appropriate technology approach.
-            </span>
-          </div>
-
-          <div class="step">
-            <span class="step-number">04</span>
-            <span>
-              We define a practical path forward.
-            </span>
-          </div>
-
-        </div>
-
-      </div>
-    </section>
-
-    <!-- CTA -->
-
-    <section class="cta-section">
-      <div class="container">
-
-        <div class="section-header">
-
-          <div class="section-label">
-            ABZEMO
-          </div>
-
-          <h2>
-            Building What's Next.
-          </h2>
-
-          <p>
-            Have an idea worth exploring? Start the conversation.
-          </p>
-
-        </div>
-
-        <a href="mailto:info@abzemo.com" class="btn btn-primary">
-          Email ABZEMO
-        </a>
-
-      </div>
-    </section>
-
+    <section class="cta"><div class="container"><div class="section-head"><div class="eyebrow">ABZEMO</div><h2>Building What’s Next.</h2><p>Have something worth building? Start the conversation with ABZEMO.</p></div><a href="online-message.html" class="btn">Send an Online Message</a></div></section>
   </main>
 
-  <!-- FOOTER -->
-
-  <footer class="site-footer">
+  <footer>
     <div class="container">
-
       <div class="footer-top">
-
-        <div class="footer-brand">
-
-          <div class="footer-logo">
-            ABZEM<span>O</span>
-          </div>
-
-          <p>
-            Building What's Next. Across technology, business,
-            healthcare, education, trade and future ventures.
-          </p>
-
-        </div>
-
+        <div class="footer-brand"><div class="footer-logo">ABZEM<span>O</span></div><p>Building What's Next. Across technology, business, healthcare, education, trade and future ventures.</p></div>
         <div class="footer-links">
-
-          <div class="footer-column">
-            <h4>Company</h4>
-            <a href="about.html">About</a>
-            <a href="mission.html">Mission</a>
-            <a href="vision.html">Vision</a>
-            <a href="director-note.html">Director's Note</a>
-          </div>
-
-          <div class="footer-column">
-            <h4>Explore</h4>
-            <a href="ventures.html">Ventures</a>
-            <a href="industries.html">Industries</a>
-            <a href="solutions.html">Solutions</a>
-            <a href="abzemo-ai.html">ABZEMO AI</a>
-          </div>
-
-          <div class="footer-column">
-            <h4>Connect</h4>
-            <a href="contact.html">Contact</a>
-            <a href="privacy.html">Privacy</a>
-            <a href="terms.html">Terms</a>
-          </div>
-
+          <div class="footer-column"><h4>Company</h4><a href="about.html">About</a><a href="mission.html">Mission</a><a href="vision.html">Vision</a><a href="director-note.html">Director's Note</a></div>
+          <div class="footer-column"><h4>Explore</h4><a href="ventures.html">Ventures</a><a href="industries.html">Industries</a><a href="solutions.html">Solutions</a><a href="abzemo-ai.html">ABZEMO AI</a></div>
+          <div class="footer-column"><h4>Connect</h4><a href="contact.html">Contact us</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div>
         </div>
-
       </div>
-
-      <div class="footer-bottom">
-        <span>© 2026 ABZEMO. All rights reserved.</span>
-        <span>Building What's Next.</span>
-      </div>
-
+      <div class="footer-bottom"><span>© 2026 ABZEMO. All rights reserved.</span><span>Building What's Next.</span></div>
     </div>
   </footer>
 
   <script>
-    const menuButton = document.getElementById("menuButton");
-    const megaMenu = document.getElementById("megaMenu");
-    const megaOverlay = document.getElementById("megaOverlay");
-    const megaClose = document.getElementById("megaClose");
-
-    function openMegaMenu() {
-      megaMenu.classList.add("active");
-      megaOverlay.classList.add("active");
-      document.body.classList.add("menu-open");
-      menuButton.setAttribute("aria-expanded", "true");
-    }
-
-    function closeMegaMenu() {
-      megaMenu.classList.remove("active");
-      megaOverlay.classList.remove("active");
-      document.body.classList.remove("menu-open");
-      menuButton.setAttribute("aria-expanded", "false");
-    }
-
-    menuButton.addEventListener("click", openMegaMenu);
-    megaClose.addEventListener("click", closeMegaMenu);
-    megaOverlay.addEventListener("click", closeMegaMenu);
-
-    document.addEventListener("keydown", function(event) {
-      if (event.key === "Escape") {
-        closeMegaMenu();
-      }
-    });
-
-    megaMenu.querySelectorAll("a").forEach(function(link) {
-      link.addEventListener("click", closeMegaMenu);
-    });
+    const menuButton=document.getElementById("menuButton"),megaMenu=document.getElementById("megaMenu"),megaOverlay=document.getElementById("megaOverlay"),megaClose=document.getElementById("megaClose");
+    function openMegaMenu(){megaMenu.classList.add("active");megaOverlay.classList.add("active");document.body.classList.add("menu-open");menuButton.setAttribute("aria-expanded","true")}
+    function closeMegaMenu(){megaMenu.classList.remove("active");megaOverlay.classList.remove("active");document.body.classList.remove("menu-open");menuButton.setAttribute("aria-expanded","false")}
+    menuButton.addEventListener("click",openMegaMenu);megaClose.addEventListener("click",closeMegaMenu);megaOverlay.addEventListener("click",closeMegaMenu);document.addEventListener("keydown",e=>{if(e.key==="Escape")closeMegaMenu()});megaMenu.querySelectorAll("a").forEach(link=>link.addEventListener("click",closeMegaMenu));
   </script>
-
   <script src="i18n.js"></script>
-  <script src="header-tools.js"></script>\n  <script src="abzemo-ai.js"></script>
-
+  <script src="header-tools.js"></script>
+  <script src="abzemo-ai.js"></script>
   <script src="abzemo-search.js"></script>
   <script src="abzemo-contact.js"></script>
 </body>
