@@ -414,6 +414,43 @@
       line-height: 1.75;
     }
 
+.ventures-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    .venture {
+      min-height: 175px;
+      padding: 26px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 1px solid var(--line);
+      background: #fff;
+      transition: .25s ease;
+    }
+
+    .venture:hover {
+      border-color: rgba(18,100,216,.4);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow);
+    }
+
+    .venture h3 {
+      margin: 0;
+      color: var(--navy);
+      font-size: 19px;
+    }
+
+    .venture span {
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 1.3px;
+      text-transform: uppercase;
+    }
+
+
     /* ROADMAP */
 
     .roadmap {
