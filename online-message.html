@@ -106,19 +106,19 @@
 @media(max-width:980px){.nav-links{display:none}}
 @media(max-width:640px){.navbar{min-height:70px}.mega-menu{width:min(460px,88vw)}}
 
-<style>
+/* ONLINE MESSAGE PAGE */
 .msg-page{min-height:100vh;padding:150px 24px 90px;background:linear-gradient(135deg,#fff,#f5f8fc)}
-.msg-wrap{width:min(900px,100%);margin:auto}
-.msg-wrap h1{margin:0 0 18px;color:#071a35;font-size:clamp(38px,5vw,66px);line-height:1;letter-spacing:-3px;font-weight:900}
-.msg-wrap>p{color:#6f7f95;font-size:18px;line-height:1.8}
+.msg-wrap{width:min(900px,100%);margin:0 auto}
+.msg-wrap .section-label{margin-bottom:14px}
+.msg-wrap h1{margin:0 0 18px;color:#071a35;font-size:clamp(38px,5vw,66px);line-height:1.12;letter-spacing:-3px;font-weight:900;overflow:visible}
+.msg-wrap>p{margin:0;color:#6f7f95;font-size:18px;line-height:1.8}
 .msg-form{margin-top:40px;padding:32px;border:1px solid #dce5f0;background:#fff;display:grid;gap:16px}
 .msg-form label{color:#071a35;font-size:13px;font-weight:700}
-.msg-form input,.msg-form textarea{width:100%;margin-top:7px;padding:13px 14px;border:1px solid #dce5f0;border-radius:8px;outline:none}
+.msg-form input,.msg-form textarea{width:100%;margin-top:7px;padding:13px 14px;border:1px solid #dce5f0;border-radius:8px;outline:none;box-sizing:border-box}
 .msg-form textarea{min-height:170px;resize:vertical}
 .msg-form button{width:max-content;padding:13px 22px;border:0;border-radius:9px;background:#1264d8;color:#fff;font-weight:800;cursor:pointer}
 
-
-    /* FOOTER */
+/* FOOTER */
 
     footer {
       padding: 65px 0 25px;
@@ -187,40 +187,21 @@
       color: rgba(255,255,255,.38);
       font-size: 11px;
     }
-
-    
 </style>
 </head>
 <body>
 
 <header class="site-header">
   <div class="container navbar">
-
     <div class="header-left">
-
-      <button
-        class="menu-button"
-        id="menuButton"
-        type="button"
-        aria-label="Open navigation menu"
-        aria-controls="megaMenu"
-        aria-expanded="false"
-      >
-        <span></span>
-        <span></span>
-        <span></span>
+      <button class="menu-button" id="menuButton" type="button" aria-label="Open navigation menu" aria-controls="megaMenu" aria-expanded="false">
+        <span></span><span></span><span></span>
       </button>
-
       <a href="index.html" class="brand" aria-label="ABZEMO Home">
-        <img
-          src="abzemo-logo-blue.png"
-          alt="ABZEMO — Building What's Next."
-        >
+        <img src="abzemo-logo-blue.png" alt="ABZEMO — Building What's Next.">
         <span class="brand-name">ABZEM<span>O</span></span>
       </a>
-
     </div>
-
     <nav aria-label="Primary navigation">
       <ul class="nav-links">
         <li><a href="index.html">Home</a></li>
@@ -231,7 +212,6 @@
         <li><a href="contact.html">Contact</a></li>
       </ul>
     </nav>
-
   </div>
 </header>
 
@@ -314,58 +294,41 @@ megaMenu.querySelectorAll("a").forEach(function(link){link.addEventListener("cli
 <script src="abzemo-search.js"></script>
 <script src="abzemo-contact.js"></script>
 
-  
 <footer>
-    <div class="container">
-
-      <div class="footer-top">
-
-        <div class="footer-brand">
-          <div class="footer-logo">
-            ABZEM<span>O</span>
-          </div>
-
-          <p>
-            Building What's Next. Across technology, business,
-            healthcare, education, trade and future ventures.
-          </p>
-        </div>
-
-        <div class="footer-links">
-
-          <div class="footer-column">
-            <h4>Company</h4>
-            <a href="about.html">About</a>
-            <a href="mission.html">Mission</a>
-            <a href="vision.html">Vision</a>
-            <a href="director-note.html">Director's Note</a>
-          </div>
-
-          <div class="footer-column">
-            <h4>Explore</h4>
-            <a href="ventures.html">Ventures</a>
-            <a href="industries.html">Industries</a>
-            <a href="solutions.html">Solutions</a>
-            <a href="abzemo-ai.html">ABZEMO AI</a>
-          </div>
-
-          <div class="footer-column">
-            <h4>Connect</h4>
-            <a href="contact.html">Contact</a>
-            <a href="privacy.html">Privacy</a>
-            <a href="terms.html">Terms</a>
-          </div>
-
-        </div>
-
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-logo">ABZEM<span>O</span></div>
+        <p>Building What's Next. Across technology, business, healthcare, education, trade and future ventures.</p>
       </div>
-
-      <div class="footer-bottom">
-        <span>© 2026 ABZEMO. All rights reserved.</span>
-        <span>Building What's Next.</span>
+      <div class="footer-links">
+        <div class="footer-column">
+          <h4>Company</h4>
+          <a href="about.html">About</a>
+          <a href="mission.html">Mission</a>
+          <a href="vision.html">Vision</a>
+          <a href="director-note.html">Director's Note</a>
+        </div>
+        <div class="footer-column">
+          <h4>Explore</h4>
+          <a href="ventures.html">Ventures</a>
+          <a href="industries.html">Industries</a>
+          <a href="solutions.html">Solutions</a>
+          <a href="abzemo-ai.html">ABZEMO AI</a>
+        </div>
+        <div class="footer-column">
+          <h4>Connect</h4>
+          <a href="contact.html">Contact</a>
+          <a href="privacy.html">Privacy</a>
+          <a href="terms.html">Terms</a>
+        </div>
       </div>
-
     </div>
-  </footer>
+    <div class="footer-bottom">
+      <span>© 2026 ABZEMO. All rights reserved.</span>
+      <span>Building What's Next.</span>
+    </div>
+  </div>
+</footer>
 </body>
 </html>
