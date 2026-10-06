@@ -145,7 +145,7 @@
       .abzemo-ai-research-link:hover{text-decoration:underline}
       .abzemo-ai-location-note{padding:0 12px 9px;font-size:8px;line-height:1.3;color:#7b8798}
       .abzemo-ai-note{margin-top:8px;font-size:9px;line-height:1.3;color:#8a96a8;text-align:center;letter-spacing:.25px}
-      @media(max-width:600px){.abzemo-ai-launcher-wrap{right:12px;bottom:12px}.abzemo-ai-bot-stage{width:calc(100vw - 24px);height:250px;margin-bottom:-4px}.abzemo-ai-bot-image{width:250px;height:250px}.abzemo-ai-launcher{width:calc(100vw - 24px);height:50px;padding-left:14px}.abzemo-ai-launcher-input{font-size:12px}.abzemo-ai-chat{right:12px;bottom:74px;width:calc(100vw - 24px);height:min(590px,calc(100vh - 100px));border-radius:18px}.abzemo-ai-messages{padding:16px}.abzemo-ai-bubble{max-width:88%}}
+      @media(max-width:600px){.abzemo-ai-launcher-wrap{right:12px;bottom:84px}.abzemo-ai-bot-stage{width:calc(100vw - 24px);height:250px;margin-bottom:-4px}.abzemo-ai-bot-image{width:250px;height:250px}.abzemo-ai-launcher{width:calc(100vw - 24px);height:50px;padding-left:14px}.abzemo-ai-launcher-input{font-size:12px}.abzemo-ai-chat{right:12px;bottom:74px;width:calc(100vw - 24px);height:min(590px,calc(100vh - 100px));border-radius:18px}.abzemo-ai-messages{padding:16px}.abzemo-ai-bubble{max-width:88%}}
       @media(prefers-reduced-motion:reduce){.abzemo-ai-chat.active,.abzemo-ai-typing span{animation:none}}
     `;
 
