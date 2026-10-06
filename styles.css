@@ -1388,3 +1388,188 @@ html[dir="rtl"] .nav-links{direction:rtl}
 h1 {
   font-size: clamp(38px, 5vw, 66px) !important;
 }
+
+/* =========================================================
+   NAVY BOX THEME — unified box treatment
+   ========================================================= */
+
+.navy-box-theme {
+  counter-reset: navy-box;
+}
+
+.navy-box-theme > * {
+  counter-increment: navy-box;
+  position: relative;
+  box-sizing: border-box;
+  color: #ffffff !important;
+  background: var(--navy) !important;
+  border: 1px solid rgba(255, 255, 255, 0.13) !important;
+  border-radius: 18px !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  padding: 28px !important;
+}
+
+.navy-box-theme > *::before {
+  content: counter(navy-box, decimal-leading-zero);
+  display: block;
+  margin: 0 0 16px;
+  color: #70a9ff !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  letter-spacing: .08em;
+}
+
+.navy-box-theme > * h3,
+.navy-box-theme > * h4 {
+  color: #ffffff !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  line-height: 1.25 !important;
+}
+
+.navy-box-theme > * p,
+.navy-box-theme > * span,
+.navy-box-theme > * li {
+  color: rgba(255, 255, 255, 0.72) !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-size: 14px !important;
+  line-height: 1.7 !important;
+}
+
+.navy-box-theme > * strong {
+  color: #ffffff !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  line-height: 1.25 !important;
+}
+
+.navy-box-theme > * .card-icon,
+.navy-box-theme > * .card-number,
+.navy-box-theme > * .possibility-number,
+.navy-box-theme > * .venture-number,
+.navy-box-theme > * .venture-status,
+.navy-box-theme > * .approach-number,
+.navy-box-theme > * .roadmap-number,
+.navy-box-theme > * .process-number,
+.navy-box-theme > * .solution-number {
+  display: none !important;
+}
+
+.navy-box-theme > * .feature-list li::before,
+.navy-box-theme > * .solution-list li::before {
+  color: #70a9ff !important;
+}
+
+/* ABZEMO AI — Multilingual Intelligence: three equal-size boxes */
+#multilingual .card-grid.navy-box-theme {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+#multilingual .card-grid.navy-box-theme > * {
+  min-height: 250px !important;
+}
+
+@media (max-width: 800px) {
+  #multilingual .card-grid.navy-box-theme {
+    grid-template-columns: 1fr;
+  }
+}
+/* =========================================================
+   ABZEMO — Future Directions / Future Ecosystem
+   ========================================================= */
+.ecosystem.navy-box-theme > *,
+.ventures-grid.navy-box-theme > .venture {
+  height: 180px !important;
+  min-height: 180px !important;
+}
+
+/* Future Ecosystem: all 8 numbers stay on one exact top line. */
+.ecosystem.navy-box-theme > * {
+  justify-content: flex-start !important;
+}
+
+.ecosystem.navy-box-theme > *::before {
+  flex: 0 0 auto;
+  margin-bottom: 16px !important;
+}
+
+/* Home — Future Directions: same 8 boxes and same dimensions as Vision. */
+.ventures-grid.navy-box-theme > .venture {
+  justify-content: flex-start !important;
+}
+
+.ventures-grid.navy-box-theme > .venture h3 {
+  min-height: 50px !important;
+  display: flex;
+  align-items: flex-start;
+}
+
+.ventures-grid.navy-box-theme > .venture span {
+  margin-top: auto;
+}
+
+/* Ventures — Venture Directions: keep the real numbers + descriptions visible.
+   All 8 cards use one fixed size large enough for the longest content. */
+.ventures-grid.navy-box-theme > .venture-card {
+  height: 300px !important;
+  min-height: 300px !important;
+  justify-content: flex-start !important;
+}
+
+.ventures-grid.navy-box-theme > .venture-card::before {
+  content: none !important;
+}
+
+.ventures-grid.navy-box-theme > .venture-card .venture-number {
+  display: block !important;
+  margin: 0 0 16px !important;
+  color: #70a9ff !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  letter-spacing: .08em !important;
+}
+
+.ventures-grid.navy-box-theme > .venture-card h3 {
+  min-height: 54px !important;
+  margin: 0 !important;
+  display: flex;
+  align-items: flex-start;
+}
+
+.ventures-grid.navy-box-theme > .venture-card p {
+  min-height: 96px !important;
+  margin: 12px 0 0 !important;
+}
+
+.ventures-grid.navy-box-theme > .venture-card .venture-status {
+  display: block !important;
+  margin-top: auto !important;
+  color: rgba(255,255,255,.72) !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-size: 11px !important;
+  line-height: 1.4 !important;
+  letter-spacing: 1.3px !important;
+  text-transform: uppercase !important;
+}
+
+
+
+
+/* VENTURE DIRECTION BAR — centered and matched to number color */
+.ventures-grid.navy-box-theme > .venture-card .venture-status {
+  display: block !important;
+  width: fit-content !important;
+  margin: auto !important;
+  padding: 5px 10px !important;
+  border: 1px solid #70a9ff !important;
+  border-radius: 999px !important;
+  color: #70a9ff !important;
+  background: rgba(112, 169, 255, 0.08) !important;
+  text-align: center !important;
+}
