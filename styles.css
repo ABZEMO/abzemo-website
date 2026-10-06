@@ -54,7 +54,6 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: calc(var(--header-height) + 20px);
-  scrollbar-gutter: stable;
 }
 
 body {
@@ -1573,4 +1572,35 @@ h1 {
   color: #70a9ff !important;
   background: rgba(112, 169, 255, 0.08) !important;
   text-align: center !important;
+}
+
+/* =========================
+   HEADER LOCK — SHARED SOURCE OF TRUTH
+   ========================= */
+
+.site-header {
+  height: var(--header-height) !important;
+  min-height: 0 !important;
+}
+
+.navbar {
+  height: 100% !important;
+  min-height: 0 !important;
+}
+
+.brand {
+  width: 150px !important;
+  height: 58px !important;
+  margin: 0 !important;
+}
+
+.brand img {
+  width: 150px !important;
+  max-height: 58px !important;
+}
+
+@media (max-width: 600px) {
+  .site-header {
+    height: var(--header-height) !important;
+  }
 }
