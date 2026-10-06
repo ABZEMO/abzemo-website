@@ -5,10 +5,6 @@
     }
   },
   "rewrites": [
-    { "source": "/zoho/callback", "destination": "/api/zoho-callback" },
-    { "source": "/contact", "destination": "/contact.html" },
-    { "source": "/contact/", "destination": "/contact.html" },
-    { "source": "/abzemo-ai", "destination": "/abzemo-ai.html" },
-    { "source": "/abzemo-ai/", "destination": "/abzemo-ai.html" }
+    { "source": "/zoho/callback", "destination": "/api/zoho-callback" }
   ]
 }
