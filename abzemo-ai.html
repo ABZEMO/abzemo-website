@@ -59,74 +59,90 @@
 
     /* HEADER */
 
+    /* HEADER */
+
     .site-header {
       position: fixed;
-      inset: 0 0 auto 0;
+      inset: 0 0 auto;
       z-index: 1000;
-      height: 78px;
       background: rgba(255,255,255,.94);
-      border-bottom: 1px solid rgba(220,229,240,.8);
       backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(220,229,240,.85);
     }
 
     .navbar {
-      height: 100%;
-      display: flex;
+      min-height: 78px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
       align-items: center;
-      justify-content: space-between;
+      gap: 24px;
     }
 
-    .logo {
-      font-size: 24px;
-      font-weight: 800;
-      letter-spacing: -.04em;
+    .brand {
+      justify-self: end;
+      display: inline-flex;
+      align-items: center;
+      font-size: 30px;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: -1.8px;
       color: var(--navy);
     }
 
-    .logo span {
+    .brand span {
       color: var(--blue);
     }
+
+    /* Match Home ABZEMO brand text exactly. */
 
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 30px;
+      justify-content: center;
+      gap: 10px;
       list-style: none;
+      margin: 0;
+      padding: 0;
     }
 
     .nav-links a {
+      color: var(--navy);
       font-size: 14px;
-      font-weight: 600;
-      color: var(--text);
+      font-weight: 700;
       transition: color .2s ease;
+      white-space: nowrap;
     }
 
     .nav-links a:hover {
       color: var(--blue);
     }
 
-    .menu-toggle {
+    .menu-button {
+      justify-self: start;
       width: 46px;
       height: 46px;
       border: 1px solid var(--line);
-      border-radius: 12px;
-      background: var(--white);
+      border-radius: 10px;
+      background: #fff;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       gap: 5px;
       cursor: pointer;
+      box-shadow: 0 6px 22px rgba(7,26,53,.06);
     }
 
-    .menu-toggle span {
-      width: 18px;
+    .menu-button span {
+      width: 20px;
       height: 2px;
-      background: var(--navy);
       border-radius: 2px;
+      background: var(--navy);
     }
 
     /* MEGA MENU */
+
+    
 
     .mega-menu {
       position: fixed;
@@ -517,7 +533,80 @@
         padding: 28px 22px;
       }
     }
-  </style>
+  
+
+    /* FOOTER */
+
+    footer {
+      padding: 65px 0 25px;
+      color: #fff;
+      background: #041225;
+    }
+
+    .footer-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 50px;
+      padding-bottom: 45px;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+
+    .footer-brand {
+      max-width: 420px;
+    }
+
+    .footer-logo {
+      margin-bottom: 15px;
+      color: #fff;
+      font-size: 29px;
+      font-weight: 900;
+    }
+
+    .footer-logo span {
+      color: #5c9cff;
+    }
+
+    .footer-brand p {
+      margin: 0;
+      color: rgba(255,255,255,.55);
+      line-height: 1.8;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 70px;
+    }
+
+    .footer-column h4 {
+      margin: 0 0 16px;
+      color: rgba(255,255,255,.75);
+      font-size: 12px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .footer-column a {
+      display: block;
+      margin-bottom: 9px;
+      color: rgba(255,255,255,.55);
+      font-size: 13px;
+    }
+
+    .footer-column a:hover {
+      color: #fff;
+    }
+
+    .footer-bottom {
+      padding-top: 22px;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      color: rgba(255,255,255,.38);
+      font-size: 11px;
+    }
+
+    
+
 </head>
 
 <body>
@@ -1055,59 +1144,7 @@
 
   </main>
 
-  <footer class="site-footer">
-
-    <div class="container">
-
-      <div class="footer-grid">
-
-        <div class="footer-brand">
-
-          <div class="logo">
-            ABZEMO<span>.</span>
-          </div>
-
-          <p>
-            Building What’s Next.
-          </p>
-
-        </div>
-
-        <div class="footer-column">
-
-          <h4>Company</h4>
-
-          <ul>
-            <li><a href="about.html">About</a></li>
-            <li><a href="mission.html">Mission</a></li>
-            <li><a href="vision.html">Vision</a></li>
-            <li><a href="contact.html">Contact</a></li>
-          </ul>
-
-        </div>
-
-        <div class="footer-column">
-
-          <h4>Explore</h4>
-
-          <ul>
-            <li><a href="abzemo-ai.html">ABZEMO AI</a></li>
-            <li><a href="ventures.html">Ventures</a></li>
-            <li><a href="solutions.html">Solutions</a></li>
-            <li><a href="index.html">Home</a></li>
-          </ul>
-
-        </div>
-
-      </div>
-
-      <div class="footer-bottom">
-        © 2026 ABZEMO. All rights reserved.
-      </div>
-
-    </div>
-
-  </footer>
+  
 
   <script>
     const menuToggle = document.getElementById("menuToggle");
@@ -1149,5 +1186,58 @@
 
   <script src="abzemo-search.js"></script>
   <script src="abzemo-contact.js"></script>
+
+<footer>
+    <div class="container">
+
+      <div class="footer-top">
+
+        <div class="footer-brand">
+          <div class="footer-logo">
+            ABZEM<span>O</span>
+          </div>
+
+          <p>
+            Building What's Next. Across technology, business,
+            healthcare, education, trade and future ventures.
+          </p>
+        </div>
+
+        <div class="footer-links">
+
+          <div class="footer-column">
+            <h4>Company</h4>
+            <a href="about.html">About</a>
+            <a href="mission.html">Mission</a>
+            <a href="vision.html">Vision</a>
+            <a href="director-note.html">Director's Note</a>
+          </div>
+
+          <div class="footer-column">
+            <h4>Explore</h4>
+            <a href="ventures.html">Ventures</a>
+            <a href="industries.html">Industries</a>
+            <a href="solutions.html">Solutions</a>
+            <a href="abzemo-ai.html">ABZEMO AI</a>
+          </div>
+
+          <div class="footer-column">
+            <h4>Connect</h4>
+            <a href="contact.html">Contact</a>
+            <a href="privacy.html">Privacy</a>
+            <a href="terms.html">Terms</a>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+        <span>© 2026 ABZEMO. All rights reserved.</span>
+        <span>Building What's Next.</span>
+      </div>
+
+    </div>
+  </footer>
 </body>
 </html>
