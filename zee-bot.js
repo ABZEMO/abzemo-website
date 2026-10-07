@@ -77,10 +77,10 @@
   const css = document.createElement("style");
   css.textContent = `
     #zee-bot-root,#zee-bot-root *{box-sizing:border-box}
-    #zee-bot-root{position:fixed;right:28px;bottom:28px;z-index:2147483000;font-family:Arial,Helvetica,sans-serif;direction:ltr;text-align:left}
+    #zee-bot-root{position:fixed !important;right:28px !important;bottom:28px !important;z-index:2147483000 !important;display:block !important;visibility:visible !important;opacity:1 !important;font-family:Arial,Helvetica,sans-serif;direction:ltr;text-align:left}
     #zee-bot-launcher-wrap{width:min(390px,calc(100vw - 56px));display:flex;flex-direction:column;align-items:flex-end}
-    .zee-bot-stage{width:390px;height:330px;margin-bottom:-6px;display:flex;align-items:flex-end;justify-content:center;pointer-events:none}
-    .zee-robot{width:300px;height:300px;display:block;filter:drop-shadow(0 18px 22px rgba(7,26,53,.18));animation:zeeRobotFloat 3.2s ease-in-out infinite}
+    .zee-bot-stage{width:390px;height:250px;margin-bottom:-6px;display:flex;align-items:flex-end;justify-content:center;pointer-events:none}
+    .zee-robot{width:230px;height:230px;display:block;filter:drop-shadow(0 18px 22px rgba(7,26,53,.18));animation:zeeRobotFloat 3.2s ease-in-out infinite}
     .zee-robot-core{transform-origin:150px 170px;animation:zeeRobotPulse 2.4s ease-in-out infinite}
     .zee-robot-eye{animation:zeeRobotBlink 4.5s infinite}
     .zee-robot-orbit{transform-origin:150px 155px;animation:zeeRobotOrbit 5s linear infinite}
@@ -88,7 +88,7 @@
     @keyframes zeeRobotPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.025)}}
     @keyframes zeeRobotBlink{0%,44%,48%,100%{opacity:1}46%{opacity:.12}}
     @keyframes zeeRobotOrbit{to{transform:rotate(360deg)}}
-    #zee-bot-launcher{width:min(390px,calc(100vw - 56px));height:52px;padding:5px 6px 5px 16px;border:1px solid rgba(18,100,216,.28);border-radius:999px;background:rgba(255,255,255,.98);font-family:Arial,Helvetica,sans-serif;box-shadow:0 14px 38px rgba(7,26,53,.18);display:flex;align-items:center;gap:8px;cursor:pointer;text-align:left;transition:border-color .2s ease,box-shadow .2s ease,transform .2s ease}
+    #zee-bot-launcher{position:relative !important;display:flex !important;visibility:visible !important;opacity:1 !important;width:min(390px,calc(100vw - 56px));height:52px;padding:5px 6px 5px 16px;border:1px solid rgba(18,100,216,.28);border-radius:999px;background:rgba(255,255,255,.98);font-family:Arial,Helvetica,sans-serif;box-shadow:0 14px 38px rgba(7,26,53,.18);display:flex;align-items:center;gap:8px;cursor:pointer;text-align:left;transition:border-color .2s ease,box-shadow .2s ease,transform .2s ease}
     #zee-bot-launcher:hover{transform:translateY(-1px);border-color:rgba(18,100,216,.55);box-shadow:0 16px 42px rgba(18,100,216,.2)}
     .zee-launcher-input{flex:1;min-width:0;color:#17243a;font-size:13px;line-height:40px}
     .zee-launcher-input::before{content:"Ask ZEE about ABZEMO...";color:#7a8798}
@@ -112,7 +112,7 @@
     .zee-composer-send{width:38px;height:38px;border:0;border-radius:12px;background:linear-gradient(135deg,#1264d8,#168cff);color:#fff;font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
     .zee-composer-send:hover{filter:brightness(1.05)}
     .zee-foot{margin-top:14px;padding-top:12px;border-top:1px solid #edf1f6;color:#7d899a;font-size:9px;line-height:1.3;text-align:center}
-    @media(max-width:600px){#zee-bot-root{right:12px;bottom:84px}.zee-bot-stage{width:calc(100vw - 24px);height:250px;margin-bottom:-4px}.zee-robot{width:250px;height:250px}#zee-bot-launcher{width:calc(100vw - 24px);height:50px}#zee-bot-panel{right:12px;bottom:74px;width:calc(100vw - 24px);height:min(590px,calc(100vh - 100px));border-radius:18px}.zee-body{padding:16px}}
+    @media(max-width:600px){#zee-bot-root{right:12px;bottom:84px}.zee-bot-stage{width:calc(100vw - 24px);height:210px;margin-bottom:-4px}.zee-robot{width:200px;height:200px}#zee-bot-launcher{width:calc(100vw - 24px);height:50px}#zee-bot-panel{right:12px;bottom:74px;width:calc(100vw - 24px);height:min(590px,calc(100vh - 100px));border-radius:18px}.zee-body{padding:16px}}
     @media(prefers-reduced-motion:reduce){.zee-robot,.zee-robot-core,.zee-robot-eye,.zee-robot-orbit,#zee-bot-panel,.zee-question{animation:none;transition:none}}
   `;
   document.head.appendChild(css);
