@@ -104,10 +104,10 @@
     .zee-welcome{margin:0 0 14px;color:#24344d;font-size:13px;line-height:1.55}
     .zee-answer{display:none;margin:0 0 14px;padding:11px 14px;border-radius:16px;border-top-left-radius:6px;background:#fff;color:#17243a;border:1px solid rgba(7,26,53,.08);box-shadow:0 5px 18px rgba(7,26,53,.05);font-size:13px;line-height:1.55}
     .zee-answer.is-visible{display:block}.zee-answer strong{display:block;margin-bottom:5px;color:#071a35;font-size:13px}
-    .zee-question-list{display:grid;gap:8px}.zee-question{width:100%;padding:11px 12px;border:1px solid rgba(7,26,53,.13);border-radius:13px;color:#17243a;background:#fff;text-align:left;font-size:12px;font-weight:700;line-height:1.35;cursor:pointer;transition:border-color .18s ease,background .18s ease,transform .18s ease}
+    .zee-question-list{display:none !important}.zee-question{width:100%;padding:11px 12px;border:1px solid rgba(7,26,53,.13);border-radius:13px;color:#17243a;background:#fff;text-align:left;font-size:12px;font-weight:700;line-height:1.35;cursor:pointer;transition:border-color .18s ease,background .18s ease,transform .18s ease}
     .zee-question:hover{border-color:rgba(18,100,216,.45);background:#f7faff;transform:translateX(2px)}
-    .zee-composer{display:flex;gap:8px;margin-top:14px;padding:7px;border:1px solid rgba(7,26,53,.12);border-radius:16px;background:#fff;box-shadow:0 5px 18px rgba(7,26,53,.05)}
-    .zee-composer-input{flex:1;min-width:0;border:0;outline:0;background:transparent;color:#17243a;font:13px/1.4 Arial,Helvetica,sans-serif;padding:6px 8px}
+    .zee-composer{display:flex;gap:8px;margin-top:14px;padding:9px;border:1px solid rgba(7,26,53,.12);border-radius:16px;background:#fff;box-shadow:0 5px 18px rgba(7,26,53,.05)}
+    .zee-composer-input{flex:1;min-width:0;border:0;outline:0;background:transparent;color:#17243a;font:14px/1.5 Arial,Helvetica,sans-serif;padding:8px 10px;min-height:42px}
     .zee-composer-input::placeholder{color:#8a96a6}
     .zee-composer-send{width:38px;height:38px;border:0;border-radius:12px;background:linear-gradient(135deg,#1264d8,#168cff);color:#fff;font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
     .zee-composer-send:hover{filter:brightness(1.05)}
@@ -159,9 +159,9 @@
       <div class="zee-body">
         <p class="zee-welcome">${pageIntro[page] || pageIntro["index.html"]}</p>
         <div class="zee-answer" aria-live="polite"></div>
-        <div class="zee-question-list"></div>
+        <div class="zee-question-list" aria-hidden="true"></div>
         <form class="zee-composer" novalidate>
-          <input class="zee-composer-input" type="text" autocomplete="off" placeholder="Write your question..." aria-label="Write your question" />
+          <input class="zee-composer-input" type="text" autocomplete="off" placeholder="Write your question here..." aria-label="Write your question here" />
           <button class="zee-composer-send" type="submit" aria-label="Send question">➤</button>
         </form>
         <div class="zee-foot">ZEE Bot • Predefined visitor assistance • No API required</div>
