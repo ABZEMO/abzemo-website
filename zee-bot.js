@@ -125,7 +125,7 @@
         </svg>
       </div>
       <form id="zee-bot-input-wrap" aria-label="Ask ZEE">
-        <input class="zee-input" type="text" autocomplete="off" placeholder="Ask ZEE about ABZEMO..." aria-label="Type your question for ZEE Bot"/>
+        <input class="zee-input" type="text" autocomplete="off" placeholder="Write your question here..." aria-label="Type your question for ZEE Bot"/>
         <button class="zee-send" type="submit" aria-label="Send question">➤</button>
       </form>
     </div>
@@ -136,7 +136,7 @@
   const inputForm = root.querySelector("#zee-bot-input-wrap");
   const input = root.querySelector(".zee-input");
 
-  inputForm.addEventListener("submit", function (event) {
+  inputForm.addEventListener("click", function (event) {\n    if (event.target === inputForm || event.target.classList.contains("zee-input")) input.focus();\n  });\n\n  inputForm.addEventListener("submit", function (event) {
     event.preventDefault();
     input.value = input.value.trim();
   });
