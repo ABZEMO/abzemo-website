@@ -64,9 +64,50 @@
   const input = root.querySelector(".zee-launcher-input");
   const chat = root.querySelector(".zee-chat");
 
-  function normalize(text){return text.toLowerCase().replace(/[^a-z0-9\s]/g," ").replace(/\s+/g," ").trim();}
-  const intentKeywords={about:["what is abzemo","about abzemo","abzemo kya","company","who are you"],solutions:["solutions","what do you offer","services","automation","business solution"],ai:["abzemo ai","what is ai","agentic ai","ai agents"],industries:["industries","which industry","sectors","education","healthcare","pharma","real estate","logistics"],sales:["sales","lead","selling","crm"],languages:["languages","multilingual","arabic","urdu","roman urdu","roman hindi"],contact:["contact","email","whatsapp","online message","reach abzemo"]};
-  function findIntent(text){const value=normalize(text);let best=null,score=0;Object.keys(intentKeywords).forEach(function(key){const current=intentKeywords[key].reduce(function(total,phrase){return total+(value.includes(normalize(phrase))?1:0)},0);if(current>score){score=current;best=key;}});return best;}
-  function addMessage(type,title,text){const bubble=document.createElement("div");bubble.className="zee-msg zee-msg-"+type;const strong=document.createElement("span");strong.className="zee-msg-title";strong.textContent=title;bubble.appendChild(strong);bubble.appendChild(document.createTextNode(text));chat.appendChild(bubble);chat.scrollTop=chat.scrollHeight;}
-  form.addEventListener("submit",function(event){event.preventDefault();const value=input.value.trim();if(!value)return;addMessage("user","You",value);const key=findIntent(value);if(key&&answers[key])addMessage("bot","ZEE",answers[key].text);else addMessage("bot","ZEE","I can help with ABZEMO, our solutions, ABZEMO AI, industries, sales automation, languages, or contact options. Please ask me about one of these areas.");input.value="";input.focus();});
+  const conversation = [];
+
+  function addMessage(type,title,text){
+    const bubble=document.createElement("div");
+    bubble.className="zee-msg zee-msg-"+type;
+    const strong=document.createElement("span");
+    strong.className="zee-msg-title";
+    strong.textContent=title;
+    bubble.appendChild(strong);
+    bubble.appendChild(document.createTextNode(text));
+    chat.appendChild(bubble);
+    chat.scrollTop=chat.scrollHeight;
+  }
+
+  async function askZee(message){
+    conversation.push({role:"user",content:message});
+    try{
+      const response=await fetch("/api/zee-bot",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({messages:conversation.slice(-12)})
+      });
+      let data={};
+      try{data=await response.json();}catch(_error){}
+      if(!response.ok || !data.reply) throw new Error(data.error || "ZEE Bot request failed.");
+      conversation.push({role:"assistant",content:data.reply});
+      addMessage("bot","ZEE",data.reply);
+    }catch(error){
+      console.error("ZEE Bot error:",error);
+      conversation.pop();
+      addMessage("bot","ZEE","I'm having trouble connecting right now. Please try again in a moment or contact info@abzemo.com.");
+    }finally{
+      input.disabled=false;
+      input.focus();
+    }
+  }
+
+  form.addEventListener("submit",function(event){
+    event.preventDefault();
+    const value=input.value.trim();
+    if(!value || input.disabled)return;
+    addMessage("user","You",value);
+    input.value="";
+    input.disabled=true;
+    askZee(value);
+  });
 })();
