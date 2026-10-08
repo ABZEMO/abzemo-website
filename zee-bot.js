@@ -88,14 +88,27 @@
     @keyframes zeeRobotPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.025)}}
     @keyframes zeeRobotBlink{0%,44%,48%,100%{opacity:1}46%{opacity:.12}}
     @keyframes zeeRobotOrbit{to{transform:rotate(360deg)}}
-    #zee-bot-input-wrap{width:min(390px,calc(100vw - 56px));height:52px;padding:5px 6px 5px 16px;border:1px solid rgba(18,100,216,.28);border-radius:999px;background:rgba(255,255,255,.98);font-family:Arial,Helvetica,sans-serif;box-shadow:0 14px 38px rgba(7,26,53,.18);display:flex;align-items:center;gap:8px;transition:border-color .2s ease,box-shadow .2s ease}
-    #zee-bot-input-wrap:focus-within{border-color:rgba(18,100,216,.65);box-shadow:0 16px 42px rgba(18,100,216,.2)}
-    .zee-input{flex:1;min-width:0;height:40px;border:0;outline:0;background:transparent;color:#17243a;font:13px/40px Arial,Helvetica,sans-serif;padding:0}
-    .zee-input::placeholder{color:#7a8798}
-    .zee-send{width:40px;height:40px;border:0;border-radius:50%;background:linear-gradient(135deg,#1264d8,#168cff);color:#fff;font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer}
-    .zee-send:hover{filter:brightness(1.05)}
-    @media(max-width:600px){#zee-bot-root{right:12px;bottom:84px}.zee-bot-stage{width:calc(100vw - 24px);height:250px;margin-bottom:-4px}.zee-robot{width:250px;height:250px}#zee-bot-input-wrap{width:calc(100vw - 24px);height:50px}.zee-input{height:38px;line-height:38px}}
-    @media(prefers-reduced-motion:reduce){.zee-robot,.zee-robot-core,.zee-robot-eye,.zee-robot-orbit{animation:none}}
+    #zee-bot-launcher{width:min(390px,calc(100vw - 56px));height:52px;padding:5px 6px 5px 16px;border:1px solid rgba(18,100,216,.28);border-radius:999px;background:rgba(255,255,255,.98);font-family:Arial,Helvetica,sans-serif;box-shadow:0 14px 38px rgba(7,26,53,.18);display:flex;align-items:center;gap:8px;cursor:pointer;text-align:left;transition:border-color .2s ease,box-shadow .2s ease,transform .2s ease}
+    #zee-bot-launcher:hover{transform:translateY(-1px);border-color:rgba(18,100,216,.55);box-shadow:0 16px 42px rgba(18,100,216,.2)}
+    .zee-launcher-input{flex:1;min-width:0;color:#17243a;font-size:13px;line-height:40px}
+    .zee-launcher-input::before{content:"Ask ZEE about ABZEMO...";color:#7a8798}
+    .zee-launcher-send{width:40px;height:40px;border:0;border-radius:50%;background:linear-gradient(135deg,#1264d8,#168cff);color:#fff;font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    #zee-bot-panel{position:fixed;right:28px;bottom:96px;width:390px;max-width:calc(100vw - 32px);height:590px;max-height:calc(100vh - 120px);overflow:hidden;border:1px solid rgba(7,26,53,.12);border-radius:22px;background:#fff;box-shadow:0 25px 75px rgba(7,26,53,.25);opacity:0;visibility:hidden;transform:translateY(12px) scale(.98);transform-origin:bottom right;transition:opacity .22s ease,transform .22s ease,visibility .22s ease;display:flex;flex-direction:column}
+    #zee-bot-root.is-open #zee-bot-panel{opacity:1;visibility:visible;transform:translateY(0) scale(1)}
+    .zee-head{min-height:74px;padding:14px 16px;background:linear-gradient(135deg,#071a35,#0c2850);color:#fff;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-shrink:0}
+    .zee-head-main{display:flex;align-items:center;gap:11px;min-width:0}
+    .zee-head-logo{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#1264d8,#168cff);display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:900;flex-shrink:0}
+    .zee-head-title{font-size:14px;font-weight:800;line-height:1.2}.zee-head-subtitle{margin-top:4px;font-size:10px;color:rgba(255,255,255,.68);line-height:1.3}
+    .zee-close{width:34px;height:34px;border:0;border-radius:10px;background:rgba(255,255,255,.08);color:#fff;cursor:pointer;font-size:22px;display:flex;align-items:center;justify-content:center}
+    .zee-body{flex:1;padding:20px;overflow-y:auto;background:#f7f9fc}
+    .zee-welcome{margin:0 0 14px;color:#24344d;font-size:13px;line-height:1.55}
+    .zee-answer{display:none;margin:0 0 14px;padding:11px 14px;border-radius:16px;border-top-left-radius:6px;background:#fff;color:#17243a;border:1px solid rgba(7,26,53,.08);box-shadow:0 5px 18px rgba(7,26,53,.05);font-size:13px;line-height:1.55}
+    .zee-answer.is-visible{display:block}.zee-answer strong{display:block;margin-bottom:5px;color:#071a35;font-size:13px}
+    .zee-question-list{display:grid;gap:8px}.zee-question{width:100%;padding:11px 12px;border:1px solid rgba(7,26,53,.13);border-radius:13px;color:#17243a;background:#fff;text-align:left;font-size:12px;font-weight:700;line-height:1.35;cursor:pointer;transition:border-color .18s ease,background .18s ease,transform .18s ease}
+    .zee-question:hover{border-color:rgba(18,100,216,.45);background:#f7faff;transform:translateX(2px)}
+    .zee-foot{margin-top:14px;padding-top:12px;border-top:1px solid #edf1f6;color:#7d899a;font-size:9px;line-height:1.3;text-align:center}
+    @media(max-width:600px){#zee-bot-root{right:12px;bottom:84px}.zee-bot-stage{width:calc(100vw - 24px);height:250px;margin-bottom:-4px}.zee-robot{width:250px;height:250px}#zee-bot-launcher{width:calc(100vw - 24px);height:50px}#zee-bot-panel{right:12px;bottom:74px;width:calc(100vw - 24px);height:min(590px,calc(100vh - 100px));border-radius:18px}.zee-body{padding:16px}}
+    @media(prefers-reduced-motion:reduce){.zee-robot,.zee-robot-core,.zee-robot-eye,.zee-robot-orbit,#zee-bot-panel,.zee-question{animation:none;transition:none}}
   `;
   document.head.appendChild(css);
 
@@ -124,20 +137,76 @@
           </g>
         </svg>
       </div>
-      <form id="zee-bot-input-wrap" aria-label="Ask ZEE">
-        <input class="zee-input" type="text" autocomplete="off" placeholder="Write your question here..." aria-label="Type your question for ZEE Bot"/>
-        <button class="zee-send" type="submit" aria-label="Send question">➤</button>
-      </form>
+      <button id="zee-bot-launcher" type="button" aria-label="Open ZEE Bot" aria-expanded="false">
+        <span class="zee-launcher-input" aria-hidden="true"></span>
+        <span class="zee-launcher-send" aria-hidden="true">➤</span>
+      </button>
+    </div>
+
+    <div id="zee-bot-panel" role="dialog" aria-label="ZEE Bot">
+      <div class="zee-head">
+        <div class="zee-head-main">
+          <div class="zee-head-logo">ZEE</div>
+          <div><div class="zee-head-title">ZEE Bot</div><div class="zee-head-subtitle">ABZEMO Visitor Assistant • Predefined Answers</div></div>
+        </div>
+        <button class="zee-close" type="button" aria-label="Close ZEE Bot">×</button>
+      </div>
+      <div class="zee-body">
+        <p class="zee-welcome">${pageIntro[page] || pageIntro["index.html"]}</p>
+        <div class="zee-answer" aria-live="polite"></div>
+        <div class="zee-question-list"></div>
+        <div class="zee-foot">ZEE Bot • Predefined visitor assistance • No API required</div>
+      </div>
     </div>
   `;
 
+
   document.body.appendChild(root);
 
-  const inputForm = root.querySelector("#zee-bot-input-wrap");
-  const input = root.querySelector(".zee-input");
+  const panel = root.querySelector("#zee-bot-panel");
+  const launcher = root.querySelector("#zee-bot-launcher");
+  const close = root.querySelector(".zee-close");
+  const answer = root.querySelector(".zee-answer");
+  const list = root.querySelector(".zee-question-list");
 
-  inputForm.addEventListener("click", function (event) {\n    if (event.target === inputForm || event.target.classList.contains("zee-input")) input.focus();\n  });\n\n  inputForm.addEventListener("submit", function (event) {
-    event.preventDefault();
-    input.value = input.value.trim();
+  questions.forEach(([key, label]) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "zee-question";
+    button.textContent = label;
+    button.addEventListener("click", function () {
+      const item = answers[key];
+      if (!item) return;
+      answer.innerHTML = "<strong>" + item.title + "</strong>" + item.text;
+      answer.classList.add("is-visible");
+    });
+    list.appendChild(button);
+  });
+
+  function setOpen(open) {
+    root.classList.toggle("is-open", open);
+    launcher.setAttribute("aria-expanded", String(open));
+  }
+
+  launcher.addEventListener("click", function () {
+    setOpen(!root.classList.contains("is-open"));
+  });
+
+  close.addEventListener("click", function () {
+    setOpen(false);
+    launcher.focus();
+  });
+
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape" && root.classList.contains("is-open")) {
+      setOpen(false);
+      launcher.focus();
+    }
+  });
+
+  document.addEventListener("click", function (event) {
+    if (root.classList.contains("is-open") && !root.contains(event.target)) {
+      setOpen(false);
+    }
   });
 })();
