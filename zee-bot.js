@@ -1,7 +1,8 @@
 /* =========================================================
    ABZEMO — ZEE Bot
-   Lightweight predefined visitor-assistance bot.
-   No OpenAI/API calls. No external dependencies.
+   AI-powered public website assistant.
+   Uses the secure /api/zee-bot backend with Groq.
+   The Groq API key never reaches the browser.
    Present on public website pages except abzemo-ai.html.
    ========================================================= */
 
@@ -10,69 +11,6 @@
 
   if (window.__ABZEMO_ZEE_BOT_LOADED__) return;
   window.__ABZEMO_ZEE_BOT_LOADED__ = true;
-
-  const page = (location.pathname.split("/").pop() || "index.html").toLowerCase();
-
-  const pageIntro = {
-    "index.html": "Welcome to ABZEMO. I can help you quickly explore what we do.",
-    "about.html": "I can help you learn about ABZEMO and our approach.",
-    "mission.html": "I can help you understand ABZEMO's mission and direction.",
-    "vision.html": "I can help you explore ABZEMO's long-term vision.",
-    "ventures.html": "I can help you explore ABZEMO's venture directions.",
-    "industries.html": "I can help you find the industries ABZEMO serves.",
-    "solutions.html": "I can help you discover ABZEMO's business and technology solutions.",
-    "contact.html": "I can help you find the right way to contact ABZEMO.",
-    "contact-us.html": "I can help you find the right way to contact ABZEMO.",
-    "online-message.html": "I can help you choose the right way to reach ABZEMO online.",
-    "director-note.html": "I can help you understand ABZEMO's leadership perspective.",
-    "privacy.html": "I can help you navigate ABZEMO's privacy information.",
-    "terms.html": "I can help you navigate ABZEMO's website terms."
-  };
-
-  const answers = {
-    about: {
-      title: "What is ABZEMO?",
-      text: "ABZEMO is a technology and business solutions company focused on building what’s next across AI, automation, digital transformation and future ventures."
-    },
-    solutions: {
-      title: "What does ABZEMO offer?",
-      text: "ABZEMO works across AI Automation, AI Agents, Sales Automation, business process automation, ERP and workflow automation, intelligent data workflows, digital transformation, and technology & project solutions."
-    },
-    ai: {
-      title: "What is ABZEMO AI?",
-      text: "ABZEMO AI is ABZEMO's AI-focused branch. It covers AI Automations, AI Agents and Agentic AI work, alongside intelligent business solutions."
-    },
-    industries: {
-      title: "Which industries do you serve?",
-      text: "ABZEMO is designed to work across sectors including education, healthcare, pharma, real estate, logistics, manufacturing, finance, retail, mobility, energy, government and other business environments."
-    },
-    sales: {
-      title: "Can ABZEMO automate sales?",
-      text: "Yes. ABZEMO can design intelligent sales and lead-management workflows, including qualification, solution matching, structured lead capture and human handoff."
-    },
-    languages: {
-      title: "Is ABZEMO multilingual?",
-      text: "ABZEMO is building multilingual digital experiences and AI capabilities, including English, Arabic, Urdu, Roman Urdu, Roman Hindi and many other language modes."
-    },
-    contact: {
-      title: "How can I contact ABZEMO?",
-      text: "Use the Contact section on this website to reach ABZEMO. For a direct business enquiry, choose Contact or Online Message from the navigation."
-    },
-    ai_page: {
-      title: "Where can I see the advanced AI?",
-      text: "The dedicated ABZEMO AI page contains the full AI experience. ZEE Bot itself is a lightweight predefined website assistant and does not use the AI API."
-    }
-  };
-
-  const questions = [
-    ["about", "What is ABZEMO?"],
-    ["solutions", "What solutions do you offer?"],
-    ["ai", "What is ABZEMO AI?"],
-    ["industries", "Which industries do you serve?"],
-    ["sales", "Can you automate sales?"],
-    ["languages", "Do you support multiple languages?"],
-    ["contact", "How can I contact ABZEMO?"]
-  ];
 
   const css = document.createElement("style");
   css.textContent = `
