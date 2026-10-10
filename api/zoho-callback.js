@@ -23,10 +23,7 @@ export default async function handler(req, res) {
   const data = await response.json();
 
   if (data.refresh_token) {
-    console.log("ZOHO_REFRESH_TOKEN=" + data.refresh_token);
-    return res.status(200).send(
-      "Done. Refresh token mil gaya. Vercel Logs mein dekho aur UZMO_ZOHO_REFRESH_TOKEN mein save karo."
-    );
+    return res.status(200).send("Zoho connected. Ye page band kar sakte ho.");
   }
 
   return res.status(400).json({ zoho_error: data.error || "unknown" });
