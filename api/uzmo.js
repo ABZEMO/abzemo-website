@@ -7,21 +7,37 @@ async function getRuntime() {
   return runtimePromise;
 }
 
-// Disable Vercel's automatic body parser so malformed/legacy client payloads
-// cannot fail before the UZMO runtime receives the request.
-module.exports.config = {
-  api: { bodyParser: false }
-};
-
-async function readJsonBody(req) {
-  const chunks = [];
-  for await (const chunk of chunks) chunks.push(Buffer.from(chunk));
-  const raw = Buffer.concat(chunks).toString("utf8").replace(/^\\uFEFF/, "").trim();
-  if (!raw) return {};
-  return JSON.parse(raw);
+function badRequest(message) {
+  const error = new Error(message);
+  error.statusCode = 400;
+  return error;
 }
 
-module.exports = async function handler(req, res) {
+async function readJsonBody(req) {
+  // Agar Vercel ne body pehle hi parse kar li ho
+  if (req.body !== undefined && req.body !== null) {
+    if (Buffer.isBuffer(req.body)) return parseJson(req.body.toString("utf8"));
+    if (typeof req.body === "string") return parseJson(req.body);
+    if (typeof req.body === "object") return req.body;
+  }
+
+  // Warna stream se khud padho
+  const chunks = [];
+  for await (const chunk of req) chunks.push(Buffer.from(chunk));
+  return parseJson(Buffer.concat(chunks).toString("utf8"));
+}
+
+function parseJson(text) {
+  const raw = String(text).replace(/^\uFEFF/, "").trim();
+  if (!raw) return {};
+  try {
+    return JSON.parse(raw);
+  } catch (e) {
+    throw badRequest("Invalid JSON body");
+  }
+}
+
+async function handler(req, res) {
   try {
     const { handleRuntime } = await getRuntime();
     const body = req.method === "POST" ? await readJsonBody(req) : {};
@@ -41,4 +57,11 @@ module.exports = async function handler(req, res) {
       error: error?.message || "UZMO runtime failed"
     });
   }
+}
+
+module.exports = handler;
+
+// Vercel ka automatic body parser band rakho (handler ke baad set karna zaroori hai)
+module.exports.config = {
+  api: { bodyParser: false }
 };
