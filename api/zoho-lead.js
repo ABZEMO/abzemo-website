@@ -21,7 +21,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "POST use karo" });
   }
 
-  const secret = (process.env.UZMO_APPROVAL_SECRET || "").trim();
+  const secret = (process.env.UZMO_ZOHO_LEAD_KEY || "").trim();
   if (!secret || req.headers["x-uzmo-key"] !== secret) {
     return res.status(401).json({ error: "unauthorized" });
   }
