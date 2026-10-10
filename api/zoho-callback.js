@@ -1,18 +1,15 @@
 export default async function handler(req, res) {
   const code = req.query && req.query.code;
-  const id = (process.env.ZOHO_CLIENT_ID || "").trim();
-  const secret = (process.env.ZOHO_CLIENT_SECRET || "").trim();
-  const redirect = (process.env.ZOHO_REDIRECT_URI || "").trim();
+  const id = (process.env.UZMO_ZOHO_CLIENT_ID || "").trim();
+  const secret = (process.env.UZMO_ZOHO_CLIENT_SECRET || "").trim();
+  const redirect = (process.env.UZMO_ZOHO_REDIRECT_URI || "").trim();
 
   const debug = {
     client_id_set: Boolean(id),
     client_id_length: id.length,
-    client_id_start: id.slice(0, 8),
     client_secret_set: Boolean(secret),
     client_secret_length: secret.length,
-    redirect_uri: redirect,
-    accounts_server_from_zoho: req.query && req.query["accounts-server"],
-    location_from_zoho: req.query && req.query.location
+    redirect_uri: redirect
   };
 
   if (!code) {
