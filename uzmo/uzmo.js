@@ -2,107 +2,126 @@
   "use strict";
 
   const agents = [
-    ["Executive Agent","Turns business goals into concise plans, decisions, briefings and follow-ups.","Strategy"],
-    ["Project Agent","Plans projects, tracks actions, dependencies, risks and delivery workflows.","Operations"],
-    ["Research Agent","Searches approved sources, synthesizes evidence and produces research outputs.","Knowledge"],
-    ["Data Agent","Works with structured data, sheets, databases, calculations and analysis.","Data"],
-    ["Document Agent","Creates, transforms, reviews and organizes documents and reports.","Content"],
-    ["Email Agent","Drafts, classifies, routes and executes email workflows with approval controls.","Communication"],
-    ["Calendar Agent","Plans meetings, checks availability and coordinates calendar actions.","Productivity"],
-    ["Finance Agent","Supports finance workflows, reporting, reconciliation and controlled approvals.","Finance"],
-    ["Procurement Agent","Coordinates requests, comparisons, approvals, purchase workflows and records.","Operations"],
-    ["Content Agent","Creates multi-channel content and prepares publishing workflows.","Growth"],
-    ["Web Agent","Handles web research, extraction, navigation and approved web actions.","Web"],
-    ["Automation Agent","Designs and manages reusable workflows, triggers, schedules and integrations.","Automation"]
+    ["finance", "Finance Agent", "Accounting, budgeting, invoicing, reconciliation and audit questions.", "Finance"],
+    ["pharma", "Pharmaceutical Agent", "Pharma operations, regulatory affairs, pharmacovigilance and supply.", "Pharma"],
+    ["healthcare", "Healthcare Agent", "Hospital and clinic operations and patient workflows.", "Healthcare"],
+    ["education", "Education Agent", "Admissions, scholarships and academic administration.", "Education"],
+    ["legal", "Legal & Policy Agent", "Contracts, clauses, regulation and policy.", "Legal"],
+    ["customs", "Customs & Trade Agent", "Customs, HS codes, tariffs, import and export.", "Trade"],
+    ["supply_chain", "Supply Chain Agent", "Logistics, inventory, warehousing and forecasting.", "Operations"],
+    ["hr", "HR Agent", "Recruitment, payroll, leave and performance.", "People"],
+    ["procurement", "Procurement Agent", "Vendors, quotations, sourcing and purchase orders.", "Operations"],
+    ["compliance", "Compliance Agent", "Controls, regulatory compliance and remediation.", "Compliance"],
+    ["quality", "Quality Agent", "QA/QC, inspection and corrective action.", "Quality"],
+    ["risk", "Risk Agent", "Risk assessment, mitigation and business continuity.", "Risk"],
+    ["real_estate", "Real Estate Agent", "Property sales and rentals, buyers, tenants and site visits.", "Real Estate"]
   ];
 
+  const names = {};
+  agents.forEach(a => { names[a[0]] = a[1]; });
+
+  let currentAgent = null;
+  let history = [];
+
   const grid = document.querySelector("#agents-grid");
-  grid.innerHTML = agents.map(([name, desc, tag]) =>
-    '<article class="agent-card"><span class="agent-tag">' + tag.toUpperCase() + '</span><h3>' + name + '</h3><p>' + desc + '</p></article>'
-  ).join("");
-
-  document.querySelectorAll(".nav-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
-      document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
-      btn.classList.add("active");
-      document.querySelector("#" + btn.dataset.view + "-view").classList.add("active");
-    });
-  });
-
   const form = document.querySelector("#command-form");
   const input = document.querySelector("#command-input");
   const stream = document.querySelector("#execution-stream");
   const state = document.querySelector("#run-state");
 
-  const plan = [
-    ["Understand goal","Parsing intent, constraints and requested outcome."],
-    ["Build plan","Breaking the goal into executable steps."],
-    ["Select agents","Routing work to the appropriate specialist agents."],
-    ["Select tools","Preparing integrations, knowledge and actions."],
-    ["Execute","Running actions with controlled permissions."],
-    ["Verify","Checking outputs, failures and completion criteria."]
-  ];
+  grid.innerHTML = agents.map(([id, name, desc, tag]) =>
+    '<article class="agent-card" data-agent="' + id + '" role="button" tabindex="0" style="cursor:pointer">' +
+    '<span class="agent-tag">' + tag.toUpperCase() + '</span><h3>' + name + '</h3><p>' + desc + '</p></article>'
+  ).join("");
 
-  form.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    const goal = input.value.trim();
-    if (!goal) return;
+  function showView(name) {
+    document.querySelectorAll(".nav-btn").forEach(b => b.classList.toggle("active", b.dataset.view === name));
+    document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+    document.querySelector("#" + name + "-view").classList.add("active");
+    window.scrollTo(0, 0);
+  }
 
-    state.textContent = "Planning";
+  document.querySelectorAll(".nav-btn").forEach(btn => {
+    btn.addEventListener("click", () => showView(btn.dataset.view));
+  });
+
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[c]));
+  }
+
+  function addLine(who, text, status) {
     stream.classList.remove("empty");
-    stream.innerHTML = plan.map((item, i) =>
-      '<div class="step" data-step="' + i + '"><span class="num">' + (i + 1) + '</span><div><b>' + item[0] + '</b><small>' + item[1] + '</small></div><span class="step-status">Queued</span></div>'
-    ).join("");
+    const row = document.createElement("div");
+    row.className = "step";
+    row.innerHTML = '<span class="num">' + (who === "You" ? "U" : "A") + '</span><div><b>' + escapeHtml(who) +
+      '</b><small style="white-space:pre-wrap">' + escapeHtml(text) + '</small></div><span class="step-status">' + escapeHtml(status || "") + '</span>';
+    stream.appendChild(row);
+    return row;
+  }
+
+  function selectAgent(id) {
+    currentAgent = id;
+    history = [];
+    stream.className = "stream";
+    stream.innerHTML = "";
+    addLine("UZMO", "You are now chatting with the " + names[id] + ". Ask your question below.", "Ready");
+    state.textContent = names[id];
+    showView("chat");
+    input.focus();
+  }
+
+  grid.addEventListener("click", e => {
+    const card = e.target.closest(".agent-card");
+    if (card) selectAgent(card.dataset.agent);
+  });
+  grid.addEventListener("keydown", e => {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    const card = e.target.closest(".agent-card");
+    if (card) { e.preventDefault(); selectAgent(card.dataset.agent); }
+  });
+
+  form.addEventListener("submit", async event => {
+    event.preventDefault();
+    const text = input.value.trim();
+    if (!text) return;
+
+    if (!currentAgent) {
+      state.textContent = "Choose an agent";
+      showView("agents");
+      return;
+    }
+
+    input.value = "";
+    addLine("You", text);
+    history.push({ role: "user", content: text });
+    const thinking = addLine(names[currentAgent], "Thinking...", "Working");
+    state.textContent = "Working";
 
     try {
-      const planned = await fetch("/api/uzmo", {
+      const res = await fetch("/api/uzmo-public", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ action: "plan", goal })
+        body: JSON.stringify({ agent: currentAgent, messages: history.slice(-10) })
       });
-      const planResult = await planned.json();
-      if (!planned.ok) throw new Error(planResult.error || "Planning failed");
-
-      const steps = [...stream.querySelectorAll(".step")];
-      steps.forEach(step => {
-        step.classList.add("done");
-        step.querySelector(".step-status").textContent = "Complete";
-      });
-
-      const summary = document.createElement("div");
-      summary.className = "step";
-      summary.innerHTML = '<span class="num">✓</span><div><b>Plan ready</b><small>' + escapeHtml((planResult.plan?.tools || []).map(t => t.name).join(", ") || "No external tool selected") + '</small></div><span class="step-status">' + (planResult.plan?.requiresApproval ? "Approval" : "Ready") + '</span>';
-      stream.appendChild(summary);
-
-      const canExecuteNow = !planResult.plan?.requiresApproval && (planResult.plan?.tools || []).some(tool => tool.id === "frappe_crm");
-      if (canExecuteNow) {
-        state.textContent = "Executing";
-        const executed = await fetch("/api/uzmo", {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({ action: "execute", plan: planResult.plan, approved: false })
-        });
-        const execution = await executed.json();
-        if (!executed.ok) throw new Error(execution.error || "Execution failed");
-        const result = document.createElement("div");
-        result.className = "step";
-        result.innerHTML = '<span class="num">↗</span><div><b>Execution result</b><small>' + escapeHtml(JSON.stringify(execution)) + '</small></div><span class="step-status">' + escapeHtml(execution.status || "Complete") + '</span>';
-        stream.appendChild(result);
-      }
-      state.textContent = "Ready";
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Request failed");
+      thinking.remove();
+      addLine(names[currentAgent], data.reply || "No reply received.", "Done");
+      history.push({ role: "assistant", content: data.reply || "" });
+      state.textContent = names[currentAgent];
     } catch (error) {
+      thinking.remove();
+      history.pop();
+      addLine("UZMO", error.message || "Something went wrong.", "Failed");
       state.textContent = "Error";
-      const result = document.createElement("div");
-      result.className = "step";
-      result.innerHTML = '<span class="num">!</span><div><b>UZMO request failed</b><small>' + escapeHtml(error.message || "Unknown error") + '</small></div><span class="step-status">Failed</span>';
-      stream.appendChild(result);
     }
   });
 
   document.querySelector("#clear-context").addEventListener("click", () => {
+    currentAgent = null;
+    history = [];
     stream.className = "stream empty";
-    stream.innerHTML = '<div class="empty-icon">✦</div><p>Your plans and actions will appear here.</p>';
+    stream.innerHTML = '<div class="empty-icon">✦</div><p>Choose an agent in the Agents tab to start.</p>';
     state.textContent = "Idle";
   });
 
@@ -118,7 +137,6 @@
     recognition.start();
   });
 
-  function escapeHtml(value) {
-    return value.replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#039;" }[c]));
-  }
+  stream.className = "stream empty";
+  stream.innerHTML = '<div class="empty-icon">✦</div><p>Choose an agent in the Agents tab to start.</p>';
 })();
