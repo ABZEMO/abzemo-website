@@ -30,7 +30,7 @@
   const tools = document.createElement("div");
   tools.className = "agent-tools";
   tools.innerHTML =
-    '<input class="agent-search" type="search" placeholder="Search agents..." aria-label="Search agents">' +
+    '<input class="agent-search" type="text" placeholder="Search agents..." aria-label="Search agents">' +
     '<div class="chips"></div><div class="agent-count"></div>';
   grid.parentNode.insertBefore(tools, grid);
   const searchBox = tools.querySelector(".agent-search");
