@@ -8,20 +8,73 @@
   <link rel="stylesheet" href="./uzmo.css">
 </head>
 <body>
-  <div class="app-shell">
-    <header class="topbar">
-      <a class="brand" href="./" aria-label="UZMO home">
-        <span class="brand-mark">U</span>
-        <span>UZMO</span>
-      </a>
-      <nav class="topnav" aria-label="Primary navigation">
-        <button class="nav-btn active" data-view="chat">Assistant</button>
-        <button class="nav-btn" data-view="agents">Agents</button>
-        <button class="nav-btn" data-view="automations">Automations</button>
-        <button class="nav-btn" data-view="studio">Studio</button>
+  <header class="site-header">
+    <div class="container navbar">
+      <div class="header-left">
+        <button class="menu-button" id="menuButton" type="button" aria-label="Open navigation menu" aria-controls="megaMenu" aria-expanded="false"><span></span><span></span><span></span></button>
+        <a href="/index.html" class="brand" aria-label="ABZEMO Home">
+          <img src="/abzemo-logo-blue.png" alt="ABZEMO — Building What's Next.">
+          <span class="brand-name">ABZEM<span>O</span></span>
+        </a>
+      </div>
+      <nav aria-label="Primary navigation">
+        <ul class="nav-links">
+          <li><a href="/index.html">Home</a></li>
+          <li><a href="/about.html">About</a></li>
+          <li><a href="/mission.html">Mission</a></li>
+          <li><a href="/vision.html">Vision</a></li>
+          <li><a href="/ventures.html">Ventures</a></li>
+          <li><a href="/contact.html">Contact</a></li>
+        </ul>
       </nav>
-      <div class="status-pill"><span></span> Local intelligence</div>
-    </header>
+    </div>
+  </header>
+
+  <div class="mega-overlay" id="megaOverlay"></div>
+  <aside class="mega-menu" id="megaMenu" aria-label="ABZEMO navigation">
+    <div class="mega-top">
+      <div class="mega-brand">ABZEM<span>O</span></div>
+      <button class="mega-close" id="megaClose" type="button" aria-label="Close navigation menu">×</button>
+    </div>
+    <div class="mega-content">
+      <div class="mega-section">
+        <div class="mega-section-title">ABZEMO</div>
+        <a href="/index.html">Home</a>
+        <a href="/about.html">About ABZEMO</a>
+        <a href="/mission.html">Mission</a>
+        <a href="/vision.html">Vision</a>
+        <a href="/director-note.html">Director's Note</a>
+      </div>
+      <div class="mega-section">
+        <div class="mega-section-title">Capabilities</div>
+        <a href="/industries.html">Industries</a>
+        <a href="/solutions.html">Solutions</a>
+        <a href="/abzemo-ai.html">ABZEMO AI</a>
+      </div>
+      <div class="mega-section">
+        <div class="mega-section-title">Ventures</div>
+        <a href="/ventures.html">All Ventures</a>
+      </div>
+      <div class="mega-section">
+        <div class="mega-section-title">Connect</div>
+        <a href="/contact.html">Contact ABZEMO</a>
+      </div>
+      <div class="mega-section">
+        <div class="mega-section-title">Legal</div>
+        <a href="/privacy.html">Privacy Policy</a>
+        <a href="/terms.html">Terms &amp; Conditions</a>
+      </div>
+    </div>
+  </aside>
+
+  <div class="app-shell">
+    <aside class="sidenav" aria-label="UZMO sections">
+      <div class="sidenav-title">UZMO</div>
+      <button class="nav-btn active" data-view="chat">Assistant</button>
+      <button class="nav-btn" data-view="agents">Agents</button>
+      <button class="nav-btn" data-view="automations">Automations</button>
+      <button class="nav-btn" data-view="studio">Studio</button>
+    </aside>
 
     <main>
       <section id="chat-view" class="view active">
@@ -103,6 +156,21 @@
       </section>
     </main>
   </div>
+
+  <script>
+    (function () {
+      var btn = document.getElementById("menuButton");
+      var menu = document.getElementById("megaMenu");
+      var overlay = document.getElementById("megaOverlay");
+      var close = document.getElementById("megaClose");
+      function open() { menu.classList.add("active"); overlay.classList.add("active"); document.body.classList.add("menu-open"); btn.setAttribute("aria-expanded", "true"); }
+      function shut() { menu.classList.remove("active"); overlay.classList.remove("active"); document.body.classList.remove("menu-open"); btn.setAttribute("aria-expanded", "false"); }
+      btn.addEventListener("click", open);
+      close.addEventListener("click", shut);
+      overlay.addEventListener("click", shut);
+      document.addEventListener("keydown", function (e) { if (e.key === "Escape") shut(); });
+    })();
+  </script>
   <script src="./uzmo.js"></script>
 </body>
 </html>
