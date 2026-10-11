@@ -131,3 +131,8 @@ main{flex:1;min-width:0}
 @media(max-width:640px){:root{--hh:70px}.container{width:min(100% - 32px,1180px)}.navbar{min-height:70px}.cards-grid,.automation-grid{grid-template-columns:1fr}.hero-copy h1{font-size:42px}.command-actions button{flex:1}.footer-links{display:grid;grid-template-columns:1fr 1fr;gap:30px}.footer-bottom{flex-direction:column}}
 .nav-links a[href="/contact.html"]{color:#fff!important;background:#071a35!important;padding:11px 20px!important;border-radius:8px}
 .nav-links a[href="/contact.html"]:hover{background:#084a9e!important}
+/* ===== Match website typography ===== */
+.eyebrow,.tiny-label{font-size:18px!important;font-weight:800;letter-spacing:.16em;margin-bottom:18px}
+.command-card .tiny-label{font-size:13px!important;letter-spacing:.14em;margin-bottom:6px}
+.hero-text,.section-heading p:last-child{font-size:18px;line-height:1.8;font-weight:500;color:#5f6f86}
+.hero-copy h1,.section-heading h2{font-weight:900}
