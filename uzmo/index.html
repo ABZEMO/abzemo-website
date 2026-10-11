@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="UZMO — an agentic AI operating layer for conversation, automation, knowledge, and connected work.">
   <title>UZMO — Agentic AI Assistant</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/abzemo-contact.css">
   <link rel="stylesheet" href="./uzmo.css">
 </head>
 <body>
@@ -54,6 +56,14 @@
       <div class="mega-section">
         <div class="mega-section-title">Ventures</div>
         <a href="/ventures.html">All Ventures</a>
+        <a class="sub-link" href="/ventures.html#ai">ABZEMO AI</a>
+        <a class="sub-link" href="/ventures.html#medical">ABZEMO Medical</a>
+        <a class="sub-link" href="/ventures.html#trade">ABZEMO Trade</a>
+        <a class="sub-link" href="/ventures.html#education">ABZEMO Smart Schooling</a>
+        <a class="sub-link" href="/ventures.html#fashions">ABZEMO Fashions</a>
+        <a class="sub-link" href="/ventures.html#realestate">ABZEMO Real Estate</a>
+        <a class="sub-link" href="/ventures.html#logistics">ABZEMO Logistics</a>
+        <a class="sub-link" href="/ventures.html#finance">ABZEMO Finance</a>
       </div>
       <div class="mega-section">
         <div class="mega-section-title">Connect</div>
@@ -157,6 +167,43 @@
     </main>
   </div>
 
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <div class="footer-logo">ABZEM<span>O</span></div>
+          <p>Building What's Next. Across technology, business, healthcare, education, trade and future ventures.</p>
+        </div>
+        <div class="footer-links">
+          <div class="footer-column">
+            <h4>Company</h4>
+            <a href="/about.html">About</a>
+            <a href="/mission.html">Mission</a>
+            <a href="/vision.html">Vision</a>
+            <a href="/director-note.html">Director's Note</a>
+          </div>
+          <div class="footer-column">
+            <h4>Explore</h4>
+            <a href="/ventures.html">Ventures</a>
+            <a href="/industries.html">Industries</a>
+            <a href="/solutions.html">Solutions</a>
+            <a href="/abzemo-ai.html">ABZEMO AI</a>
+          </div>
+          <div class="footer-column">
+            <h4>Connect</h4>
+            <a href="/contact.html">Contact</a>
+            <a href="/privacy.html">Privacy</a>
+            <a href="/terms.html">Terms</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 ABZEMO. All rights reserved.</span>
+        <span>Building What's Next.</span>
+      </div>
+    </div>
+  </footer>
+
   <script>
     (function () {
       var btn = document.getElementById("menuButton");
@@ -169,8 +216,13 @@
       close.addEventListener("click", shut);
       overlay.addEventListener("click", shut);
       document.addEventListener("keydown", function (e) { if (e.key === "Escape") shut(); });
+      menu.querySelectorAll("a").forEach(function (a) { a.addEventListener("click", shut); });
     })();
   </script>
   <script src="./uzmo.js"></script>
+  <script src="/i18n.js"></script>
+  <script src="/header-tools.js"></script>
+  <script src="/abzemo-search.js"></script>
+  <script src="/abzemo-contact.js"></script>
 </body>
 </html>
