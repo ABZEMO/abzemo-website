@@ -35,7 +35,7 @@ function limited(ip) {
 
 export async function handlePublicChat(req, res) {
   if (req.method === "GET") {
-    return res.status(200).json({ agents: CATALOG.map(a => ({ id: a.id, name: a.name, category: a.category })) });
+    return res.status(200).json({ agents: CATALOG.map(a => ({ id: a.id, name: a.name, category: a.category, focus: a.focus })) });
   }
   if (req.method !== "POST") return res.status(405).json({ error: "POST required" });
 
