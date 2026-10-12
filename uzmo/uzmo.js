@@ -245,7 +245,7 @@
     grid.innerHTML = list.map(a =>
       '<article class="agent-card" data-agent="' + escapeHtml(a.id) + '" role="button" tabindex="0">' +
       '<span class="agent-tag">' + escapeHtml(a.category.toUpperCase()) + "</span>" +
-      "<h3>" + escapeHtml(a.name) + "</h3></article>"
+        "<h3>" + escapeHtml(a.name) + "</h3><p>" + escapeHtml(a.focus || "") + "</p></article>"
     ).join("") || '<p style="color:#6f7f95">No agents found.</p>';
   }
 
