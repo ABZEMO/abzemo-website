@@ -1,5 +1,5 @@
 import crypto from "node:crypto";
-
+import { createLeadIfNew } from "./zoho.js";
 const COOKIE = "uzmo_session";
 const MAX_AGE = 7 * 24 * 3600;
 const CODE_TTL = 10 * 60;
@@ -101,7 +101,10 @@ export async function handleAuth(req, res) {
       if (info.aud !== clientId() || !issuerOk || String(info.email_verified) !== "true" || !info.email) {
         return res.status(401).json({ error: "Invalid Google login" });
       }
-      return res.status(200).json(startSession(res, String(info.email).toLowerCase(), String(info.name || "")));
+      const gEmail = String(info.email).toLowerCase();
+      const gName = String(info.name || "");
+      await createLeadIfNew({ email: gEmail, name: gName, method: "Google" });
+      return res.status(200).json(startSession(res, gEmail, gName));
     } catch (e) {
       return res.status(500).json({ error: "Login failed" });
     }
@@ -157,6 +160,7 @@ export async function handleAuth(req, res) {
     if (expected.length !== actual.length || !crypto.timingSafeEqual(expected, actual)) {
       return res.status(401).json({ error: "Invalid or expired code" });
     }
+    await createLeadIfNew({ email, name: "", method: "email code" });
     return res.status(200).json(startSession(res, email, ""));
   }
 
