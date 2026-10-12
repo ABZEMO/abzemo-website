@@ -1,3 +1,4 @@
+import { readSession } from "./auth.js";
 import { CATALOG } from "../agents/catalog.js";
 
 const BY_ID = {};
@@ -37,8 +38,9 @@ export async function handlePublicChat(req, res) {
   }
   if (req.method !== "POST") return res.status(405).json({ error: "POST required" });
 
-  const ip = String(req.headers["x-forwarded-for"] || "").split(",")[0].trim() || "unknown";
-  if (limited(ip)) return res.status(429).json({ error: "Too many requests. Please wait a minute." });
+  const session = readSession(req);
+  if (!session) return res.status(401).json({ error: "Please sign in to use UZMO." });
+  if (limited(session.email)) return res.status(429).json({ error: "Too many requests. Please wait a minute." });
 
   const body = req.body && typeof req.body === "object" ? req.body : {};
   const agent = BY_ID[body.agent];
