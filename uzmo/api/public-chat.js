@@ -56,7 +56,7 @@ export async function handlePublicChat(req, res) {
     return res.status(400).json({ error: "A user message is required" });
   }
 
-  const key = (process.env.GROQ_API_KEY || "").trim();
+  const key = (process.env.UZMO_GROQ_API_KEY || process.env.GROQ_API_KEY || "").trim();
   if (!key) return res.status(503).json({ error: "Chat is not configured" });
 
   const notePromise = messages.length === 1
