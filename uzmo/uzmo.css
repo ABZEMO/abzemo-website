@@ -1,3 +1,4 @@
+.login-overlay{inset:78px 0 0 0!important;z-index:900!important}
 :root{--blue:#1264d8;--blue-dark:#084a9e;--blue-light:#eaf2ff;--navy:#071a35;--accent:#70a9ff;--text:#24344d;--muted:#6f7f95;--light:#f5f8fc;--white:#fff;--line:#dce5f0;--good:#58d68d;--shadow-md:0 18px 45px rgba(7,26,53,.09);--hh:78px}
 *{box-sizing:border-box}
 body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--text);background:#fff;line-height:1.6}
