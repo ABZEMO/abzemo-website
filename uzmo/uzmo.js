@@ -9,6 +9,8 @@
   let history = [];
   let user = null;
   let googleReady = false;
+  let ticket = "";
+  let pendingEmail = "";
 
   const grid = document.querySelector("#agents-grid");
   const form = document.querySelector("#command-form");
@@ -30,12 +32,21 @@
     ".agent-card{min-height:130px!important;cursor:pointer}" +
     ".userbox{margin-top:auto;padding:14px;border-top:1px solid #dce5f0;font-size:13px;color:#24344d;word-break:break-word}" +
     ".userbox button{margin-top:8px;background:none;border:0;color:#1264d8;font-weight:700;cursor:pointer;padding:0;font:inherit;font-size:13px}" +
-    ".login-overlay{position:fixed;inset:0;z-index:2000;background:rgba(7,26,53,.72);display:none;align-items:center;justify-content:center;padding:20px}" +
+    ".login-overlay{position:fixed;inset:0;z-index:2000;background:rgba(7,26,53,.72);display:none;align-items:center;justify-content:center;padding:20px;overflow-y:auto}" +
     ".login-overlay.show{display:flex}" +
     ".login-card{background:#071a35;color:#fff;border:1px solid rgba(255,255,255,.13);border-radius:18px;padding:34px;max-width:420px;width:100%;text-align:center}" +
     ".login-card h2{margin:0 0 10px;font-size:28px}" +
     ".login-card p{margin:0 0 22px;color:rgba(255,255,255,.72);font-size:14px}" +
     "#g-btn{display:flex;justify-content:center;min-height:44px}" +
+    ".or{display:flex;align-items:center;gap:12px;margin:20px 0;color:rgba(255,255,255,.55);font-size:12px}" +
+    ".or:before,.or:after{content:\"\";flex:1;height:1px;background:rgba(255,255,255,.18)}" +
+    ".login-card input{width:100%;padding:13px 14px;margin-bottom:10px;border-radius:10px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:#fff;font:inherit;font-size:15px;outline:none;text-align:center}" +
+    ".login-card input::placeholder{color:rgba(255,255,255,.5)}" +
+    ".login-card input:focus{border-color:#70a9ff}" +
+    ".login-card .lbtn{width:100%;padding:13px;border:0;border-radius:10px;background:#1264d8;color:#fff;font:inherit;font-size:14px;font-weight:700;cursor:pointer}" +
+    ".login-card .lbtn:hover{background:#2b7bec}" +
+    ".login-card .lbtn:disabled{opacity:.6;cursor:default}" +
+    ".login-card .llink{background:none;border:0;color:#70a9ff;font:inherit;font-size:13px;cursor:pointer;margin-top:12px}" +
     ".login-msg{margin-top:14px;font-size:13px;color:#ffb4b4}";
   document.head.appendChild(style);
 
@@ -43,10 +54,25 @@
   overlay.className = "login-overlay";
   overlay.innerHTML =
     '<div class="login-card"><h2>Sign in to UZMO</h2>' +
-    "<p>Continue with Google to chat with UZMO agents.</p>" +
-    '<div id="g-btn"></div><div class="login-msg" id="login-msg"></div></div>';
+    "<p>Sign in to chat with UZMO agents.</p>" +
+    '<div id="g-wrap"><div id="g-btn"></div><div class="or">or use your email</div></div>' +
+    '<div id="email-step1"><input id="em-email" type="email" placeholder="you@company.com" autocomplete="email">' +
+    '<button type="button" class="lbtn" id="em-send">Send sign-in code</button></div>' +
+    '<div id="email-step2" style="display:none"><p id="em-hint" style="margin-bottom:12px"></p>' +
+    '<input id="em-code" type="text" inputmode="numeric" maxlength="6" placeholder="6-digit code" autocomplete="one-time-code">' +
+    '<button type="button" class="lbtn" id="em-verify">Verify and sign in</button>' +
+    '<button type="button" class="llink" id="em-back">Use a different email</button></div>' +
+    '<div class="login-msg" id="login-msg"></div></div>';
   document.body.appendChild(overlay);
   const loginMsg = overlay.querySelector("#login-msg");
+  const gWrap = overlay.querySelector("#g-wrap");
+  const step1 = overlay.querySelector("#email-step1");
+  const step2 = overlay.querySelector("#email-step2");
+  const emEmail = overlay.querySelector("#em-email");
+  const emCode = overlay.querySelector("#em-code");
+  const emSend = overlay.querySelector("#em-send");
+  const emVerify = overlay.querySelector("#em-verify");
+  const emHint = overlay.querySelector("#em-hint");
 
   const userbox = document.createElement("div");
   userbox.className = "userbox";
@@ -85,7 +111,7 @@
     s.src = "https://accounts.google.com/gsi/client";
     s.async = true;
     s.onload = cb;
-    s.onerror = () => { loginMsg.textContent = "Could not load Google login. Please refresh."; };
+    s.onerror = () => { loginMsg.textContent = "Could not load Google login."; };
     document.head.appendChild(s);
   }
 
@@ -105,19 +131,83 @@
     }
   }
 
+  async function postAuth(action, payload) {
+    const r = await fetch("/api/uzmo-auth?action=" + action, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || "Request failed");
+    return data;
+  }
+
+  emSend.addEventListener("click", async () => {
+    loginMsg.textContent = "";
+    const email = emEmail.value.trim().toLowerCase();
+    if (!email) { loginMsg.textContent = "Please enter your email."; return; }
+    emSend.disabled = true;
+    emSend.textContent = "Sending...";
+    try {
+      const data = await postAuth("email-send", { email });
+      ticket = data.ticket;
+      pendingEmail = email;
+      emHint.textContent = "We sent a 6-digit code to " + email + ". It expires in 10 minutes.";
+      step1.style.display = "none";
+      gWrap.style.display = "none";
+      step2.style.display = "block";
+      emCode.value = "";
+      emCode.focus();
+    } catch (e) {
+      loginMsg.textContent = e.message;
+    }
+    emSend.disabled = false;
+    emSend.textContent = "Send sign-in code";
+  });
+
+  emVerify.addEventListener("click", async () => {
+    loginMsg.textContent = "";
+    const code = emCode.value.trim();
+    if (!/^\d{6}$/.test(code)) { loginMsg.textContent = "Enter the 6-digit code."; return; }
+    emVerify.disabled = true;
+    try {
+      const data = await postAuth("email-verify", { email: pendingEmail, code, ticket });
+      setUser(data);
+    } catch (e) {
+      loginMsg.textContent = e.message;
+    }
+    emVerify.disabled = false;
+  });
+
+  overlay.querySelector("#em-back").addEventListener("click", () => {
+    loginMsg.textContent = "";
+    step2.style.display = "none";
+    step1.style.display = "block";
+    if (googleReady) gWrap.style.display = "block";
+  });
+
+  emEmail.addEventListener("keydown", e => { if (e.key === "Enter") emSend.click(); });
+  emCode.addEventListener("keydown", e => { if (e.key === "Enter") emVerify.click(); });
+
   async function showLogin() {
     overlay.classList.add("show");
-    if (googleReady) return;
+    gWrap.style.display = "none";
     try {
       const cfg = await (await fetch("/api/uzmo-auth?action=config")).json();
-      if (!cfg.clientId) throw new Error("Login is not configured");
-      loadGoogle(() => {
-        window.google.accounts.id.initialize({ client_id: cfg.clientId, callback: onCredential });
-        window.google.accounts.id.renderButton(document.getElementById("g-btn"), { theme: "outline", size: "large", text: "continue_with", width: 280 });
-        googleReady = true;
-      });
+      if (!cfg.email) step1.style.display = "none";
+      if (cfg.clientId) {
+        gWrap.style.display = "block";
+        if (!cfg.email) gWrap.querySelector(".or").style.display = "none";
+        if (!googleReady) {
+          loadGoogle(() => {
+            window.google.accounts.id.initialize({ client_id: cfg.clientId, callback: onCredential });
+            window.google.accounts.id.renderButton(document.getElementById("g-btn"), { theme: "outline", size: "large", text: "continue_with", width: 280 });
+            googleReady = true;
+          });
+        }
+      }
     } catch (e) {
-      loginMsg.textContent = e.message || "Login unavailable";
+      loginMsg.textContent = "Login unavailable. Please refresh.";
     }
   }
 
