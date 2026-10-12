@@ -56,3 +56,33 @@ export async function createLeadIfNew({ email, name, method }) {
     return { error: true };
   }
 }
+
+export async function addInterestNote({ email, agentName, question }) {
+  try {
+    const token = await getAccessToken();
+    const headers = { Authorization: "Zoho-oauthtoken " + token };
+
+    const found = await withTimeout(
+      "https://www.zohoapis.com/crm/v6/Leads/search?email=" + encodeURIComponent(email),
+      { headers }
+    );
+    if (found.status !== 200) return { skipped: true };
+    const f = await found.json();
+    const id = f.data && f.data[0] && f.data[0].id;
+    if (!id) return { skipped: true };
+
+    const r = await withTimeout("https://www.zohoapis.com/crm/v6/Leads/" + id + "/Notes", {
+      method: "POST",
+      headers: { ...headers, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        data: [{
+          Note_Title: "UZMO: " + agentName,
+          Note_Content: "Agent: " + agentName + "\nFirst question: " + String(question).slice(0, 500)
+        }]
+      })
+    });
+    return { added: r.ok };
+  } catch (e) {
+    return { error: true };
+  }
+}
