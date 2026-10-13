@@ -1,7 +1,7 @@
 /* ABZEMO GLOBAL INTERNATIONALIZATION — reliable country/language detection */
 (function () {
   "use strict";
-  const STORAGE_KEY="abzemo_site_language", RTL=new Set(["ar","ur","fa","he"]);
+  const STORAGE_KEY="abzemo_site_language", CACHE_PREFIX="abzemo_tr_", RTL=new Set(["ar","ur","fa","he"]);
   const LANGUAGES=[
     ["en","English"],["ar","العربية"],["ur","اردو"],["fr","Français"],["es","Español"],
     ["de","Deutsch"],["it","Italiano"],["pt","Português"],["tr","Türkçe"],["ru","Русский"],
@@ -67,7 +67,7 @@
   function translatable(el){return el&&!el.closest("script,style,noscript,svg,code,pre,[data-no-translate]")&&!el.matches("input,textarea,select,option");}
   function snapshot(){
     const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT); let n;
-    while(n=w.nextNode()){if(!translatable(n.parentElement))continue;const t=n.nodeValue.trim();if(t.length>=2&&!protectedText.has(t))original.set(n,n.nodeValue);}
+    while(n=w.nextNode()){if(original.has(n)||!translatable(n.parentElement))continue;const t=n.nodeValue.trim();if(t.length>=2&&!protectedText.has(t))original.set(n,n.nodeValue);}
   }
   function setDirection(lang){document.documentElement.lang=lang;document.documentElement.dir=RTL.has(lang)?"rtl":"ltr";}
   async function region(){
@@ -110,24 +110,55 @@
     wrap.style.right="auto"; wrap.style.transform="translateY(-50%)";
   }
   function restore(){original.forEach((v,n)=>{if(n&&n.parentNode)n.nodeValue=v})}
-  async function translatePage(lang){
-    if(lang==="en"){restore();return} if(translating)return; snapshot();
-    const nodes=[...original.keys()].filter(n=>n&&n.parentNode), unique=[...new Set(nodes.map(n=>original.get(n).trim()).filter(Boolean))];
-    if(!unique.length)return; translating=true;
-    try{
-      const map=new Map();
-      for(let i=0;i<unique.length;i+=120){
-        const r=await fetch("/api/translate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({target_language:lang,texts:unique.slice(i,i+120)})});
-        if(!r.ok)throw new Error("translation unavailable");
-        const data=await r.json();
-        (data.translations||[]).forEach(x=>map.set(x.source,x.translation));
+
+  function loadCache(lang){try{return JSON.parse(localStorage.getItem(CACHE_PREFIX+lang)||"{}")||{}}catch(_){return{}}}
+  function saveCache(lang,c){try{localStorage.setItem(CACHE_PREFIX+lang,JSON.stringify(c))}catch(_){}}
+  function applyMap(map){
+    original.forEach((source,n)=>{
+      if(!n||!n.parentNode)return;
+      const key=source.trim();
+      if(map[key]){
+        const lead=source.match(/^\s*/)?.[0]||"",trail=source.match(/\s*$/)?.[0]||"";
+        n.nodeValue=lead+map[key]+trail;
       }
-      nodes.forEach(n=>{const source=original.get(n),key=source.trim();if(map.has(key)){const lead=source.match(/^\s*/)?.[0]||"",trail=source.match(/\s*$/)?.[0]||"";n.nodeValue=lead+map.get(key)+trail}});
-    }catch(e){console.warn("ABZEMO translation:",e)}finally{translating=false}
+    });
+  }
+  async function translatePage(lang){
+    if(lang==="en"){restore();return}
+    if(translating)return;
+    snapshot();
+    const cache=loadCache(lang);
+    applyMap(cache);
+    const unique=[...new Set([...original.values()].map(v=>v.trim()).filter(Boolean))].filter(t=>!cache[t]);
+    if(!unique.length)return;
+    translating=true;
+    const chunks=[];
+    for(let i=0;i<unique.length;i+=25)chunks.push(unique.slice(i,i+25));
+    let next=0;
+    async function worker(){
+      while(next<chunks.length){
+        const chunk=chunks[next++];
+        try{
+          const r=await fetch("/api/translate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({target_language:lang,texts:chunk})});
+          if(!r.ok)continue;
+          const data=await r.json();
+          const list=data.translations||[];
+          if(list.length===chunk.length){
+            list.forEach((x,i)=>{if(x&&x.translation)cache[chunk[i]]=x.translation});
+          }else{
+            list.forEach(x=>{if(x&&x.source&&x.translation)cache[x.source.trim()]=x.translation});
+          }
+          saveCache(lang,cache);
+          if(current===lang)applyMap(cache);
+        }catch(e){console.warn("ABZEMO translation:",e)}
+      }
+    }
+    try{await Promise.all([worker(),worker(),worker()])}finally{translating=false}
   }
   async function setLanguage(lang){
     if(!LANGUAGES.some(x=>x[0]===lang))lang="en";current=lang;localStorage.setItem(STORAGE_KEY,lang);setDirection(lang);
-    const select=document.getElementById("abzemoLanguageSelect");if(select)select.value=lang;await translatePage(lang);
+    const select=document.getElementById("abzemoLanguageSelect");if(select)select.value=lang;
+    restore();await translatePage(lang);
     window.dispatchEvent(new CustomEvent("abzemo:languagechange",{detail:{language:lang}}));
   }
   function init(){injectStyles();snapshot();setDirection(current);buildSelector();requestAnimationFrame(positionSelector);setTimeout(positionSelector,150);setTimeout(positionSelector,500);if(current!=="en")translatePage(current)}
