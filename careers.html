@@ -89,6 +89,19 @@
     }
     .mega-overlay{position:fixed;inset:0;z-index:1090;background:rgba(7,26,53,.42);backdrop-filter:blur(5px);opacity:0;visibility:hidden;transition:.3s ease}.mega-overlay.active{opacity:1;visibility:visible}.mega-menu{position:fixed;inset:0 auto 0 0;z-index:1100;width:min(460px,88vw);overflow-y:auto;background:#fff;transform:translateX(-105%);transition:transform .38s cubic-bezier(.77,0,.18,1);box-shadow:20px 0 70px rgba(7,26,53,.2)}.mega-menu.active{transform:translateX(0)}.mega-top{min-height:82px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:2;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}.mega-brand{color:var(--navy);font-size:27px;font-weight:900;letter-spacing:-1px}.mega-brand span{color:var(--blue)}.mega-close{width:42px;height:42px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--navy);font-size:27px;cursor:pointer}.mega-content{padding:30px 28px 42px}.mega-section{margin-bottom:32px}.mega-section-title{margin-bottom:12px;color:var(--blue);font-size:11px;font-weight:900;letter-spacing:2px;text-transform:uppercase}.mega-section a{display:block;padding:7px 0;color:var(--navy);font-size:15px;font-weight:700;transition:.2s}.mega-section a:hover{color:var(--blue);transform:translateX(4px)}.mega-section .sub-link{padding-left:10px;color:var(--muted);font-size:14px;font-weight:500}
     footer{padding:65px 0 25px;color:#fff;background:#041225}.footer-top{display:flex;justify-content:space-between;gap:50px;padding-bottom:45px;border-bottom:1px solid rgba(255,255,255,.1)}.footer-brand{max-width:420px}.footer-logo{margin-bottom:15px;color:#fff;font-size:29px;font-weight:900}.footer-logo span{color:#5c9cff}.footer-brand p{margin:0;color:rgba(255,255,255,.55);line-height:1.8}.footer-links{display:flex;gap:70px}.footer-column h4{margin:0 0 16px;color:rgba(255,255,255,.75);font-size:12px;letter-spacing:1.5px;text-transform:uppercase}.footer-column a{display:block;margin-bottom:9px;color:rgba(255,255,255,.55);font-size:13px}.footer-column a:hover{color:#fff}.footer-bottom{padding-top:22px;display:flex;justify-content:space-between;gap:20px;color:rgba(255,255,255,.38);font-size:11px}
+
+    /* Careers typography: match ABZEMO inner pages and keep dark-panel text readable */
+    body { font-family: Arial, Helvetica, sans-serif; }
+    .hero h1 { color: #ffffff; font-size: clamp(38px, 5vw, 66px); line-height: .98; letter-spacing: -4px; font-weight: 900; }
+    .hero p { color: #d9e6f8; }
+    .apply-intro h2 { color: #ffffff; }
+    .section-head h2 { color: var(--navy); font-size: clamp(38px, 5vw, 66px); line-height: 1.02; letter-spacing: -3px; font-weight: 700; }
+    .card h3 { color: var(--navy); font-size: 20px; line-height: 1.25; }
+    @media (max-width: 640px) {
+      .hero h1 { font-size: clamp(38px, 10vw, 58px); letter-spacing: -2px; }
+      .section-head h2 { letter-spacing: -2px; }
+    }
+
   </style>
 </head>
 <body>
