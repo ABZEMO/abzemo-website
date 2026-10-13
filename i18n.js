@@ -102,11 +102,11 @@
     if(c)region().then(name=>{c.textContent=name||"Global";positionSelector()});
   }
   function positionSelector(){
-    const wrap=document.getElementById("abzemoLanguageControl"),nav=document.querySelector(".navbar"),contact=[...document.querySelectorAll(".nav-links a")].find(a=>a.textContent.trim().toLowerCase()==="contact"),search=document.querySelector(".abzemo-search-trigger");
+    const wrap=document.getElementById("abzemoLanguageControl"),nav=document.querySelector(".navbar"),contact=[...document.querySelectorAll(".nav-links a")].find(a=>/contact/i.test(a.getAttribute("href")||"")),search=document.querySelector(".abzemo-search-trigger");
     if(!wrap||!nav||!contact||!search||window.innerWidth<=980){if(wrap&&window.innerWidth<=980){wrap.style.left="auto";wrap.style.right="52px"}return}
-    const nr=nav.getBoundingClientRect(),cr=contact.getBoundingClientRect(),sr=search.getBoundingClientRect(),gap=12;
-    const minLeft=cr.right+gap-nr.left, maxLeft=sr.left-gap-wrap.offsetWidth-nr.left;
-    wrap.style.left=(maxLeft>=minLeft?minLeft+((maxLeft-minLeft)/2):Math.max(8,maxLeft))+"px";
+    const rtl=document.documentElement.dir==="rtl",nr=nav.getBoundingClientRect(),cr=contact.getBoundingClientRect(),sr=search.getBoundingClientRect(),gap=12;
+    const a=rtl?sr.right+gap-nr.left:cr.right+gap-nr.left,b=rtl?cr.left-gap-wrap.offsetWidth-nr.left:sr.left-gap-wrap.offsetWidth-nr.left;
+    wrap.style.left=(b>=a?a+(b-a)/2:Math.max(8,b))+"px";
     wrap.style.right="auto"; wrap.style.transform="translateY(-50%)";
   }
   function restore(){original.forEach((v,n)=>{if(n&&n.parentNode)n.nodeValue=v})}
@@ -132,6 +132,7 @@
   }
   function init(){injectStyles();snapshot();setDirection(current);buildSelector();requestAnimationFrame(positionSelector);setTimeout(positionSelector,150);setTimeout(positionSelector,500);if(current!=="en")translatePage(current)}
   window.addEventListener("resize",()=>requestAnimationFrame(positionSelector));
+  window.addEventListener("abzemo:languagechange",()=>setTimeout(positionSelector,150));
   window.ABZEMO_I18N={languages:LANGUAGES,getLanguage:()=>current,setLanguage};
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
 })();
