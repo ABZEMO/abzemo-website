@@ -13,8 +13,19 @@ const MODEL = process.env.GROQ_MODEL || "openai/gpt-oss-120b";
 const MAX_MESSAGE_LENGTH = 2000;
 const MAX_MESSAGES = 12;
 
+function isAllowedOrigin(origin) {
+  if (ALLOWED_ORIGINS.has(origin)) return true;
+  try {
+    const parsed = new URL(origin);
+    return parsed.protocol === "https:" &&
+      /^abzemo-website-[a-z0-9-]+-aasopsglobal-3790\.vercel\.app$/i.test(parsed.hostname);
+  } catch {
+    return false;
+  }
+}
+
 function corsHeaders(origin) {
-  const allowedOrigin = ALLOWED_ORIGINS.has(origin)
+  const allowedOrigin = isAllowedOrigin(origin)
     ? origin
     : "https://abzemo.com";
 
