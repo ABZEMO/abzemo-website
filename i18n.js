@@ -1,7 +1,7 @@
 /* ABZEMO GLOBAL INTERNATIONALIZATION — reliable country/language detection */
 (function () {
   "use strict";
-  const STORAGE_KEY="abzemo_site_language", CACHE_PREFIX="abzemo_tr_", RTL=new Set(["ar","ur","fa","he"]);
+  const STORAGE_KEY="abzemo_site_language", CACHE_PREFIX="abzemo_tr2_", RTL=new Set(["ar","ur","fa","he"]);
   const LANGUAGES=[
     ["en","English"],["ar","العربية"],["ur","اردو"],["fr","Français"],["es","Español"],
     ["de","Deutsch"],["it","Italiano"],["pt","Português"],["tr","Türkçe"],["ru","Русский"],
@@ -143,11 +143,7 @@
           if(!r.ok)continue;
           const data=await r.json();
           const list=data.translations||[];
-          if(list.length===chunk.length){
-            list.forEach((x,i)=>{if(x&&x.translation)cache[chunk[i]]=x.translation});
-          }else{
-            list.forEach(x=>{if(x&&x.source&&x.translation)cache[x.source.trim()]=x.translation});
-          }
+          list.forEach(x=>{if(x&&x.source&&x.translation&&chunk.includes(x.source.trim()))cache[x.source.trim()]=x.translation});
           saveCache(lang,cache);
           if(current===lang)applyMap(cache);
         }catch(e){console.warn("ABZEMO translation:",e)}
