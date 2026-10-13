@@ -113,7 +113,7 @@
 
   function loadCache(lang){try{return JSON.parse(localStorage.getItem(CACHE_PREFIX+lang)||"{}")||{}}catch(_){return{}}}
   function saveCache(lang,c){try{localStorage.setItem(CACHE_PREFIX+lang,JSON.stringify(c))}catch(_){}}
-  function applyMap(map){
+  function applyMap(map){ setTimeout(positionSelector,50); setTimeout(positionSelector,400);
     original.forEach((source,n)=>{
       if(!n||!n.parentNode)return;
       const key=source.trim();
