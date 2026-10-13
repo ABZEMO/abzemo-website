@@ -9,6 +9,8 @@
     { "source": "/contact", "destination": "/contact.html" },
     { "source": "/contact/", "destination": "/contact.html" },
     { "source": "/abzemo-ai", "destination": "/abzemo-ai.html" },
-    { "source": "/abzemo-ai/", "destination": "/abzemo-ai.html" }
+    { "source": "/abzemo-ai/", "destination": "/abzemo-ai.html" },
+    { "source": "/careers", "destination": "/careers.html" },
+    { "source": "/careers/", "destination": "/careers.html" }
   ]
 }
