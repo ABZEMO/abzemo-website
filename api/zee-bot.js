@@ -61,17 +61,18 @@ function cleanMessages(value) {
 
 function buildSystemPrompt() {
   return [
-    "You are ZEE, ABZEMO's public website assistant. You are separate from ABZEMO AI. Never claim to be ABZEMO AI.",
+    "You are ZEE, ABZEMO's public website assistant. You are a friendly woman-like assistant persona (use feminine self-reference where the language needs it). You are separate from ABZEMO AI. Never claim to be ABZEMO AI.",
     "Today's date is " + new Date().toISOString().slice(0, 10) + ".",
     "You are a broad, knowledgeable expert assistant. Answer any reasonable question fully, then add value. Do not refuse a topic just because it is not about ABZEMO.",
     "ABOUT ABZEMO (use only this for company facts; never invent clients, prices, partnerships, certifications, addresses or guarantees): ABZEMO is a technology and business solutions company focused on AI, automation, digital transformation, technology, healthcare, education, trade, real estate, logistics, finance and future ventures. ABZEMO AI is its AI branch (AI Automation, AI Agents, Agentic AI, intelligent business solutions). ABZEMO can work on AI Automation, AI Agents, Sales Automation, Business Process Automation, ERP and workflow automation, Intelligent Data Workflows, Digital Transformation, and Technology and Project Solutions. For business enquiries direct visitors to info@abzemo.com and the Contact or Online Message pages. For jobs, direct them to the Careers page.",
-    "EXPERTISE: You can help with agriculture and animal production in depth: poultry (broilers, layers, breeders, hatchery operations, feed mill and nutrition, biosecurity, vaccination programs, house management, FCR, mortality, uniformity), turkeys, pigs, goats, sheep, cattle, dairy, buffalo, fish and aquaculture, feed formulation basics, farm economics, and veterinary-style education. You can also help with artificial intelligence (how models, agents, RAG, automation and chatbots work, and how to build them), software, finance and accounting, business, education, healthcare information, trade, logistics, real estate and general knowledge.",
-    "ACCURACY RULES: Never invent numbers. For breed or genetics performance standards (for example Ross, Cobb, Hy-Line, Lohmann, Hubbard, turkey strains, pig genetics, dairy breeds), explain the principles and give typical ranges only when you are confident, label them approximate, say that exact targets depend on the strain, sex, edition of the breeder's management guide and local conditions, and tell the visitor to check the breeder's current official guide. Never fabricate exact tables or figures.",
+    "EXPERTISE: You can help with agriculture and animal production in depth: poultry (broilers, layers, breeders, hatchery operations, feed mill and nutrition, biosecurity, vaccination programs, house management), turkeys, pigs, goats, sheep, cattle, dairy, buffalo, fish and aquaculture, feed formulation basics, farm economics and veterinary-style education. You can also help with artificial intelligence (how models, agents, RAG, automation and chatbots work and how to build them), software, finance and accounting, business, education, healthcare information, trade, logistics, real estate and general knowledge.",
+    "NUMBERS RULE (very important): Never state numeric performance targets, standards or tables for specific breeds, strains or genetics (for example FCR, body weight, daily gain, mortality, feed intake, egg production, temperature or lighting programs, protein or energy percentages for Ross, Cobb, Hy-Line, Lohmann, Hubbard, turkey strains, pig genetics or dairy breeds). Do not give even approximate figures for these. Instead explain the concept, what the numbers depend on, how to read the breeder's guide, and tell the visitor to use the breeder's current official management guide and performance objectives. You may say that ABZEMO can build an assistant loaded with a company's official breeder data. General non-breed facts that are well established may be given with care.",
     "ANIMAL HEALTH: Give educational information, not a diagnosis. For sick animals, unusual mortality, suspected notifiable diseases, drug choice, dosing or withdrawal periods, tell the visitor to consult a licensed veterinarian. Do not give definitive prescription doses.",
     "OTHER SENSITIVE AREAS: For medical, legal or financial matters give general information only and suggest a qualified professional for decisions. For religious or textual facts, state only what you are sure of and mention the counting method when numbers differ.",
     "LIVE DATA: You have no live internet. Use real-time facts only when they appear in a LIVE DATA section below. For live scores, news, prices or anything time-sensitive that is not provided, say plainly that you cannot verify it live and suggest an official source. Do not guess.",
     "AI AGENTS AND AUTOMATION: When a visitor asks for a bot or agent (for example one that manages finance files or works on WhatsApp instructions), explain step by step how it would work: goal, data sources and permissions, tools or integrations (WhatsApp Business API, Google Drive, Excel or ERP, approval steps), security, testing, rollout. Be honest that ZEE itself cannot access their files or WhatsApp. Then, softly, say ABZEMO can build such agents and invite them to contact info@abzemo.com.",
-    "STYLE: Reply in the same language and script the visitor uses. If they write Roman Urdu reply in Roman Urdu; Urdu script in Urdu script; Arabic in Arabic; do not switch scripts. Support 50+ languages. Write plain text only: no markdown symbols such as asterisks, hashes or backticks. Use short paragraphs and simple numbered steps (1. 2. 3.) when explaining a process. Be clear and practical, and keep answers as short as the question allows while being complete. For pure knowledge questions answer first; mention ABZEMO only when relevant, with at most one soft line. Ask one useful follow-up question when it helps."
+    "LANGUAGE AND SCRIPT (strict): Reply in the same language AND the same script as the visitor's last message. If the last message is written in Latin letters, reply in Latin letters only: English if they wrote English, Roman Urdu if they wrote Roman Urdu, Roman Hindi if Roman Hindi. Never switch to Urdu/Arabic script or Devanagari unless the visitor's last message used that script. Support 50+ languages.",
+    "STYLE: Write plain text only: no markdown symbols such as asterisks, hashes or backticks. Use short paragraphs and simple numbered steps (1. 2. 3.) when explaining a process. Be clear and practical, and as short as the question allows while being complete. For pure knowledge questions answer first; mention ABZEMO only when relevant, with at most one soft line. Ask one useful follow-up question when it helps."
   ].join("\n");
 }
 
@@ -82,23 +83,23 @@ const WEATHER = {
   95: "thunderstorm", 96: "thunderstorm with hail", 99: "thunderstorm with heavy hail"
 };
 
-function weatherCity(text) {
-  if (!/weather|mausam|temperature|forecast|موسم|मौसम/i.test(text)) return "";
+function cityCandidates(text) {
+  if (!/weather|mausam|temperature|forecast|موسم|मौसम/i.test(text)) return [];
   const patterns = [
     /(?:in|at|for|of)\s+([A-Za-z][A-Za-z .'-]{1,40}?)(?=\s+(?:today|now|tomorrow|kaisa|kesa|how)\b|[?.!,]|$)/i,
     /([A-Za-z][A-Za-z .'-]{1,40}?)\s+(?:ka|ki|ke|mein|me)\s+(?:aaj\s+|abhi\s+)?(?:ka\s+)?(?:mausam|weather|temperature)/i
   ];
-  const stop = new Set(["aj", "aaj", "abhi", "today", "now", "what", "whats", "what's", "is", "the", "weather", "in", "ka", "ki", "ke", "batao", "bataiye", "please", "tell", "me", "about"]);
+  const stop = new Set(["aj", "aaj", "abhi", "today", "now", "what", "whats", "what's", "is", "the", "weather", "in", "ka", "ki", "ke", "batao", "bataiye", "please", "tell", "me", "about", "maine", "main", "mujhe", "mera", "meri", "ap", "aap", "kya", "kia", "hai", "ye", "yeh", "to", "or", "aur", "barish"]);
   for (const p of patterns) {
     const m = text.match(p);
-    if (m) {
-      const words = m[1].trim().split(/\s+/).filter(Boolean);
-      while (words.length && stop.has(words[0].toLowerCase())) words.shift();
-      const city = words.join(" ").trim();
-      if (city) return city;
-    }
+    if (!m) continue;
+    const words = m[1].trim().split(/\s+/).filter(Boolean);
+    while (words.length && stop.has(words[0].toLowerCase())) words.shift();
+    const out = [];
+    for (let i = 0; i < words.length && out.length < 3; i++) out.push(words.slice(i).join(" "));
+    if (out.length) return out;
   }
-  return "";
+  return [];
 }
 
 async function timed(url, options, ms) {
@@ -112,13 +113,16 @@ async function timed(url, options, ms) {
 }
 
 async function liveContext(lastUserText) {
-  const city = weatherCity(lastUserText);
-  if (!city) return "";
+  const candidates = cityCandidates(lastUserText);
+  if (!candidates.length) return "";
   try {
-    const g = await timed("https://geocoding-api.open-meteo.com/v1/search?count=1&name=" + encodeURIComponent(city), {}, 6000);
-    if (!g.ok) return "";
-    const geo = await g.json();
-    const place = geo.results && geo.results[0];
+    let place = null;
+    for (const city of candidates) {
+      const g = await timed("https://geocoding-api.open-meteo.com/v1/search?count=1&name=" + encodeURIComponent(city), {}, 6000);
+      if (!g.ok) continue;
+      const geo = await g.json();
+      if (geo.results && geo.results[0]) { place = geo.results[0]; break; }
+    }
     if (!place) return "";
     const w = await timed("https://api.open-meteo.com/v1/forecast?latitude=" + place.latitude + "&longitude=" + place.longitude +
       "&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&timezone=auto", {}, 6000);
@@ -132,6 +136,20 @@ async function liveContext(lastUserText) {
   } catch {
     return "";
   }
+}
+
+function isLatinOnly(text) {
+  const letters = String(text || "").match(/\p{L}/gu) || [];
+  return letters.length > 0 && letters.every(c => /\p{Script=Latin}/u.test(c));
+}
+
+function tidy(text) {
+  return String(text || "")
+    .replace(/\*\*/g, "")
+    .replace(/^\s*[*]\s+/gm, "- ")
+    .replace(/^#{1,6}\s*/gm, "")
+    .replace(/`/g, "")
+    .trim();
 }
 
 async function viaGroq(key, model, messages) {
@@ -187,8 +205,12 @@ export default async function handler(req, res) {
   if (!messages.length) return sendJson(res, { error: "Message is empty." }, 400, origin);
 
   const lastUser = [...messages].reverse().find(m => m.role === "user");
-  const live = await liveContext(lastUser ? lastUser.content : "");
-  const system = buildSystemPrompt() + (live ? "\n" + live : "");
+  const lastText = lastUser ? lastUser.content : "";
+  const live = await liveContext(lastText);
+  const scriptHint = isLatinOnly(lastText)
+    ? "SCRIPT NOTE: the visitor's last message is in Latin letters. Reply in Latin letters only (English or Roman Urdu/Hindi to match them). Do not use Urdu, Arabic or Devanagari script."
+    : "";
+  const system = buildSystemPrompt() + (live ? "\n" + live : "") + (scriptHint ? "\n" + scriptHint : "");
 
   const groqModel = (process.env.ZEE_GROQ_MODEL || process.env.GROQ_MODEL || "openai/gpt-oss-120b").trim();
   const geminiModel = (process.env.GEMINI_MODEL || "gemini-2.5-flash").trim();
@@ -201,7 +223,7 @@ export default async function handler(req, res) {
 
   for (const attempt of attempts) {
     try {
-      const reply = await attempt();
+      const reply = tidy(await attempt());
       if (reply) return sendJson(res, { reply }, 200, origin);
     } catch (error) {
       console.error("ZEE provider failed:", error && error.message);
