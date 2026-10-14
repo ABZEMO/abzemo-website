@@ -1,8 +1,8 @@
 /* =========================================================
    ABZEMO — ZEE Bot
    AI-powered public website assistant.
-   Uses the secure /api/zee-bot backend with Groq.
-   The Groq API key never reaches the browser.
+   Uses the secure /api/zee-bot backend.
+   API keys never reach the browser.
    Present on public website pages except abzemo-ai.html.
    ========================================================= */
 
@@ -26,8 +26,8 @@
     @keyframes zeeRobotPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.025)}}
     @keyframes zeeRobotBlink{0%,44%,48%,100%{opacity:1}46%{opacity:.12}}
     @keyframes zeeRobotOrbit{to{transform:rotate(360deg)}}
-    .zee-chat{width:min(390px,calc(100vw - 56px));max-height:180px;overflow-y:auto;margin-bottom:10px;display:flex;flex-direction:column;gap:7px;scroll-behavior:smooth}
-    .zee-msg{max-width:86%;padding:9px 12px;border-radius:14px;font-size:12px;line-height:1.45;box-shadow:0 5px 18px rgba(7,26,53,.08)}
+    .zee-chat{width:min(390px,calc(100vw - 56px));max-height:220px;overflow-y:auto;margin-bottom:10px;display:flex;flex-direction:column;gap:7px;scroll-behavior:smooth}
+    .zee-msg{max-width:92%;padding:9px 12px;border-radius:14px;font-size:12px;line-height:1.5;white-space:pre-wrap;word-break:break-word;box-shadow:0 5px 18px rgba(7,26,53,.08)}
     .zee-msg-user{align-self:flex-end;background:#1264d8;color:#fff;border-bottom-right-radius:5px}
     .zee-msg-bot{align-self:flex-start;background:#fff;color:#17243a;border:1px solid rgba(7,26,53,.08);border-bottom-left-radius:5px}
     .zee-msg-title{display:block;margin-bottom:3px;font-weight:800;color:#071a35}.zee-msg-user .zee-msg-title{color:#fff}
@@ -38,13 +38,17 @@
     .zee-launcher-send{width:40px;height:40px;border:0;border-radius:50%;background:linear-gradient(135deg,#1264d8,#168cff);color:#fff;font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer}
     .zee-tools{display:flex;align-items:center;gap:6px;margin-top:7px;width:min(390px,calc(100vw - 56px));justify-content:flex-end}
     .zee-language,.zee-keyboard-toggle{height:30px;border:1px solid rgba(18,100,216,.22);border-radius:15px;background:#fff;color:#17243a;font:11px Arial,sans-serif;padding:0 10px;cursor:pointer;box-shadow:0 5px 15px rgba(7,26,53,.08)}
+    .zee-voice,.zee-speaker{width:30px;height:30px;border:1px solid rgba(18,100,216,.22);border-radius:50%;background:#fff;color:#1264d8;font-size:14px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 5px 15px rgba(7,26,53,.08);padding:0}
+    .zee-voice.active{background:#1264d8;color:#fff}
+    .zee-speaker.off{color:#7d899a;background:#f4f6f9}
+    .zee-voice:disabled{opacity:.45;cursor:not-allowed}
     .zee-keyboard{display:none;width:min(390px,calc(100vw - 56px));margin-top:7px;padding:8px;border:1px solid rgba(18,100,216,.18);border-radius:14px;background:#fff;box-shadow:0 12px 28px rgba(7,26,53,.12);direction:ltr}
     .zee-keyboard.open{display:block}
     .zee-keyboard-grid{display:flex;flex-wrap:wrap;gap:5px;max-height:145px;overflow:auto}
     .zee-key{min-width:31px;height:31px;border:1px solid rgba(7,26,53,.1);border-radius:7px;background:#f7f9fc;color:#17243a;font:13px Arial,sans-serif;cursor:pointer}
     .zee-key-wide{padding:0 12px}
     .zee-keyboard-note{font:10px/1.35 Arial,sans-serif;color:#7a8798;margin-bottom:7px}
-    @media(max-width:600px){#zee-bot-root{right:12px;bottom:84px}.zee-bot-stage{width:calc(100vw - 24px);height:210px;margin-bottom:-4px}.zee-robot{width:200px;height:200px}.zee-chat{width:calc(100vw - 24px);max-height:150px}#zee-bot-launcher{width:calc(100vw - 24px);min-height:50px}}
+    @media(max-width:600px){#zee-bot-root{right:12px;bottom:84px}.zee-bot-stage{width:calc(100vw - 24px);height:210px;margin-bottom:-4px}.zee-robot{width:200px;height:200px}.zee-chat{width:calc(100vw - 24px);max-height:170px}#zee-bot-launcher{width:calc(100vw - 24px);min-height:50px}}
     @media(prefers-reduced-motion:reduce){.zee-robot,.zee-robot-core,.zee-robot-eye,.zee-robot-orbit{animation:none}}
   `;
   document.head.appendChild(css);
@@ -61,10 +65,12 @@
       </div>
       <div class="zee-chat" aria-live="polite"></div>
       <form id="zee-bot-launcher" autocomplete="off">
-        <input class="zee-launcher-input" type="text" aria-label="Ask ZEE about ABZEMO" placeholder="Write your question here..." />
+        <input class="zee-launcher-input" type="text" aria-label="Ask ZEE" placeholder="Write your question here..." />
         <button class="zee-launcher-send" type="submit" aria-label="Send message">➤</button>
       </form>
       <div class="zee-tools">
+        <button type="button" class="zee-voice" aria-label="Voice input" title="Speak your question">🎙</button>
+        <button type="button" class="zee-speaker off" aria-label="Turn on ZEE voice" title="Turn on ZEE voice">🔇</button>
         <select class="zee-language" aria-label="Choose typing language">
           <option value="en">English</option><option value="ur">Urdu</option><option value="ar">Arabic</option><option value="hi">Hindi</option><option value="bn">Bengali</option><option value="pa">Punjabi</option><option value="sd">Sindhi</option><option value="ps">Pashto</option><option value="fa">Persian</option><option value="he">Hebrew</option><option value="ru">Russian</option><option value="uk">Ukrainian</option><option value="el">Greek</option><option value="hy">Armenian</option><option value="ka">Georgian</option><option value="zh">Chinese</option><option value="ja">Japanese</option><option value="ko">Korean</option><option value="th">Thai</option><option value="vi">Vietnamese</option><option value="tr">Turkish</option><option value="az">Azerbaijani</option><option value="kk">Kazakh</option><option value="uz">Uzbek</option><option value="pl">Polish</option><option value="cs">Czech</option><option value="sk">Slovak</option><option value="hu">Hungarian</option><option value="ro">Romanian</option><option value="bg">Bulgarian</option><option value="sr">Serbian</option><option value="hr">Croatian</option><option value="sl">Slovenian</option><option value="sq">Albanian</option><option value="it">Italian</option><option value="es">Spanish</option><option value="pt">Portuguese</option><option value="fr">French</option><option value="de">German</option><option value="nl">Dutch</option><option value="da">Danish</option><option value="sv">Swedish</option><option value="no">Norwegian</option><option value="fi">Finnish</option><option value="is">Icelandic</option><option value="ga">Irish</option><option value="cy">Welsh</option><option value="id">Indonesian</option><option value="ms">Malay</option><option value="fil">Filipino</option><option value="sw">Swahili</option><option value="af">Afrikaans</option><option value="am">Amharic</option><option value="so">Somali</option><option value="ta">Tamil</option><option value="te">Telugu</option><option value="kn">Kannada</option><option value="ml">Malayalam</option><option value="mr">Marathi</option><option value="gu">Gujarati</option><option value="ne">Nepali</option><option value="si">Sinhala</option>
         </select>
@@ -85,6 +91,8 @@
   const keyboardToggle = root.querySelector(".zee-keyboard-toggle");
   const keyboard = root.querySelector(".zee-keyboard");
   const keyboardGrid = root.querySelector(".zee-keyboard-grid");
+  const voiceBtn = root.querySelector(".zee-voice");
+  const speakerBtn = root.querySelector(".zee-speaker");
 
   const keyboardChars = {
     ur: "ا ب پ ت ٹ ث ج چ ح خ د ڈ ذ ر ڑ ز ژ س ش ص ض ط ظ ع غ ف ق ک گ ل م ن ں و ہ ھ ء ی ے".split(" "),
@@ -112,6 +120,19 @@
     si: "අ ආ ඇ ඈ ඉ ඊ උ ඌ එ ඒ ඓ ඔ ඕ ඖ ක ග ච ජ ට ඩ ත ද න ප බ ම ය ර ල ව ස හ".split(" "),
     th: "ก ข ค ง จ ฉ ช ซ ญ ด ต ถ ท น บ ป ผ ฝ พ ฟ ม ย ร ล ว ศ ษ ส ห อ".split(" ")
   };
+
+  const langTags = {
+    en: "en-US", ur: "ur-PK", ar: "ar-SA", hi: "hi-IN", bn: "bn-BD", pa: "pa-IN", fa: "fa-IR", he: "he-IL",
+    ru: "ru-RU", uk: "uk-UA", el: "el-GR", zh: "zh-CN", ja: "ja-JP", ko: "ko-KR", th: "th-TH", vi: "vi-VN",
+    tr: "tr-TR", pl: "pl-PL", cs: "cs-CZ", sk: "sk-SK", hu: "hu-HU", ro: "ro-RO", bg: "bg-BG", sr: "sr-RS",
+    hr: "hr-HR", it: "it-IT", es: "es-ES", pt: "pt-PT", fr: "fr-FR", de: "de-DE", nl: "nl-NL", da: "da-DK",
+    sv: "sv-SE", no: "nb-NO", fi: "fi-FI", id: "id-ID", ms: "ms-MY", fil: "fil-PH", sw: "sw-KE", af: "af-ZA",
+    ta: "ta-IN", te: "te-IN", kn: "kn-IN", ml: "ml-IN", mr: "mr-IN", gu: "gu-IN", ne: "ne-NP", si: "si-LK"
+  };
+
+  function langTag() {
+    return langTags[language.value] || language.value || "en-US";
+  }
 
   function renderKeyboard(){
     const chars=keyboardChars[language.value] || "q w e r t y u i o p a s d f g h j k l z x c v b n m".split(" ");
@@ -155,6 +176,98 @@
   });
   input.lang=language.value;
 
+  /* ---------- Voice: speaker (ZEE speaks) ---------- */
+  const speakerKey = "abzemo_zee_speaker";
+  let speakerOn = localStorage.getItem(speakerKey) === "true";
+  let lastWasVoice = false;
+
+  function updateSpeaker() {
+    speakerBtn.classList.toggle("off", !speakerOn);
+    speakerBtn.textContent = speakerOn ? "🔊" : "🔇";
+    const label = speakerOn ? "Turn off ZEE voice" : "Turn on ZEE voice";
+    speakerBtn.setAttribute("aria-label", label);
+    speakerBtn.title = label;
+  }
+
+  function stopSpeaking() {
+    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+  }
+
+  function speak(text) {
+    if (!("speechSynthesis" in window) || !text) return;
+    stopSpeaking();
+    const clean = String(text).replace(/[*#`_>]/g, "").replace(/\s+/g, " ").trim().slice(0, 1200);
+    if (!clean) return;
+    const u = new SpeechSynthesisUtterance(clean);
+    u.lang = langTag();
+    u.rate = 1;
+    window.speechSynthesis.speak(u);
+  }
+
+  speakerBtn.addEventListener("click", function () {
+    speakerOn = !speakerOn;
+    localStorage.setItem(speakerKey, String(speakerOn));
+    if (!speakerOn) stopSpeaking();
+    updateSpeaker();
+  });
+  updateSpeaker();
+
+  /* ---------- Voice: mic (visitor speaks) ---------- */
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  let recognition = null;
+  let listening = false;
+
+  if (!SR) {
+    voiceBtn.disabled = true;
+    voiceBtn.title = "Voice input is not supported in this browser";
+  } else {
+    recognition = new SR();
+    recognition.continuous = false;
+    recognition.interimResults = true;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = function () {
+      listening = true;
+      voiceBtn.classList.add("active");
+      voiceBtn.textContent = "■";
+    };
+
+    recognition.onresult = function (event) {
+      let transcript = "";
+      let isFinal = false;
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        transcript += event.results[i][0].transcript;
+        if (event.results[i].isFinal) isFinal = true;
+      }
+      input.value = transcript.trim();
+      if (isFinal && input.value) {
+        lastWasVoice = true;
+        if (form.requestSubmit) form.requestSubmit();
+        else form.dispatchEvent(new Event("submit", { cancelable: true }));
+      }
+    };
+
+    recognition.onerror = function () {
+      listening = false;
+      voiceBtn.classList.remove("active");
+      voiceBtn.textContent = "🎙";
+    };
+
+    recognition.onend = function () {
+      listening = false;
+      voiceBtn.classList.remove("active");
+      voiceBtn.textContent = "🎙";
+    };
+
+    voiceBtn.addEventListener("click", function () {
+      if (listening) { recognition.stop(); return; }
+      stopSpeaking();
+      recognition.lang = langTag();
+      try { recognition.start(); } catch (e) {}
+    });
+  }
+
+  /* ---------- Chat ---------- */
   const conversation = [];
 
   function addMessage(type,title,text){
@@ -171,6 +284,8 @@
 
   async function askZee(message){
     conversation.push({role:"user",content:message});
+    const spokenReply = lastWasVoice;
+    lastWasVoice = false;
     try{
       const response=await fetch("/api/zee-bot",{
         method:"POST",
@@ -182,6 +297,7 @@
       if(!response.ok || !data.reply) throw new Error(data.error || "ZEE Bot request failed.");
       conversation.push({role:"assistant",content:data.reply});
       addMessage("bot","ZEE",data.reply);
+      if (speakerOn || spokenReply) speak(data.reply);
     }catch(error){
       console.error("ZEE Bot error:",error);
       conversation.pop();
