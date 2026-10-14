@@ -13,29 +13,32 @@
     }
   });
 
-  /* UZMO link: add to menu (Capabilities) and footer (Explore) if missing */
-  function hasUzmo(scope) {
-    return scope.querySelector('a[href="/uzmo/"]') !== null;
+  /* Shared links: add to menu and footer if missing */
+  function hasLink(scope, href) {
+    return scope.querySelector('a[href="' + href + '"]') !== null;
   }
 
-  function makeLink() {
+  function makeLink(href, text) {
     var a = document.createElement("a");
-    a.setAttribute("href", "/uzmo/");
-    a.textContent = "UZMO";
+    a.setAttribute("href", href);
+    a.textContent = text;
     return a;
   }
 
-  document.querySelectorAll(".mega-section").forEach(function(section){
-    var title = section.querySelector(".mega-section-title");
-    if (!title || title.textContent.trim().toLowerCase() !== "capabilities") return;
-    if (hasUzmo(section)) return;
-    section.appendChild(makeLink());
-  });
+  function addTo(scopes, titleSelector, wanted, href, text) {
+    document.querySelectorAll(scopes).forEach(function(scope){
+      var title = scope.querySelector(titleSelector);
+      if (!title || title.textContent.trim().toLowerCase() !== wanted) return;
+      if (hasLink(scope, href)) return;
+      scope.appendChild(makeLink(href, text));
+    });
+  }
 
-  document.querySelectorAll(".footer-column").forEach(function(column){
-    var title = column.querySelector("h4");
-    if (!title || title.textContent.trim().toLowerCase() !== "explore") return;
-    if (hasUzmo(column)) return;
-    column.appendChild(makeLink());
-  });
+  /* UZMO: menu (Capabilities) and footer (Explore) */
+  addTo(".mega-section", ".mega-section-title", "capabilities", "/uzmo/", "UZMO");
+  addTo(".footer-column", "h4", "explore", "/uzmo/", "UZMO");
+
+  /* Careers: menu (ABZEMO) and footer (Company) */
+  addTo(".mega-section", ".mega-section-title", "abzemo", "careers.html", "Careers");
+  addTo(".footer-column", "h4", "company", "careers.html", "Careers");
 })();
