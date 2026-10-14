@@ -19,12 +19,12 @@
     #zee-bot-launcher-wrap{width:min(390px,calc(100vw - 56px));display:flex;flex-direction:column;align-items:flex-end}
     .zee-bot-stage{width:390px;height:250px;margin-bottom:-8px;display:flex;align-items:flex-end;justify-content:center;pointer-events:none}
     .zee-robot{width:230px;height:230px;display:block;filter:drop-shadow(0 18px 22px rgba(7,26,53,.18));animation:zeeRobotFloat 3.2s ease-in-out infinite}
-    .zee-robot-core{transform-origin:150px 170px;animation:zeeRobotPulse 2.4s ease-in-out infinite}
-    .zee-robot-eye{animation:zeeRobotBlink 4.5s infinite}
-    .zee-robot-orbit{transform-origin:150px 155px;animation:zeeRobotOrbit 5s linear infinite}
+    .zee-robot-core{transform-origin:150px 200px;animation:zeeRobotPulse 2.4s ease-in-out infinite}
+    .zee-robot-eye{transform-origin:center;animation:zeeRobotBlink 4.5s infinite}
+    .zee-robot-orbit{transform-origin:150px 155px;animation:zeeRobotOrbit 6s linear infinite}
     @keyframes zeeRobotFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-10px) rotate(-1.5deg)}}
-    @keyframes zeeRobotPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.025)}}
-    @keyframes zeeRobotBlink{0%,44%,48%,100%{opacity:1}46%{opacity:.12}}
+    @keyframes zeeRobotPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.02)}}
+    @keyframes zeeRobotBlink{0%,44%,48%,100%{opacity:1}46%{opacity:.1}}
     @keyframes zeeRobotOrbit{to{transform:rotate(360deg)}}
     .zee-chat{width:min(390px,calc(100vw - 56px));max-height:220px;overflow-y:auto;margin-bottom:10px;display:flex;flex-direction:column;gap:7px;scroll-behavior:smooth}
     .zee-msg{max-width:92%;padding:9px 12px;border-radius:14px;font-size:12px;line-height:1.5;white-space:pre-wrap;word-break:break-word;box-shadow:0 5px 18px rgba(7,26,53,.08)}
@@ -59,8 +59,33 @@
     <div id="zee-bot-launcher-wrap">
       <div class="zee-bot-stage" aria-hidden="true">
         <svg class="zee-robot" viewBox="0 0 300 300" role="img" aria-label="ZEE Bot">
-          <g class="zee-robot-orbit" fill="none" stroke="#168cff" stroke-width="2" opacity=".55"><ellipse cx="150" cy="155" rx="122" ry="42" transform="rotate(-18 150 155)"/><circle cx="272" cy="116" r="5" fill="#1264d8" stroke="none"/></g>
-          <g class="zee-robot-core"><rect x="72" y="90" width="156" height="124" rx="38" fill="#071a35"/><rect x="84" y="102" width="132" height="96" rx="30" fill="#f7f9fc"/><rect x="105" y="128" width="90" height="45" rx="18" fill="#071a35"/><circle class="zee-robot-eye" cx="128" cy="150" r="7" fill="#168cff"/><circle class="zee-robot-eye" cx="172" cy="150" r="7" fill="#168cff"/><path d="M132 181 Q150 193 168 181" fill="none" stroke="#1264d8" stroke-width="5" stroke-linecap="round"/><rect x="139" y="67" width="22" height="27" rx="11" fill="#071a35"/><circle cx="150" cy="60" r="8" fill="#168cff"/><circle cx="66" cy="148" r="15" fill="#1264d8" opacity=".9"/><circle cx="234" cy="148" r="15" fill="#1264d8" opacity=".9"/><path d="M88 218 Q150 242 212 218" fill="none" stroke="#1264d8" stroke-width="5" stroke-linecap="round"/></g>
+          <g class="zee-robot-orbit" fill="none" stroke="#168cff" stroke-width="2" opacity=".5"><ellipse cx="150" cy="160" rx="128" ry="44" transform="rotate(-18 150 160)"/><circle cx="276" cy="118" r="5" fill="#1264d8" stroke="none"/><circle cx="26" cy="196" r="4" fill="#168cff" stroke="none"/></g>
+          <g class="zee-robot-core">
+            <circle cx="96" cy="84" r="21" fill="#0b2a5b"/>
+            <circle cx="204" cy="84" r="21" fill="#0b2a5b"/>
+            <path d="M196 74 L222 62 L220 90 Z" fill="#168cff"/>
+            <path d="M196 74 L172 62 L174 90 Z" fill="#1264d8"/>
+            <circle cx="196" cy="76" r="5" fill="#ffffff"/>
+            <ellipse cx="150" cy="140" rx="68" ry="62" fill="#0b2a5b"/>
+            <ellipse cx="150" cy="144" rx="62" ry="56" fill="#ffffff" stroke="#1264d8" stroke-width="4"/>
+            <rect x="100" y="114" width="100" height="58" rx="26" fill="#071a35"/>
+            <path d="M82 134 Q88 70 150 68 Q212 70 218 134 Q190 102 150 106 Q110 102 82 134 Z" fill="#0b2a5b"/>
+            <circle cx="82" cy="146" r="11" fill="#1264d8"/>
+            <circle cx="218" cy="146" r="11" fill="#1264d8"/>
+            <path d="M82 154 Q84 178 112 180" fill="none" stroke="#071a35" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="114" cy="180" r="4" fill="#168cff"/>
+            <circle class="zee-robot-eye" cx="130" cy="140" r="7" fill="#8fd0ff"/>
+            <circle class="zee-robot-eye" cx="170" cy="140" r="7" fill="#8fd0ff"/>
+            <path d="M121 133 L115 128 M179 133 L185 128" stroke="#8fd0ff" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="114" cy="158" r="6" fill="#ff9db8" opacity=".55"/>
+            <circle cx="186" cy="158" r="6" fill="#ff9db8" opacity=".55"/>
+            <path d="M136 156 Q150 168 164 156" fill="none" stroke="#8fd0ff" stroke-width="4" stroke-linecap="round"/>
+            <rect x="138" y="198" width="24" height="14" rx="5" fill="#071a35"/>
+            <path d="M92 268 Q92 216 150 212 Q208 216 208 268 Z" fill="#1264d8"/>
+            <path d="M128 214 Q150 232 172 214" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
+            <circle cx="150" cy="248" r="13" fill="#ffffff"/>
+            <text x="150" y="254" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="16" font-weight="900" fill="#1264d8">Z</text>
+          </g>
         </svg>
       </div>
       <div class="zee-chat" aria-live="polite"></div>
@@ -70,7 +95,7 @@
       </form>
       <div class="zee-tools">
         <button type="button" class="zee-voice" aria-label="Voice input" title="Speak your question">🎙</button>
-        <button type="button" class="zee-speaker off" aria-label="Turn on ZEE voice" title="Turn on ZEE voice">🔇</button>
+        <button type="button" class="zee-speaker" aria-label="Mute ZEE voice" title="ZEE voice replies on">🔊</button>
         <select class="zee-language" aria-label="Choose typing language">
           <option value="en">English</option><option value="ur">Urdu</option><option value="ar">Arabic</option><option value="hi">Hindi</option><option value="bn">Bengali</option><option value="pa">Punjabi</option><option value="sd">Sindhi</option><option value="ps">Pashto</option><option value="fa">Persian</option><option value="he">Hebrew</option><option value="ru">Russian</option><option value="uk">Ukrainian</option><option value="el">Greek</option><option value="hy">Armenian</option><option value="ka">Georgian</option><option value="zh">Chinese</option><option value="ja">Japanese</option><option value="ko">Korean</option><option value="th">Thai</option><option value="vi">Vietnamese</option><option value="tr">Turkish</option><option value="az">Azerbaijani</option><option value="kk">Kazakh</option><option value="uz">Uzbek</option><option value="pl">Polish</option><option value="cs">Czech</option><option value="sk">Slovak</option><option value="hu">Hungarian</option><option value="ro">Romanian</option><option value="bg">Bulgarian</option><option value="sr">Serbian</option><option value="hr">Croatian</option><option value="sl">Slovenian</option><option value="sq">Albanian</option><option value="it">Italian</option><option value="es">Spanish</option><option value="pt">Portuguese</option><option value="fr">French</option><option value="de">German</option><option value="nl">Dutch</option><option value="da">Danish</option><option value="sv">Swedish</option><option value="no">Norwegian</option><option value="fi">Finnish</option><option value="is">Icelandic</option><option value="ga">Irish</option><option value="cy">Welsh</option><option value="id">Indonesian</option><option value="ms">Malay</option><option value="fil">Filipino</option><option value="sw">Swahili</option><option value="af">Afrikaans</option><option value="am">Amharic</option><option value="so">Somali</option><option value="ta">Tamil</option><option value="te">Telugu</option><option value="kn">Kannada</option><option value="ml">Malayalam</option><option value="mr">Marathi</option><option value="gu">Gujarati</option><option value="ne">Nepali</option><option value="si">Sinhala</option>
         </select>
@@ -176,15 +201,15 @@
   });
   input.lang=language.value;
 
-  /* ---------- Voice: speaker (ZEE speaks) ---------- */
-  const speakerKey = "abzemo_zee_speaker";
-  let speakerOn = localStorage.getItem(speakerKey) === "true";
+  /* ---------- Voice replies (only when the visitor spoke) ---------- */
+  const speakerKey = "abzemo_zee_voice_replies";
+  let speakerOn = localStorage.getItem(speakerKey) !== "false";
   let lastWasVoice = false;
 
   function updateSpeaker() {
     speakerBtn.classList.toggle("off", !speakerOn);
     speakerBtn.textContent = speakerOn ? "🔊" : "🔇";
-    const label = speakerOn ? "Turn off ZEE voice" : "Turn on ZEE voice";
+    const label = speakerOn ? "Mute ZEE voice replies" : "Turn on ZEE voice replies";
     speakerBtn.setAttribute("aria-label", label);
     speakerBtn.title = label;
   }
@@ -193,14 +218,31 @@
     if ("speechSynthesis" in window) window.speechSynthesis.cancel();
   }
 
+  var FEMALE_HINT = /female|woman|zira|samantha|susan|hazel|heera|aria|jenny|salma|zariyah|karen|moira|tessa|victoria|fiona|joanna|catherine|linda|sara|natasha|libby|sonia|ayesha|asma|uzma|swara|neerja|kalpana|amelie|alice|elsa|helena|katja|paulina|laura|monica/i;
+
+  function pickVoice(tag) {
+    if (!("speechSynthesis" in window)) return null;
+    var voices = window.speechSynthesis.getVoices() || [];
+    var base = tag.slice(0, 2).toLowerCase();
+    var pool = voices.filter(function (v) { return (v.lang || "").toLowerCase().indexOf(base) === 0; });
+    if (!pool.length) return null;
+    var exact = pool.filter(function (v) { return (v.lang || "").toLowerCase() === tag.toLowerCase(); });
+    var scoped = exact.length ? exact : pool;
+    return scoped.find(function (v) { return FEMALE_HINT.test(v.name); }) || scoped[0];
+  }
+
   function speak(text) {
     if (!("speechSynthesis" in window) || !text) return;
     stopSpeaking();
-    const clean = String(text).replace(/[*#`_>]/g, "").replace(/\s+/g, " ").trim().slice(0, 1200);
+    var clean = String(text).replace(/[*#`_>]/g, "").replace(/\s+/g, " ").trim().slice(0, 1200);
     if (!clean) return;
-    const u = new SpeechSynthesisUtterance(clean);
-    u.lang = langTag();
+    var u = new SpeechSynthesisUtterance(clean);
+    var tag = langTag();
+    u.lang = tag;
+    var voice = pickVoice(tag);
+    if (voice) u.voice = voice;
     u.rate = 1;
+    u.pitch = 1.12;
     window.speechSynthesis.speak(u);
   }
 
@@ -212,7 +254,7 @@
   });
   updateSpeaker();
 
-  /* ---------- Voice: mic (visitor speaks) ---------- */
+  /* ---------- Mic (visitor speaks) ---------- */
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   let recognition = null;
   let listening = false;
@@ -282,10 +324,8 @@
     chat.scrollTop=chat.scrollHeight;
   }
 
-  async function askZee(message){
+  async function askZee(message, viaVoice){
     conversation.push({role:"user",content:message});
-    const spokenReply = lastWasVoice;
-    lastWasVoice = false;
     try{
       const response=await fetch("/api/zee-bot",{
         method:"POST",
@@ -297,7 +337,7 @@
       if(!response.ok || !data.reply) throw new Error(data.error || "ZEE Bot request failed.");
       conversation.push({role:"assistant",content:data.reply});
       addMessage("bot","ZEE",data.reply);
-      if (speakerOn || spokenReply) speak(data.reply);
+      if (viaVoice && speakerOn) speak(data.reply);
     }catch(error){
       console.error("ZEE Bot error:",error);
       conversation.pop();
@@ -312,9 +352,11 @@
     event.preventDefault();
     const value=input.value.trim();
     if(!value || input.disabled)return;
+    const viaVoice = lastWasVoice;
+    lastWasVoice = false;
     addMessage("user","You",value);
     input.value="";
     input.disabled=true;
-    askZee(value);
+    askZee(value, viaVoice);
   });
 })();
