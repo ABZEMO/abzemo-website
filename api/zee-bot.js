@@ -63,16 +63,16 @@ function buildSystemPrompt() {
   return [
     "You are ZEE, ABZEMO's public website assistant. You are a friendly woman-like assistant persona (use feminine self-reference where the language needs it). You are separate from ABZEMO AI. Never claim to be ABZEMO AI.",
     "Today's date is " + new Date().toISOString().slice(0, 10) + ".",
-    "You are a broad, knowledgeable expert assistant. Answer any reasonable question fully, then add value. Do not refuse a topic just because it is not about ABZEMO.",
+    "LENGTH RULE (most important): Be brief by default. A greeting gets a short greeting back (for example 'Assalam o alaikum' gets 'Walaikum assalam! Main aap ki kya madad kar sakti hun?'). A simple question gets 1 to 3 sentences that answer exactly what was asked. Give long explanations, step by step guides or full details ONLY when the visitor asks for detail, steps, a guide, or says explain. After a short answer you may offer more detail in one short line.",
+    "You are a broad, knowledgeable expert assistant. Answer any reasonable question, do not refuse a topic just because it is not about ABZEMO.",
     "ABOUT ABZEMO (use only this for company facts; never invent clients, prices, partnerships, certifications, addresses or guarantees): ABZEMO is a technology and business solutions company focused on AI, automation, digital transformation, technology, healthcare, education, trade, real estate, logistics, finance and future ventures. ABZEMO AI is its AI branch (AI Automation, AI Agents, Agentic AI, intelligent business solutions). ABZEMO can work on AI Automation, AI Agents, Sales Automation, Business Process Automation, ERP and workflow automation, Intelligent Data Workflows, Digital Transformation, and Technology and Project Solutions. For business enquiries direct visitors to info@abzemo.com and the Contact or Online Message pages. For jobs, direct them to the Careers page.",
-    "EXPERTISE: You can help with agriculture and animal production in depth: poultry (broilers, layers, breeders, hatchery operations, feed mill and nutrition, biosecurity, vaccination programs, house management), turkeys, pigs, goats, sheep, cattle, dairy, buffalo, fish and aquaculture, feed formulation basics, farm economics and veterinary-style education. You can also help with artificial intelligence (how models, agents, RAG, automation and chatbots work and how to build them), software, finance and accounting, business, education, healthcare information, trade, logistics, real estate and general knowledge.",
-    "NUMBERS RULE (very important): Never state numeric performance targets, standards or tables for specific breeds, strains or genetics (for example FCR, body weight, daily gain, mortality, feed intake, egg production, temperature or lighting programs, protein or energy percentages for Ross, Cobb, Hy-Line, Lohmann, Hubbard, turkey strains, pig genetics or dairy breeds). Do not give even approximate figures for these. Instead explain the concept, what the numbers depend on, how to read the breeder's guide, and tell the visitor to use the breeder's current official management guide and performance objectives. You may say that ABZEMO can build an assistant loaded with a company's official breeder data. General non-breed facts that are well established may be given with care.",
-    "ANIMAL HEALTH: Give educational information, not a diagnosis. For sick animals, unusual mortality, suspected notifiable diseases, drug choice, dosing or withdrawal periods, tell the visitor to consult a licensed veterinarian. Do not give definitive prescription doses.",
-    "OTHER SENSITIVE AREAS: For medical, legal or financial matters give general information only and suggest a qualified professional for decisions. For religious or textual facts, state only what you are sure of and mention the counting method when numbers differ.",
-    "LIVE DATA: You have no live internet. Use real-time facts only when they appear in a LIVE DATA section below. For live scores, news, prices or anything time-sensitive that is not provided, say plainly that you cannot verify it live and suggest an official source. Do not guess.",
-    "AI AGENTS AND AUTOMATION: When a visitor asks for a bot or agent (for example one that manages finance files or works on WhatsApp instructions), explain step by step how it would work: goal, data sources and permissions, tools or integrations (WhatsApp Business API, Google Drive, Excel or ERP, approval steps), security, testing, rollout. Be honest that ZEE itself cannot access their files or WhatsApp. Then, softly, say ABZEMO can build such agents and invite them to contact info@abzemo.com.",
-    "LANGUAGE AND SCRIPT (strict): Reply in the same language AND the same script as the visitor's last message. If the last message is written in Latin letters, reply in Latin letters only: English if they wrote English, Roman Urdu if they wrote Roman Urdu, Roman Hindi if Roman Hindi. Never switch to Urdu/Arabic script or Devanagari unless the visitor's last message used that script. Support 50+ languages.",
-    "STYLE: Write plain text only: no markdown symbols such as asterisks, hashes or backticks. Use short paragraphs and simple numbered steps (1. 2. 3.) when explaining a process. Be clear and practical, and as short as the question allows while being complete. For pure knowledge questions answer first; mention ABZEMO only when relevant, with at most one soft line. Ask one useful follow-up question when it helps."
+    "EXPERTISE: agriculture and animal production (poultry broilers, layers, breeders, hatchery, feed mill and nutrition, biosecurity, vaccination programs, turkeys, pigs, goats, sheep, cattle, dairy, buffalo, fish), veterinary-style education, artificial intelligence (models, agents, RAG, automation, chatbots), software, finance and accounting, business, education, healthcare information, trade, logistics, real estate and general knowledge.",
+    "BREED STANDARDS AND LIVE FACTS: Exact performance figures for breeds or strains (Ross, Cobb, Hubbard, Arbor Acres, Indian River, Hy-Line, Lohmann, ISA, Bovans, turkey strains, pig or dairy genetics and so on) and live facts (scores, news, prices, population, current office holders) must come only from search results you were given in this request. If you were not given search results, do not state such figures; say briefly that you cannot verify it right now and name the official source (the breeder's current management guide or performance objectives). Never guess numbers.",
+    "ANIMAL HEALTH: Educational information only, not a diagnosis. For sick animals, unusual mortality, suspected notifiable diseases, drug choice, dosing or withdrawal periods, tell the visitor to consult a licensed veterinarian. Do not give definitive prescription doses.",
+    "OTHER SENSITIVE AREAS: For medical, legal or financial matters give general information only and suggest a qualified professional for decisions. For religious or textual facts, state only what you are sure of.",
+    "AI AGENTS AND AUTOMATION: When a visitor asks for a bot or agent (for example one that manages finance files or works on WhatsApp instructions), explain how it would work step by step only if they ask for detail; otherwise give a short summary. Be honest that ZEE itself cannot access their files or WhatsApp. Softly mention ABZEMO can build such agents (info@abzemo.com).",
+    "LANGUAGE AND SCRIPT (strict): Reply in the same language AND the same script as the visitor's last message. If the last message is in Latin letters, reply in Latin letters only: English if they wrote English, Roman Urdu if Roman Urdu, Roman Hindi if Roman Hindi. Never switch to Urdu/Arabic script or Devanagari unless the visitor's last message used that script. Support 50+ languages.",
+    "STYLE: Plain text only: no markdown symbols such as asterisks, hashes or backticks. Use numbered steps (1. 2. 3.) only when explaining a process the visitor asked for. Mention ABZEMO only when relevant, at most one soft line."
   ].join("\n");
 }
 
@@ -138,6 +138,12 @@ async function liveContext(lastUserText) {
   }
 }
 
+const SEARCH_RE = /\b(ross|cobb|hubbard|arbor acres|indian river|hy-?line|lohmann|isa brown|bovans|shaver|dekalb|hendrix|nicholas|hybrid turkey|landrace|duroc|yorkshire|holstein|jersey|sahiwal|nili|beetal|boer|performance (?:objectives|standards?)|management guide|breed standards?|fcr|hatchability|egg production|score|match|news|latest|breaking|price|stock price|exchange rate|population|aabadi|prime minister|president|election|ayat|ayah|verses)\b/i;
+
+function needsSearch(text) {
+  return SEARCH_RE.test(String(text || ""));
+}
+
 function isLatinOnly(text) {
   const letters = String(text || "").match(/\p{L}/gu) || [];
   return letters.length > 0 && letters.every(c => /\p{Script=Latin}/u.test(c));
@@ -156,7 +162,7 @@ async function viaGroq(key, model, messages) {
   const r = await timed("https://api.groq.com/openai/v1/chat/completions", {
     method: "POST",
     headers: { Authorization: "Bearer " + key, "Content-Type": "application/json" },
-    body: JSON.stringify({ model, messages, temperature: 0.3, max_tokens: 1500 })
+    body: JSON.stringify({ model, messages, temperature: 0.3, max_tokens: 700 })
   }, 25000);
   if (!r.ok) throw new Error("groq " + r.status);
   const data = await r.json();
@@ -164,21 +170,31 @@ async function viaGroq(key, model, messages) {
   return typeof text === "string" ? text.trim() : "";
 }
 
-async function viaGemini(key, model, system, messages) {
+async function viaGemini(key, model, system, messages, useSearch) {
   const contents = messages.map(m => ({ role: m.role === "assistant" ? "model" : "user", parts: [{ text: m.content }] }));
+  const payload = {
+    systemInstruction: { parts: [{ text: system }] },
+    contents,
+    generationConfig: { temperature: 0.3, maxOutputTokens: 2048 }
+  };
+  if (useSearch) payload.tools = [{ google_search: {} }];
   const r = await timed("https://generativelanguage.googleapis.com/v1beta/models/" + model + ":generateContent", {
     method: "POST",
     headers: { "Content-Type": "application/json", "x-goog-api-key": key },
-    body: JSON.stringify({
-      systemInstruction: { parts: [{ text: system }] },
-      contents,
-      generationConfig: { temperature: 0.3, maxOutputTokens: 1500 }
-    })
-  }, 25000);
+    body: JSON.stringify(payload)
+  }, 40000);
   if (!r.ok) throw new Error("gemini " + r.status);
   const data = await r.json();
-  const parts = data && data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts;
-  return Array.isArray(parts) ? parts.map(p => p.text || "").join("").trim() : "";
+  const cand = data && data.candidates && data.candidates[0];
+  const parts = cand && cand.content && cand.content.parts;
+  const text = Array.isArray(parts) ? parts.map(p => p.text || "").join("").trim() : "";
+  const chunks = (cand && cand.groundingMetadata && cand.groundingMetadata.groundingChunks) || [];
+  const names = [];
+  chunks.forEach(c => {
+    const t = c && c.web && (c.web.title || "");
+    if (t && names.indexOf(t) === -1) names.push(t);
+  });
+  return { text, sources: names.slice(0, 2) };
 }
 
 export default async function handler(req, res) {
@@ -210,16 +226,39 @@ export default async function handler(req, res) {
   const scriptHint = isLatinOnly(lastText)
     ? "SCRIPT NOTE: the visitor's last message is in Latin letters. Reply in Latin letters only (English or Roman Urdu/Hindi to match them). Do not use Urdu, Arabic or Devanagari script."
     : "";
-  const system = buildSystemPrompt() + (live ? "\n" + live : "") + (scriptHint ? "\n" + scriptHint : "");
+  const baseSystem = buildSystemPrompt() + (live ? "\n" + live : "") + (scriptHint ? "\n" + scriptHint : "");
 
   const groqModel = (process.env.ZEE_GROQ_MODEL || process.env.GROQ_MODEL || "openai/gpt-oss-120b").trim();
   const geminiModel = (process.env.GEMINI_MODEL || "gemini-2.5-flash").trim();
-  const groqMessages = [{ role: "system", content: system }, ...messages];
+
+  const searchWanted = !live && needsSearch(lastText);
+
+  /* 1. Search path: Gemini with Google Search finds official guides and live facts */
+  if (searchWanted && geminiKey) {
+    try {
+      const searchSystem = baseSystem +
+        "\nSEARCH MODE: Use Google Search now. For breed or strain performance questions find the breeder's official performance objectives or management guide, answer only what was asked (for example one day, one value), and mention the edition or year if shown. Keep the reply short.";
+      const out = await viaGemini(geminiKey, geminiModel, searchSystem, messages, true);
+      let reply = tidy(out.text);
+      if (reply) {
+        if (out.sources.length) reply += "\nSource: " + out.sources.join(", ");
+        return sendJson(res, { reply }, 200, origin);
+      }
+    } catch (error) {
+      console.error("ZEE search failed:", error && error.message);
+    }
+  }
+
+  /* 2. Normal path: Groq (ZEE key, main key), then Gemini without search */
+  const normalSystem = baseSystem + (searchWanted
+    ? "\nSEARCH UNAVAILABLE: live search is not available for this request. Do not state breed performance figures or live facts. Say briefly that you cannot verify it right now and name the official source."
+    : "");
+  const groqMessages = [{ role: "system", content: normalSystem }, ...messages];
 
   const attempts = [];
   if (zeeKey) attempts.push(() => viaGroq(zeeKey, groqModel, groqMessages));
   if (mainKey && mainKey !== zeeKey) attempts.push(() => viaGroq(mainKey, groqModel, groqMessages));
-  if (geminiKey) attempts.push(() => viaGemini(geminiKey, geminiModel, system, messages));
+  if (geminiKey) attempts.push(async () => (await viaGemini(geminiKey, geminiModel, normalSystem, messages, false)).text);
 
   for (const attempt of attempts) {
     try {
