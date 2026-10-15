@@ -169,7 +169,17 @@ async function viaGroq(key, model, messages) {
   const text = data && data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
   return typeof text === "string" ? text.trim() : "";
 }
-
+async function viaGroqSearch(key, model, messages) {
+  const r = await timed("https://api.groq.com/openai/v1/chat/completions", {
+    method: "POST",
+    headers: { Authorization: "Bearer " + key, "Content-Type": "application/json" },
+    body: JSON.stringify({ model, messages, temperature: 0.3, max_tokens: 900, reasoning_effort: "low", tools: [{ type: "browser_search" }] })
+  }, 40000);
+  if (!r.ok) throw new Error("groq-search " + r.status);
+  const data = await r.json();
+  const text = data && data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
+  return typeof text === "string" ? text.trim() : "";
+}
 async function viaGemini(key, model, system, messages, useSearch) {
   const contents = messages.map(m => ({ role: m.role === "assistant" ? "model" : "user", parts: [{ text: m.content }] }));
   const payload = {
@@ -233,19 +243,25 @@ export default async function handler(req, res) {
 
   const searchWanted = !live && needsSearch(lastText);
 
-  /* 1. Search path: Gemini with Google Search finds official guides and live facts */
-  if (searchWanted && geminiKey) {
-    try {
-      const searchSystem = baseSystem +
-        "\nSEARCH MODE: Use Google Search now. For breed or strain performance questions find the breeder's official performance objectives or management guide, answer only what was asked (for example one day, one value), and mention the edition or year if shown. Keep the reply short.";
+  /* 1. Search path: Groq browser_search first, then Gemini Search */
+  if (searchWanted) {
+    const searchSystem = baseSystem +
+      "\nSEARCH MODE: Use web search now. For breed or strain performance questions find the breeder's official performance objectives or management guide, answer only what was asked (for example one day, one value), and mention the edition or year if shown. Keep the reply short.";
+    const searchMessages = [{ role: "system", content: searchSystem }, ...messages];
+    const searchAttempts = [];
+    if (zeeKey) searchAttempts.push(() => viaGroqSearch(zeeKey, groqModel, searchMessages));
+    if (mainKey && mainKey !== zeeKey) searchAttempts.push(() => viaGroqSearch(mainKey, groqModel, searchMessages));
+    if (geminiKey) searchAttempts.push(async () => {
       const out = await viaGemini(geminiKey, geminiModel, searchSystem, messages, true);
-      let reply = tidy(out.text);
-      if (reply) {
-        if (out.sources.length) reply += "\nSource: " + out.sources.join(", ");
-        return sendJson(res, { reply }, 200, origin);
+      return out.text + (out.sources.length ? "\nSource: " + out.sources.join(", ") : "");
+    });
+    for (const attempt of searchAttempts) {
+      try {
+        const reply = tidy(await attempt());
+        if (reply) return sendJson(res, { reply }, 200, origin);
+      } catch (error) {
+        console.error("ZEE search failed:", error && error.message);
       }
-    } catch (error) {
-      console.error("ZEE search failed:", error && error.message);
     }
   }
 
