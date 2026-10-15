@@ -19,11 +19,11 @@
     #zee-bot-launcher-wrap{width:min(390px,calc(100vw - 56px));display:flex;flex-direction:column;align-items:flex-end}
     .zee-bot-stage{width:390px;height:250px;margin-bottom:-8px;display:flex;align-items:flex-end;justify-content:center;pointer-events:none}
     .zee-robot{width:230px;height:230px;display:block;filter:drop-shadow(0 18px 22px rgba(7,26,53,.18));animation:zeeRobotFloat 3.2s ease-in-out infinite}
-    .zee-robot-core{transform-origin:150px 200px;animation:zeeRobotPulse 2.4s ease-in-out infinite}
-    .zee-robot-eye{transform-origin:center;animation:zeeRobotBlink 4.5s infinite}
-    .zee-robot-orbit{transform-origin:150px 155px;animation:zeeRobotOrbit 6s linear infinite}
-    @keyframes zeeRobotFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-10px) rotate(-1.5deg)}}
-    @keyframes zeeRobotPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.02)}}
+    .zee-robot-core{transform-origin:150px 220px;animation:zeeRobotPulse 2.6s ease-in-out infinite}
+    .zee-robot-eye{animation:zeeRobotBlink 4.5s infinite}
+    .zee-robot-orbit{transform-origin:150px 160px;animation:zeeRobotOrbit 7s linear infinite}
+    @keyframes zeeRobotFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+    @keyframes zeeRobotPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.015)}}
     @keyframes zeeRobotBlink{0%,44%,48%,100%{opacity:1}46%{opacity:.1}}
     @keyframes zeeRobotOrbit{to{transform:rotate(360deg)}}
     .zee-chat{width:min(390px,calc(100vw - 56px));max-height:220px;overflow-y:auto;margin-bottom:10px;display:flex;flex-direction:column;gap:7px;scroll-behavior:smooth}
@@ -36,8 +36,8 @@
     .zee-launcher-input{flex:1;min-width:0;height:40px;border:0;outline:0;background:transparent;color:#17243a;font:13px/40px Arial,Helvetica,sans-serif}
     .zee-launcher-input::placeholder{color:#7a8798}
     .zee-launcher-send{width:40px;height:40px;border:0;border-radius:50%;background:linear-gradient(135deg,#1264d8,#168cff);color:#fff;font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer}
-    .zee-tools{display:flex;align-items:center;gap:6px;margin-top:7px;width:min(390px,calc(100vw - 56px));justify-content:flex-end}
-    .zee-language,.zee-keyboard-toggle{height:30px;border:1px solid rgba(18,100,216,.22);border-radius:15px;background:#fff;color:#17243a;font:11px Arial,sans-serif;padding:0 10px;cursor:pointer;box-shadow:0 5px 15px rgba(7,26,53,.08)}
+    .zee-tools{display:flex;align-items:center;gap:6px;margin-top:7px;width:min(390px,calc(100vw - 56px));justify-content:flex-end;flex-wrap:wrap}
+    .zee-language,.zee-keyboard-toggle,.zee-clear{height:30px;border:1px solid rgba(18,100,216,.22);border-radius:15px;background:#fff;color:#17243a;font:11px Arial,sans-serif;padding:0 10px;cursor:pointer;box-shadow:0 5px 15px rgba(7,26,53,.08)}
     .zee-voice,.zee-speaker{width:30px;height:30px;border:1px solid rgba(18,100,216,.22);border-radius:50%;background:#fff;color:#1264d8;font-size:14px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 5px 15px rgba(7,26,53,.08);padding:0}
     .zee-voice.active{background:#1264d8;color:#fff}
     .zee-speaker.off{color:#7d899a;background:#f4f6f9}
@@ -59,32 +59,39 @@
     <div id="zee-bot-launcher-wrap">
       <div class="zee-bot-stage" aria-hidden="true">
         <svg class="zee-robot" viewBox="0 0 300 300" role="img" aria-label="ZEE Bot">
-          <g class="zee-robot-orbit" fill="none" stroke="#168cff" stroke-width="2" opacity=".5"><ellipse cx="150" cy="160" rx="128" ry="44" transform="rotate(-18 150 160)"/><circle cx="276" cy="118" r="5" fill="#1264d8" stroke="none"/><circle cx="26" cy="196" r="4" fill="#168cff" stroke="none"/></g>
+          <g class="zee-robot-orbit" fill="none" stroke="#168cff" stroke-width="2" opacity=".45"><ellipse cx="150" cy="165" rx="130" ry="46" transform="rotate(-16 150 165)"/><circle cx="278" cy="122" r="5" fill="#1264d8" stroke="none"/></g>
           <g class="zee-robot-core">
-            <circle cx="96" cy="84" r="21" fill="#0b2a5b"/>
-            <circle cx="204" cy="84" r="21" fill="#0b2a5b"/>
-            <path d="M196 74 L222 62 L220 90 Z" fill="#168cff"/>
-            <path d="M196 74 L172 62 L174 90 Z" fill="#1264d8"/>
-            <circle cx="196" cy="76" r="5" fill="#ffffff"/>
-            <ellipse cx="150" cy="140" rx="68" ry="62" fill="#0b2a5b"/>
-            <ellipse cx="150" cy="144" rx="62" ry="56" fill="#ffffff" stroke="#1264d8" stroke-width="4"/>
-            <rect x="100" y="114" width="100" height="58" rx="26" fill="#071a35"/>
-            <path d="M82 134 Q88 70 150 68 Q212 70 218 134 Q190 102 150 106 Q110 102 82 134 Z" fill="#0b2a5b"/>
-            <circle cx="82" cy="146" r="11" fill="#1264d8"/>
-            <circle cx="218" cy="146" r="11" fill="#1264d8"/>
-            <path d="M82 154 Q84 178 112 180" fill="none" stroke="#071a35" stroke-width="3" stroke-linecap="round"/>
-            <circle cx="114" cy="180" r="4" fill="#168cff"/>
-            <circle class="zee-robot-eye" cx="130" cy="140" r="7" fill="#8fd0ff"/>
-            <circle class="zee-robot-eye" cx="170" cy="140" r="7" fill="#8fd0ff"/>
-            <path d="M121 133 L115 128 M179 133 L185 128" stroke="#8fd0ff" stroke-width="2.5" stroke-linecap="round"/>
-            <circle cx="114" cy="158" r="6" fill="#ff9db8" opacity=".55"/>
-            <circle cx="186" cy="158" r="6" fill="#ff9db8" opacity=".55"/>
-            <path d="M136 156 Q150 168 164 156" fill="none" stroke="#8fd0ff" stroke-width="4" stroke-linecap="round"/>
-            <rect x="138" y="198" width="24" height="14" rx="5" fill="#071a35"/>
-            <path d="M92 268 Q92 216 150 212 Q208 216 208 268 Z" fill="#1264d8"/>
-            <path d="M128 214 Q150 232 172 214" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
-            <circle cx="150" cy="248" r="13" fill="#ffffff"/>
-            <text x="150" y="254" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="16" font-weight="900" fill="#1264d8">Z</text>
+            <!-- back hair -->
+            <path d="M80 140 C70 70 110 40 150 40 C190 40 230 70 220 140 L224 196 C224 206 210 206 206 196 L202 160 L98 160 L94 196 C90 206 76 206 76 196 Z" fill="#0b2a5b"/>
+            <!-- hair bun and band -->
+            <circle cx="150" cy="38" r="17" fill="#0b2a5b"/>
+            <circle cx="150" cy="38" r="7" fill="#168cff"/>
+            <!-- neck -->
+            <rect x="136" y="188" width="28" height="22" rx="8" fill="#f3d9cc"/>
+            <!-- body -->
+            <path d="M88 280 C88 224 116 208 150 208 C184 208 212 224 212 280 Z" fill="#1264d8"/>
+            <path d="M124 210 Q150 232 176 210" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
+            <circle cx="150" cy="252" r="13" fill="#ffffff"/>
+            <text x="150" y="258" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="16" font-weight="900" fill="#1264d8">Z</text>
+            <!-- face -->
+            <ellipse cx="150" cy="140" rx="58" ry="54" fill="#fbe6da"/>
+            <!-- fringe -->
+            <path d="M90 130 C92 84 120 76 150 76 C180 76 208 84 210 130 C190 112 170 98 150 98 C130 98 110 112 90 130 Z" fill="#0b2a5b"/>
+            <!-- headset -->
+            <circle cx="90" cy="146" r="11" fill="#1264d8"/>
+            <circle cx="210" cy="146" r="11" fill="#1264d8"/>
+            <path d="M90 157 Q92 180 122 182" fill="none" stroke="#071a35" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="125" cy="182" r="4.5" fill="#168cff"/>
+            <!-- eyes -->
+            <ellipse class="zee-robot-eye" cx="130" cy="142" rx="7" ry="9" fill="#071a35"/>
+            <ellipse class="zee-robot-eye" cx="170" cy="142" rx="7" ry="9" fill="#071a35"/>
+            <circle cx="132.5" cy="138.5" r="2.6" fill="#ffffff"/>
+            <circle cx="172.5" cy="138.5" r="2.6" fill="#ffffff"/>
+            <path d="M120 130 Q130 124 140 130 M160 130 Q170 124 180 130" fill="none" stroke="#071a35" stroke-width="2.4" stroke-linecap="round"/>
+            <!-- cheeks and smile -->
+            <circle cx="116" cy="160" r="7" fill="#ff9db8" opacity=".5"/>
+            <circle cx="184" cy="160" r="7" fill="#ff9db8" opacity=".5"/>
+            <path d="M136 164 Q150 176 164 164" fill="none" stroke="#c2506f" stroke-width="3.5" stroke-linecap="round"/>
           </g>
         </svg>
       </div>
@@ -100,6 +107,7 @@
           <option value="en">English</option><option value="ur">Urdu</option><option value="ar">Arabic</option><option value="hi">Hindi</option><option value="bn">Bengali</option><option value="pa">Punjabi</option><option value="sd">Sindhi</option><option value="ps">Pashto</option><option value="fa">Persian</option><option value="he">Hebrew</option><option value="ru">Russian</option><option value="uk">Ukrainian</option><option value="el">Greek</option><option value="hy">Armenian</option><option value="ka">Georgian</option><option value="zh">Chinese</option><option value="ja">Japanese</option><option value="ko">Korean</option><option value="th">Thai</option><option value="vi">Vietnamese</option><option value="tr">Turkish</option><option value="az">Azerbaijani</option><option value="kk">Kazakh</option><option value="uz">Uzbek</option><option value="pl">Polish</option><option value="cs">Czech</option><option value="sk">Slovak</option><option value="hu">Hungarian</option><option value="ro">Romanian</option><option value="bg">Bulgarian</option><option value="sr">Serbian</option><option value="hr">Croatian</option><option value="sl">Slovenian</option><option value="sq">Albanian</option><option value="it">Italian</option><option value="es">Spanish</option><option value="pt">Portuguese</option><option value="fr">French</option><option value="de">German</option><option value="nl">Dutch</option><option value="da">Danish</option><option value="sv">Swedish</option><option value="no">Norwegian</option><option value="fi">Finnish</option><option value="is">Icelandic</option><option value="ga">Irish</option><option value="cy">Welsh</option><option value="id">Indonesian</option><option value="ms">Malay</option><option value="fil">Filipino</option><option value="sw">Swahili</option><option value="af">Afrikaans</option><option value="am">Amharic</option><option value="so">Somali</option><option value="ta">Tamil</option><option value="te">Telugu</option><option value="kn">Kannada</option><option value="ml">Malayalam</option><option value="mr">Marathi</option><option value="gu">Gujarati</option><option value="ne">Nepali</option><option value="si">Sinhala</option>
         </select>
         <button type="button" class="zee-keyboard-toggle" aria-expanded="false">Keyboard</button>
+        <button type="button" class="zee-clear" aria-label="Clear chat">Clear</button>
       </div>
       <div class="zee-keyboard" aria-hidden="true">
         <div class="zee-keyboard-note">Choose a language above. Latin-script languages use the standard keyboard; script-specific characters appear here.</div>
@@ -118,6 +126,7 @@
   const keyboardGrid = root.querySelector(".zee-keyboard-grid");
   const voiceBtn = root.querySelector(".zee-voice");
   const speakerBtn = root.querySelector(".zee-speaker");
+  const clearBtn = root.querySelector(".zee-clear");
 
   const keyboardChars = {
     ur: "ا ب پ ت ٹ ث ج چ ح خ د ڈ ذ ر ڑ ز ژ س ش ص ض ط ظ ع غ ف ق ک گ ل م ن ں و ہ ھ ء ی ے".split(" "),
@@ -204,7 +213,6 @@
   /* ---------- Voice replies (only when the visitor spoke) ---------- */
   const speakerKey = "abzemo_zee_voice_replies";
   let speakerOn = localStorage.getItem(speakerKey) !== "false";
-  let lastWasVoice = false;
 
   function updateSpeaker() {
     speakerBtn.classList.toggle("off", !speakerOn);
@@ -258,6 +266,7 @@
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   let recognition = null;
   let listening = false;
+  let lastWasVoice = false;
 
   if (!SR) {
     voiceBtn.disabled = true;
@@ -347,6 +356,15 @@
       input.focus();
     }
   }
+
+  clearBtn.addEventListener("click", function () {
+    stopSpeaking();
+    conversation.length = 0;
+    chat.innerHTML = "";
+    input.value = "";
+    input.disabled = false;
+    input.focus();
+  });
 
   form.addEventListener("submit",function(event){
     event.preventDefault();
