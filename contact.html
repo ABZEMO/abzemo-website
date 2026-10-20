@@ -196,13 +196,27 @@
           <div class="form-card">
             <span class="form-kicker">ONLINE ENQUIRY</span>
             <h3>Tell us what you’re building.</h3>
-            <form class="form" action="mailto:info@abzemo.com" method="post" enctype="text/plain">
-              <div class="form-row"><label>First Name<input name="First Name" required></label><label>Last Name<input name="Last Name" required></label></div>
-              <div class="form-row"><label>Email Address<input name="Email Address" type="email" required></label><label>Contact / WhatsApp<input name="Contact / WhatsApp" type="tel"></label></div>
-              <label>What are you enquiring about?<select name="Enquiry Type"><option>AI &amp; Agentic Automation</option><option>Business Solutions</option><option>Digital Transformation</option><option>Partnerships &amp; Opportunities</option><option>Other</option></select></label>
-              <label>Tell us about your requirement<textarea name="Requirement" required placeholder="Briefly describe your challenge, idea or requirement..."></textarea></label>
-              <button type="submit" class="btn btn-primary">Send Enquiry</button>
-            </form>
+            <form class="form" id="enqForm">
+  <div class="form-row"><label>First Name<input name="First Name" required></label><label>Last Name<input name="Last Name" required></label></div>
+  <div class="form-row"><label>Email Address<input name="Email Address" type="email" required></label><label>Contact / WhatsApp<input name="Contact / WhatsApp" type="tel"></label></div>
+  <label>What are you enquiring about?<select name="Enquiry Type"><option>AI &amp; Agentic Automation</option><option>Business Solutions</option><option>Digital Transformation</option><option>Partnerships &amp; Opportunities</option><option>Other</option></select></label>
+  <label>Tell us about your requirement<textarea name="Requirement" required placeholder="Briefly describe your challenge, idea or requirement..."></textarea></label>
+  <button type="submit" class="btn btn-primary">Send Enquiry</button>
+  <p id="enqStatus"></p>
+</form>
+<script>
+document.getElementById("enqForm").addEventListener("submit",async function(e){
+  e.preventDefault();
+  var f=e.target,s=document.getElementById("enqStatus"),b=f.querySelector("button");
+  b.disabled=true;s.textContent="Sending...";
+  try{
+    var r=await fetch("/api/contact",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:f.elements["First Name"].value+" "+f.elements["Last Name"].value,email:f.elements["Email Address"].value,phone:f.elements["Contact / WhatsApp"].value,type:f.elements["Enquiry Type"].value,message:f.elements["Requirement"].value})});
+    if(!r.ok)throw new Error("fail");
+    s.textContent="Thank you. Your enquiry has been sent.";f.reset();
+  }catch(x){s.textContent="Something went wrong. Please email info@abzemo.com.";}
+  b.disabled=false;
+});
+</script>
           </div>
         </div>
       </div>
