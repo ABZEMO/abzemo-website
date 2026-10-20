@@ -11,11 +11,18 @@ const TOOLS = [
   { id: "mcp", name: "MCP Tool", description: "Invoke an authorized Model Context Protocol tool.", capabilities: ["mcp", "tool"], integration: "mcp" },
   { id: "a2a", name: "Agent-to-Agent", description: "Delegate work to another authorized agent.", capabilities: ["agent", "a2a"], integration: "a2a" }
 ];
+
+function matchesCapability(text, capability) {
+  const escaped = capability.replace(/[.*+?^$()|[\\]\\]/g, "\\$&");
+  return new RegExp("\\b" + escaped + "\\b", "i").test(text);
+}
+
 export function listTools() { return TOOLS; }
 export function getTool(id) { return TOOLS.find(tool => tool.id === id); }
+
 export function selectTools(goal, agents) {
-  const text = String(goal || "").toLowerCase(), agentIds = new Set((agents || []).map(agent => agent.id));
-  const selected = TOOLS.filter(tool => tool.capabilities.some(cap => text.includes(cap)) ||
+  const text = String(goal || ""), agentIds = new Set((agents || []).map(agent => agent.id));
+  const selected = TOOLS.filter(tool => tool.capabilities.some(cap => matchesCapability(text, cap)) ||
     (tool.id === "google_sheets" && agentIds.has("data")) ||
     (tool.id === "gmail" && agentIds.has("email")) ||
     (tool.id === "google_calendar" && agentIds.has("calendar")));
