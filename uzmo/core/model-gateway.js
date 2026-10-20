@@ -52,7 +52,7 @@ function gemini(env, fetchImpl) {
     const tools = options.tools?.length ? [{ functionDeclarations: options.tools.map(tool => ({ name: tool.function?.name || tool.name, description: tool.function?.description || "", parameters: tool.function?.parameters || tool.input_schema || { type: "object", properties: {} } })) }] : undefined;
     const data = await request(fetchImpl, `${endpoint}?key=${encodeURIComponent(key)}`, null, { ...(system ? { systemInstruction: { parts: [{ text: system }] } } : {}), contents, ...(tools ? { tools } : {}) });
     const parts = data?.candidates?.[0]?.content?.parts || [];
-    const calls = parts.filter(x => x.functionCall).map((x, i) => ({ id: `gemini-${Date.now()}-${i}`, name: x.functionCall.name, input: x.functionCall.args || {} }));
+    const calls = parts.filter(x => x.functionCall).map((x, i) => ({ id: `gemini-${Date.now()}-${i}`, name: x.functionCall.name, arguments: x.functionCall.args || {} }));
     return normalize("gemini", model, parts.filter(x => x.text).map(x => x.text).join(""), calls, data?.usageMetadata);
   });
 }
@@ -61,7 +61,7 @@ function normalize(providerName, model, text, toolCalls = [], usage = null) {
   return { provider: providerName, model, text: String(text || ""), tool_calls: normalizeToolCalls(providerName, toolCalls), usage: usage || null };
 }
 function normalizeToolCalls(providerName, calls) {
-  return (calls || []).map(call => providerName === "openai" ? { id: call.id, name: call.function?.name, arguments: parseJson(call.function?.arguments) } : { id: call.id, name: call.name, arguments: call.input || {} });
+  return (calls || []).map(call => providerName === "openai" ? { id: call.id, name: call.function?.name, arguments: parseJson(call.function?.arguments) } : { id: call.id, name: call.name, arguments: call.arguments ?? call.input ?? {} });
 }
 function parseJson(value) { try { return typeof value === "string" ? JSON.parse(value) : (value || {}); } catch { return {}; } }
 async function withRetries(fn) {
