@@ -25,7 +25,7 @@ function openAI(env, fetchImpl) {
   const model = env.UZMO_OPENAI_MODEL || env.UZMO_MODEL_NAME || "gpt-4o-mini";
   const endpoint = env.UZMO_OPENAI_ENDPOINT || "https://api.openai.com/v1/chat/completions";
   return provider("openai", key, model, async (messages, options) => {
-    const data = await request(fetchImpl, endpoint, key, { model, messages, temperature: options.temperature ?? 0.2, ...(options.tools ? { tools: options.tools, tool_choice: options.tool_choice || "auto" } : {}) });
+    const data = await request(fetchImpl, endpoint, key, { model, messages: toOpenAIMessages(messages), temperature: options.temperature ?? 0.2, ...(options.tools ? { tools: options.tools, tool_choice: options.tool_choice || "auto" } : {}) });
     const message = data?.choices?.[0]?.message || {};
     return normalize("openai", model, message.content || "", message.tool_calls || [], data?.usage);
   });
@@ -36,7 +36,7 @@ function anthropic(env, fetchImpl) {
   const endpoint = env.UZMO_ANTHROPIC_ENDPOINT || "https://api.anthropic.com/v1/messages";
   return provider("anthropic", key, model, async (messages, options) => {
     const system = messages.filter(m => m.role === "system").map(m => m.content).join("\n");
-    const input = messages.filter(m => m.role !== "system");
+    const input = toAnthropicMessages(messages);
     const data = await request(fetchImpl, endpoint, key, { model, max_tokens: options.max_tokens || 4096, system, messages: input, ...(options.tools ? { tools: options.tools } : {}) }, { "anthropic-version": "2023-06-01" });
     const blocks = data?.content || [];
     return normalize("anthropic", model, blocks.filter(x => x.type === "text").map(x => x.text).join(""), blocks.filter(x => x.type === "tool_use"), data?.usage);
@@ -47,7 +47,7 @@ function gemini(env, fetchImpl) {
   const model = env.UZMO_GEMINI_MODEL || "gemini-2.5-flash";
   const endpoint = env.UZMO_GEMINI_ENDPOINT || `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
   return provider("gemini", key, model, async (messages, options = {}) => {
-    const contents = messages.filter(m => m.role !== "system").map(m => ({ role: m.role === "assistant" ? "model" : "user", parts: [{ text: String(m.content ?? "") }] }));
+    const contents = toGeminiMessages(messages);
     const system = messages.filter(m => m.role === "system").map(m => m.content).join("\n");
     const tools = options.tools?.length ? [{ functionDeclarations: options.tools.map(tool => ({ name: tool.function?.name || tool.name, description: tool.function?.description || "", parameters: tool.function?.parameters || tool.input_schema || { type: "object", properties: {} } })) }] : undefined;
     const data = await request(fetchImpl, `${endpoint}?key=${encodeURIComponent(key)}`, null, { ...(system ? { systemInstruction: { parts: [{ text: system }] } } : {}), contents, ...(tools ? { tools } : {}) });
@@ -56,6 +56,73 @@ function gemini(env, fetchImpl) {
     return normalize("gemini", model, parts.filter(x => x.text).map(x => x.text).join(""), calls, data?.usageMetadata);
   });
 }
+
+function parseToolResultMessage(message) {
+  if (message?.role !== "user" || typeof message.content !== "string") return null;
+  try {
+    const value = JSON.parse(message.content);
+    return value?.tool_result || null;
+  } catch { return null; }
+}
+function toOpenAIMessages(messages) {
+  const output = [];
+  for (const message of messages) {
+    const toolResult = parseToolResultMessage(message);
+    if (toolResult) {
+      output.push({ role: "tool", tool_call_id: toolResult.call_id || "", content: JSON.stringify(toolResult.result ?? {}) });
+      continue;
+    }
+    if (message.role === "assistant" && Array.isArray(message.tool_calls)) {
+      output.push({
+        role: "assistant",
+        content: message.content || null,
+        tool_calls: message.tool_calls.map(call => ({ id: call.id, type: "function", function: { name: call.name, arguments: JSON.stringify(call.arguments || {}) } }))
+      });
+      continue;
+    }
+    output.push(message);
+  }
+  return output;
+}
+function toAnthropicMessages(messages) {
+  const output = [];
+  for (const message of messages.filter(m => m.role !== "system")) {
+    const toolResult = parseToolResultMessage(message);
+    if (toolResult) {
+      output.push({ role: "user", content: [{ type: "tool_result", tool_use_id: toolResult.call_id || "", content: JSON.stringify(toolResult.result ?? {}) }] });
+      continue;
+    }
+    if (message.role === "assistant" && Array.isArray(message.tool_calls)) {
+      const content = [];
+      if (message.content) content.push({ type: "text", text: String(message.content) });
+      for (const call of message.tool_calls) content.push({ type: "tool_use", id: call.id || crypto.randomUUID(), name: call.name, input: call.arguments || {} });
+      output.push({ role: "assistant", content });
+      continue;
+    }
+    output.push({ role: message.role, content: String(message.content ?? "") });
+  }
+  return output;
+}
+function toGeminiMessages(messages) {
+  const output = [];
+  for (const message of messages.filter(m => m.role !== "system")) {
+    const toolResult = parseToolResultMessage(message);
+    if (toolResult) {
+      output.push({ role: "user", parts: [{ functionResponse: { name: toolResult.tool || "", response: toolResult.result || {} } }] });
+      continue;
+    }
+    if (message.role === "assistant" && Array.isArray(message.tool_calls)) {
+      const parts = [];
+      if (message.content) parts.push({ text: String(message.content) });
+      for (const call of message.tool_calls) parts.push({ functionCall: { name: call.name, args: call.arguments || {} } });
+      output.push({ role: "model", parts });
+      continue;
+    }
+    output.push({ role: message.role === "assistant" ? "model" : "user", parts: [{ text: String(message.content ?? "") }] });
+  }
+  return output;
+}
+
 function provider(id, key, model, complete) { return { id, model, configured: Boolean(key), complete }; }
 function normalize(providerName, model, text, toolCalls = [], usage = null) {
   return { provider: providerName, model, text: String(text || ""), tool_calls: normalizeToolCalls(providerName, toolCalls), usage: usage || null };
