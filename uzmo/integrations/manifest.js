@@ -16,7 +16,7 @@ export const CONNECTOR_MANIFEST = {
     auth: "oauth2_or_service",
     capabilities: ["erp", "finance", "procurement", "inventory"]
   },
-  salesforce: {
+  zoho_crm: {\n    name: "Zoho CRM",\n    auth: "oauth2_refresh_token",\n    capabilities: ["crm", "leads", "contacts", "accounts", "deals"]\n  },\n  salesforce: {
     name: "Salesforce",
     auth: "oauth2",
     capabilities: ["crm", "leads", "accounts", "opportunities"]

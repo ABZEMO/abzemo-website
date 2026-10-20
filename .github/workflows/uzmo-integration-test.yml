@@ -1,0 +1,23 @@
+name: UZMO Integration Tests
+
+on:
+  push:
+    paths:
+      - "uzmo/integrations/**"
+      - "uzmo/tools/registry.js"
+      - "test/uzmo-integrations.test.mjs"
+  pull_request:
+    paths:
+      - "uzmo/integrations/**"
+      - "uzmo/tools/registry.js"
+      - "test/uzmo-integrations.test.mjs"
+
+jobs:
+  integration-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --test test/uzmo-integrations.test.mjs
