@@ -47,7 +47,7 @@
   if (navbar && !navbar.querySelector(".pregnancy-plus-header-btn")) {
     var ppStyle = document.createElement("style");
     ppStyle.textContent =
-      ".pregnancy-plus-header-btn{position:absolute;right:0;top:50%;transform:translateY(-50%);" +
+      ".pregnancy-plus-header-btn{position:static;transform:none;flex:0 0 auto;" +
       "z-index:1004;display:inline-flex;flex-direction:row-reverse;align-items:center;justify-content:center;gap:7px;" +
       "min-height:40px;padding:0 14px;border:1px solid #f3bfd4;border-radius:999px;" +
       "background:linear-gradient(135deg,#ffe1ec,#e8ddff);color:#704b91;font-size:13px;" +
@@ -65,7 +65,12 @@
     ppButton.setAttribute("aria-label", "Open Pregnancy Plus");
     ppButton.setAttribute("target", "_blank");
     ppButton.setAttribute("rel", "noopener noreferrer");
-    navbar.appendChild(ppButton);
+    var searchControl = document.querySelector(".abzemo-search-trigger");
+    if (searchControl && searchControl.parentNode) {
+      searchControl.insertAdjacentElement("afterend", ppButton);
+    } else {
+      navbar.appendChild(ppButton);
+    }
   }
 
 })();
