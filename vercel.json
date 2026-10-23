@@ -5,12 +5,45 @@
     }
   },
   "rewrites": [
-    { "source": "/zoho/callback", "destination": "/api/zoho-callback" },
-    { "source": "/contact", "destination": "/contact.html" },
-    { "source": "/contact/", "destination": "/contact.html" },
-    { "source": "/abzemo-ai", "destination": "/abzemo-ai.html" },
-    { "source": "/abzemo-ai/", "destination": "/abzemo-ai.html" },
-    { "source": "/careers", "destination": "/careers.html" },
-    { "source": "/careers/", "destination": "/careers.html" }
+    {
+      "source": "/zoho/callback",
+      "destination": "/api/zoho-callback"
+    },
+    {
+      "source": "/contact",
+      "destination": "/contact.html"
+    },
+    {
+      "source": "/contact/",
+      "destination": "/contact.html"
+    },
+    {
+      "source": "/abzemo-ai",
+      "destination": "/abzemo-ai.html"
+    },
+    {
+      "source": "/abzemo-ai/",
+      "destination": "/abzemo-ai.html"
+    },
+    {
+      "source": "/careers",
+      "destination": "/careers.html"
+    },
+    {
+      "source": "/careers/",
+      "destination": "/careers.html"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/pregnancy-plus",
+      "destination": "https://pregnancy-plus-8yzbt1vjs-aasopsglobal-3790.vercel.app",
+      "permanent": false
+    },
+    {
+      "source": "/pregnancy-plus/",
+      "destination": "https://pregnancy-plus-8yzbt1vjs-aasopsglobal-3790.vercel.app",
+      "permanent": false
+    }
   ]
 }
