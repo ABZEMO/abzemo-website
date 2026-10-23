@@ -35,51 +35,19 @@
     },
     {
       "source": "/pregnancy-plus",
-      "destination": "https://pregnancy-plus.vercel.app"
+      "destination": "https://pregnancy-plus-8yzbt1vjs-aasopsglobal-3790.vercel.app"
     },
     {
       "source": "/pregnancy-plus/",
-      "destination": "https://pregnancy-plus.vercel.app"
+      "destination": "https://pregnancy-plus-8yzbt1vjs-aasopsglobal-3790.vercel.app"
     },
     {
       "source": "/pregnancyplus",
-      "destination": "https://pregnancy-plus.vercel.app"
+      "destination": "https://pregnancy-plus-8yzbt1vjs-aasopsglobal-3790.vercel.app"
     },
     {
       "source": "/pregnancyplus/",
-      "destination": "https://pregnancy-plus.vercel.app"
-    },
-    {
-      "source": "/pregnancy-plus/contact",
-      "destination": "https://pregnancy-plus.vercel.app/contact.html"
-    },
-    {
-      "source": "/pregnancy-plus/contact/",
-      "destination": "https://pregnancy-plus.vercel.app/contact.html"
-    },
-    {
-      "source": "/pregnancy-plus/api/contact",
-      "destination": "https://pregnancy-plus.vercel.app/api/contact"
-    },
-    {
-      "source": "/pregnancy-plus/theme.css",
-      "destination": "https://pregnancy-plus.vercel.app/theme.css"
-    },
-    {
-      "source": "/pregnancy-plus/abzemo-search.css",
-      "destination": "https://pregnancy-plus.vercel.app/abzemo-search.css"
-    },
-    {
-      "source": "/pregnancy-plus/pp-header.js",
-      "destination": "https://pregnancy-plus.vercel.app/pp-header.js"
-    },
-    {
-      "source": "/pregnancy-plus/i18n.js",
-      "destination": "https://pregnancy-plus.vercel.app/i18n.js"
-    },
-    {
-      "source": "/pregnancy-plus/abzemo-search.js",
-      "destination": "https://pregnancy-plus.vercel.app/abzemo-search.js"
+      "destination": "https://pregnancy-plus-8yzbt1vjs-aasopsglobal-3790.vercel.app"
     }
   ]
 }
