@@ -32,18 +32,14 @@
     {
       "source": "/careers/",
       "destination": "/careers.html"
-    }
-  ],
-  "redirects": [
+    },
     {
       "source": "/pregnancy-plus",
-      "destination": "https://pregnancy-plus-8yzbt1vjs-aasopsglobal-3790.vercel.app",
-      "permanent": false
+      "destination": "https://pregnancy-plus-8yzbt1vjs-aasopsglobal-3790.vercel.app"
     },
     {
       "source": "/pregnancy-plus/",
-      "destination": "https://pregnancy-plus-8yzbt1vjs-aasopsglobal-3790.vercel.app",
-      "permanent": false
+      "destination": "https://pregnancy-plus-8yzbt1vjs-aasopsglobal-3790.vercel.app"
     }
   ]
 }
