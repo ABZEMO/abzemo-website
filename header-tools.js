@@ -42,24 +42,28 @@
   addTo(".mega-section", ".mega-section-title", "abzemo", "careers.html", "Careers");
   addTo(".footer-column", "h4", "company", "careers.html", "Careers");
 
-  /* Pregnancy Plus header button — isolated addition; keep existing header behavior unchanged. */
+  /* Pregnancy Plus header button — rightmost, after Search; keep other header content intact. */
   var navbar = document.querySelector(".site-header .navbar");
   if (navbar && !navbar.querySelector(".pregnancy-plus-header-btn")) {
     var ppStyle = document.createElement("style");
     ppStyle.textContent =
-      ".pregnancy-plus-header-btn{justify-self:end;display:inline-flex;align-items:center;justify-content:center;" +
-      "min-height:40px;padding:0 15px;border:1px solid #f3bfd4;border-radius:999px;" +
+      ".pregnancy-plus-header-btn{position:absolute;right:0;top:50%;transform:translateY(-50%);" +
+      "z-index:1004;display:inline-flex;align-items:center;justify-content:center;gap:7px;" +
+      "min-height:40px;padding:0 14px;border:1px solid #f3bfd4;border-radius:999px;" +
       "background:linear-gradient(135deg,#ffe1ec,#e8ddff);color:#704b91;font-size:13px;" +
       "font-weight:800;white-space:nowrap;box-shadow:0 4px 12px rgba(155,127,230,.14);" +
-      "transition:transform .2s ease,box-shadow .2s ease;text-decoration:none}" +
-      ".pregnancy-plus-header-btn:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(155,127,230,.22);color:#704b91}" +
-      "@media(max-width:760px){.pregnancy-plus-header-btn{min-height:34px;padding:0 10px;font-size:11px}}" +
-      "@media(max-width:420px){.pregnancy-plus-header-btn{padding:0 8px;font-size:10px}}";
+      "transition:box-shadow .2s ease;text-decoration:none}" +
+      ".pregnancy-plus-header-btn:hover{box-shadow:0 6px 16px rgba(155,127,230,.22);color:#704b91}" +
+      ".pregnancy-plus-header-btn svg{width:17px;height:17px;flex:0 0 17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}" +
+      ".abzemo-search-trigger{right:166px!important}" +
+      "@media(max-width:980px){.abzemo-search-trigger{right:132px!important}.abzemo-language-control{right:180px!important;left:auto!important}}" +
+      "@media(max-width:640px){.pregnancy-plus-header-btn{min-height:36px;padding:0 8px;gap:4px;font-size:10px}.pregnancy-plus-header-btn svg{width:14px;height:14px;flex-basis:14px}.abzemo-search-trigger{right:116px!important;width:38px!important;height:38px!important}.abzemo-language-control{right:158px!important;left:auto!important;width:42px!important}}" +
+      "@media(max-width:420px){.pregnancy-plus-header-btn{padding:0 6px;font-size:9px;gap:3px}.abzemo-search-trigger{right:106px!important}.abzemo-language-control{right:146px!important}}";
     document.head.appendChild(ppStyle);
     var ppButton = document.createElement("a");
     ppButton.className = "pregnancy-plus-header-btn";
     ppButton.href = "https://pregnancy-plus.vercel.app/";
-    ppButton.textContent = "Pregnancy Plus";
+    ppButton.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/></svg><span>Pregnancy Plus</span>';
     ppButton.setAttribute("aria-label", "Open Pregnancy Plus");
     ppButton.setAttribute("target", "_blank");
     ppButton.setAttribute("rel", "noopener noreferrer");
