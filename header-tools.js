@@ -47,7 +47,8 @@
 
   /* Pregnancy Plus button */
   var ppBtn = document.createElement("a");
-  ppBtn.href = "https://pregnancy-plus.vercel.app/";
+  ppBtn.href = "/pregnancy-plus/";
+  ppBtn.addEventListener("click", function () { try { var l = localStorage.getItem("abzemo_site_language"); if (l) localStorage.setItem("pp_site_language", l); } catch (e) {} });
   ppBtn.className = "pp-btn";
   ppBtn.setAttribute("aria-label", "Pregnancy Plus");
   ppBtn.innerHTML = '<svg viewBox="0 0 48 48" aria-hidden="true"><defs><linearGradient id="ppbg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f7a8c8"/><stop offset="1" stop-color="#7b4fbf"/></linearGradient></defs><circle cx="24" cy="24" r="22" fill="url(#ppbg)"/><path d="M24 36c-8-5.5-11-9.4-11-13.2 0-3.2 2.4-5.3 5.2-5.3 2.2 0 4.2 1.2 5.8 3.6 1.6-2.4 3.6-3.6 5.8-3.6 2.8 0 5.2 2.1 5.2 5.3C35 26.6 32 30.5 24 36z" fill="#fff"/></svg><span>Pregnancy <b>Plus</b></span>';
