@@ -4,6 +4,9 @@
       "maxDuration": 30
     }
   },
+    "redirects": [
+    { "source": "/pregnancy-plus", "destination": "/pregnancy-plus/", "permanent": false }
+  ],
   "rewrites": [
     {
       "source": "/zoho/callback",
@@ -33,13 +36,17 @@
       "source": "/careers/",
       "destination": "/careers.html"
     },
-        {
+    {
       "source": "/pregnancy-plus",
       "destination": "https://pregnancy-plus.vercel.app/pregnancy-plus"
     },
     {
       "source": "/pregnancy-plus/:path*",
       "destination": "https://pregnancy-plus.vercel.app/pregnancy-plus/:path*"
+    },
+    {
+      "source": "/pregnancy-plus/",
+      "destination": "https://pregnancy-plus.vercel.app/pregnancy-plus/"
     },
     {
       "source": "/pregnancyplus",
