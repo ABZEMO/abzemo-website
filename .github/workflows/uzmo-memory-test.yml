@@ -1,1 +1,23 @@
-name: UZMO Tests\non:\n  push:\n    paths: ["uzmo/**", "test/uzmo-*.test.mjs", "package.json"]\n  pull_request:\n    paths: ["uzmo/**", "test/uzmo-*.test.mjs", "package.json"]\njobs:\n  uzmo-tests:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n        with:\n          node-version: 22\n      - run: npm run test:uzmo\n
+name: UZMO Tests
+on:
+  push:
+    paths:
+      - "uzmo/**"
+      - "test/uzmo-*.test.mjs"
+      - "package.json"
+      - ".github/workflows/uzmo-memory-test.yml"
+  pull_request:
+    paths:
+      - "uzmo/**"
+      - "test/uzmo-*.test.mjs"
+      - "package.json"
+      - ".github/workflows/uzmo-memory-test.yml"
+jobs:
+  uzmo-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm run test:uzmo
