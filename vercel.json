@@ -33,21 +33,17 @@
       "source": "/careers/",
       "destination": "/careers.html"
     },
-    {
+        {
       "source": "/pregnancy-plus",
-      "destination": "https://pregnancy-plus-8yzbt1vjs-aasopsglobal-3790.vercel.app"
+      "destination": "https://pregnancy-plus.vercel.app/pregnancy-plus"
     },
     {
-      "source": "/pregnancy-plus/",
-      "destination": "https://pregnancy-plus-8yzbt1vjs-aasopsglobal-3790.vercel.app"
+      "source": "/pregnancy-plus/:path*",
+      "destination": "https://pregnancy-plus.vercel.app/pregnancy-plus/:path*"
     },
     {
       "source": "/pregnancyplus",
-      "destination": "https://pregnancy-plus-8yzbt1vjs-aasopsglobal-3790.vercel.app"
-    },
-    {
-      "source": "/pregnancyplus/",
-      "destination": "https://pregnancy-plus-8yzbt1vjs-aasopsglobal-3790.vercel.app"
+      "destination": "https://pregnancy-plus.vercel.app/pregnancy-plus"
     }
   ]
 }
