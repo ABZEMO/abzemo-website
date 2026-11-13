@@ -321,6 +321,19 @@
   /* ---------- Chat ---------- */
   const conversation = [];
 
+  /* ZEE support: a random id for this chat (kept only in memory) so ticket drafts survive between messages */
+  function newSupportSessionId(){
+    try{
+      const bytes=new Uint8Array(16);
+      crypto.getRandomValues(bytes);
+      return Array.from(bytes,function(b){return b.toString(16).padStart(2,"0");}).join("");
+    }catch(_error){
+      return String(Date.now())+Math.random().toString(16).slice(2)+Math.random().toString(16).slice(2);
+    }
+  }
+  let supportSessionId=newSupportSessionId();
+  let supportActive=false;
+
   function addMessage(type,title,text){
     const bubble=document.createElement("div");
     bubble.className="zee-msg zee-msg-"+type;
@@ -339,11 +352,12 @@
       const response=await fetch("/api/zee-bot",{
         method:"POST",
         headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({messages:conversation.slice(-12)})
+        body:JSON.stringify({messages:conversation.slice(-12),sessionId:supportSessionId,supportActive:supportActive})
       });
       let data={};
       try{data=await response.json();}catch(_error){}
       if(!response.ok || !data.reply) throw new Error(data.error || "ZEE Bot request failed.");
+      supportActive=data.supportActive===true;
       conversation.push({role:"assistant",content:data.reply});
       addMessage("bot","ZEE",data.reply);
       if (viaVoice && speakerOn) speak(data.reply);
@@ -360,6 +374,8 @@
   clearBtn.addEventListener("click", function () {
     stopSpeaking();
     conversation.length = 0;
+    supportSessionId = newSupportSessionId();
+    supportActive = false;
     chat.innerHTML = "";
     input.value = "";
     input.disabled = false;
