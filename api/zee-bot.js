@@ -8,6 +8,20 @@ const ALLOWED_ORIGINS = new Set([
 const MAX_MESSAGE_LENGTH = 2000;
 const MAX_MESSAGES = 12;
 
+/* ZEE customer-service module. Loaded lazily: if it cannot load, ordinary chat keeps working exactly as before. */
+let supportModulePromise;
+function getSupportModule() {
+  if (!supportModulePromise) {
+    supportModulePromise = import("../support/zee-support.js")
+      .then(m => m.default || m)
+      .catch(error => {
+        console.error("ZEE support module unavailable:", error && error.message);
+        return null;
+      });
+  }
+  return supportModulePromise;
+}
+
 function isAllowedOrigin(origin) {
   if (ALLOWED_ORIGINS.has(origin)) return true;
   try {
@@ -72,6 +86,7 @@ function buildSystemPrompt() {
     "OTHER SENSITIVE AREAS: For medical, legal or financial matters give general information only and suggest a qualified professional for decisions. For religious or textual facts, state only what you are sure of.",
     "AI AGENTS AND AUTOMATION: When a visitor asks for a bot or agent (for example one that manages finance files or works on WhatsApp instructions), explain how it would work step by step only if they ask for detail; otherwise give a short summary. Be honest that ZEE itself cannot access their files or WhatsApp. Softly mention ABZEMO can build such agents (info@abzemo.com).",
     "LANGUAGE AND SCRIPT (strict): Reply in the same language AND the same script as the visitor's last message. If the last message is in Latin letters, reply in Latin letters only: English if they wrote English, Roman Urdu if Roman Urdu, Roman Hindi if Roman Hindi. Never switch to Urdu/Arabic script or Devanagari unless the visitor's last message used that script. Support 50+ languages.",
+    "SUPPORT TICKETS: In a normal reply you cannot create, look up, change or close tickets, send emails or notify humans. Never say or imply that a ticket was created, a status was checked, an email was sent or a human was notified. If the visitor wants to register a complaint, track a ticket, give feedback or talk to a human, tell them to say so (for example: I want to register a complaint, track my ticket, talk to a human) and ZEE's support desk will handle it. For urgent matters they can email info@abzemo.com.",
     "STYLE: Plain text only: no markdown symbols such as asterisks, hashes or backticks. Use numbered steps (1. 2. 3.) only when explaining a process the visitor asked for. Mention ABZEMO only when relevant, at most one soft line."
   ].join("\n");
 }
@@ -236,10 +251,47 @@ export default async function handler(req, res) {
   const scriptHint = isLatinOnly(lastText)
     ? "SCRIPT NOTE: the visitor's last message is in Latin letters. Reply in Latin letters only (English or Roman Urdu/Hindi to match them). Do not use Urdu, Arabic or Devanagari script."
     : "";
-  const baseSystem = buildSystemPrompt() + (live ? "\n" + live : "") + (scriptHint ? "\n" + scriptHint : "");
+  const supportModule = await getSupportModule();
+  let knowledgeText = "";
+  if (supportModule) {
+    try { knowledgeText = await supportModule.knowledgeContext(lastText, process.env); } catch (error) { knowledgeText = ""; }
+  }
+  const baseSystem = buildSystemPrompt() + (live ? "\n" + live : "") + (scriptHint ? "\n" + scriptHint : "") + (knowledgeText ? "\n" + knowledgeText : "");
 
   const groqModel = (process.env.ZEE_GROQ_MODEL || process.env.GROQ_MODEL || "openai/gpt-oss-120b").trim();
   const geminiModel = (process.env.GEMINI_MODEL || "gemini-3.5-flash").trim();
+
+    /* ZEE customer service: complaints, tickets, tracking, human escalation, feedback.
+     Returns null for ordinary conversation, so everything below runs exactly as before. */
+  if (supportModule) {
+    try {
+      const supportReply = await supportModule.handleSupport({
+        sessionId: body.sessionId,
+        supportActive: body.supportActive === true,
+        messages,
+        headers: req.headers,
+        generate: async (system, msgs) => {
+          const list = [{ role: "system", content: system }, ...msgs];
+          const tries = [];
+          if (zeeKey) tries.push(() => viaGroq(zeeKey, groqModel, list));
+          if (mainKey && mainKey !== zeeKey) tries.push(() => viaGroq(mainKey, groqModel, list));
+          if (geminiKey) tries.push(async () => (await viaGemini(geminiKey, geminiModel, system, msgs, false)).text);
+          for (const attempt of tries) {
+            try {
+              const out = tidy(await attempt());
+              if (out) return out;
+            } catch (error) {
+              console.error("ZEE support AI step failed:", error && error.message);
+            }
+          }
+          return "";
+        }
+      });
+      if (supportReply && supportReply.reply) return sendJson(res, supportReply, 200, origin);
+    } catch (error) {
+      console.error("ZEE support failed:", error && error.message);
+    }
+  }
 
   const searchWanted = !live && needsSearch(lastText);
 
