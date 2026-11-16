@@ -687,9 +687,17 @@ async function ensureTicket(c, allowSkip) {
   if (!d.email) { s.step = "email"; return { prompt: MSG.askTicketEmail() }; }
   const r = await lookupTicket(c, d.ticketId, d.email);
   if (r.ticket) return { ticket: r.ticket };
-  d.ticketId = ""; d.email = "";
-  s.step = "ticket";
+  d.email = ""; // keep the reference, so the visitor only has to retype the e-mail
+  s.step = "email";
   return { fail: r.message };
+}
+
+/* A reference/e-mail step only complains when the message contains neither a ticket reference nor an e-mail. */
+function credsProblem(c, allowSkip) {
+  const s = c.session, t = c.text;
+  if (findTicketId(t) || findEmail(t)) return null;
+  if (allowSkip && isSkip(t)) return null;
+  return s.step === "ticket" ? MSG.badTicket() : MSG.badEmail();
 }
 
 function harvestCreds(c, allowSkip) {
@@ -698,7 +706,7 @@ function harvestCreds(c, allowSkip) {
   if (id) d.ticketId = id;
   const em = findEmail(t);
   if (em && d.ticketId) d.email = em;
-  if (allowSkip && s.step === "ticket" && !id && isSkip(t)) d.general = true;
+  if (allowSkip && !id && !em && isSkip(t)) d.general = true;
 }
 
 /* ------------------------------------------------------------------ */
@@ -920,9 +928,8 @@ async function advanceTrack(c) {
 }
 
 async function continueTrack(c) {
-  const s = c.session;
-  if (s.step === "ticket" && !findTicketId(c.text)) return MSG.badTicket();
-  if (s.step === "email" && !findEmail(c.text)) return MSG.badEmail();
+  const problem = credsProblem(c, false);
+  if (problem) return problem;
   harvestCreds(c, false);
   return advanceTrack(c);
 }
@@ -958,8 +965,8 @@ async function advanceEscalate(c) {
 async function continueEscalate(c, fromDescription) {
   const s = c.session;
   if (!fromDescription) {
-    if (s.step === "ticket" && !findTicketId(c.text)) return MSG.badTicket();
-    if (s.step === "email" && !findEmail(c.text)) return MSG.badEmail();
+    const problem = credsProblem(c, false);
+    if (problem) return problem;
     harvestCreds(c, false);
   } else {
     s.data.email = findEmail(c.text);
@@ -1008,8 +1015,8 @@ async function advanceFeedback(c) {
 async function continueFeedback(c) {
   const s = c.session, d = s.data, t = c.text;
   if (s.step === "ticket" || s.step === "email") {
-    if (s.step === "ticket" && !findTicketId(t) && !isSkip(t)) return MSG.badTicket();
-    if (s.step === "email" && !findEmail(t)) return MSG.badEmail();
+    const problem = credsProblem(c, true);
+    if (problem) return problem;
     harvestCreds(c, true);
     return advanceFeedback(c);
   }
@@ -1057,12 +1064,13 @@ function flowIntent(flow) {
   return flow === "escalate" ? "human" : flow;
 }
 
-function shouldSwitch(s, det) {
+function shouldSwitch(s, det, text) {
   if (!det || !det.strong) return false;
   if (!s.flow) return false;
   if (flowIntent(s.flow) === det.intent) return false;
   if (FREE_TEXT_STEPS.has(s.step)) return false;
-  if (s.step === "ticket" || s.step === "email") return false; // the visitor is typing a reference or email, not changing topic
+  // While a ticket reference or e-mail is being typed, only a message WITHOUT a reference/e-mail can change the topic.
+  if ((s.step === "ticket" || s.step === "email") && (findTicketId(text) || findEmail(text))) return false;
   return true;
 }
 
@@ -1099,7 +1107,7 @@ async function continueFlow(c) {
 async function route(c, det) {
   const s = c.session;
   if (s.flow && isCancel(c.text)) { endFlow(s); return MSG.cancelled(); }
-  if (shouldSwitch(s, det)) { endFlow(s); return startFlow(c, det); }
+  if (shouldSwitch(s, det, c.text)) { endFlow(s); return startFlow(c, det); }
   if (s.flow) return continueFlow(c);
   return det ? startFlow(c, det) : null;
 }
