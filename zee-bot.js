@@ -58,9 +58,10 @@
   root.innerHTML = `
     <div id="zee-bot-launcher-wrap">
       <div class="zee-bot-stage" aria-hidden="true">
-        <svg class="zee-robot" viewBox="0 0 300 300" role="img" aria-label="ZEE Bot">
-          <g class="zee-robot-orbit" fill="none" stroke="#168cff" stroke-width="2" opacity=".45"><ellipse cx="150" cy="165" rx="130" ry="46" transform="rotate(-16 150 165)"/><circle cx="278" cy="122" r="5" fill="#1264d8" stroke="none"/></g>
-          <g class="zee-robot-core">
+            <img class="zee-robot" src="/assets/zee-lady-bot.png" alt="ZEE Bot" style="object-fit:contain">
+            <svg class="zee-robot-old" style="display:none" viewBox="0 0 300 300" role="img" aria-label="ZEE Bot" hidden>
+            <g class="zee-robot-orbit" fill="none" stroke="#168cff" stroke-width="2" opacity=".45"><ellipse cx="150" cy="165" rx="130" ry="46" transform="rotate(-16 150 165)"/><circle cx="278" cy="122" r="5" fill="#1264d8" stroke="none"/></g>
+            <g class="zee-robot-core">
             <!-- back hair -->
             <path d="M80 140 C70 70 110 40 150 40 C190 40 230 70 220 140 L224 196 C224 206 210 206 206 196 L202 160 L98 160 L94 196 C90 206 76 206 76 196 Z" fill="#0b2a5b"/>
             <!-- hair bun and band -->
