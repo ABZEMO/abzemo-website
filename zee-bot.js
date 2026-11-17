@@ -51,10 +51,10 @@
     @media(max-width:600px){#zee-bot-root{right:12px;bottom:84px}.zee-bot-stage{width:calc(100vw - 24px);height:210px;margin-bottom:-4px}.zee-robot{width:200px;height:200px}.zee-chat{width:calc(100vw - 24px);max-height:170px}#zee-bot-launcher{width:calc(100vw - 24px);min-height:50px}}
     @media(prefers-reduced-motion:reduce){.zee-robot,.zee-robot-core,.zee-robot-eye,.zee-robot-orbit{animation:none}}
     .zee-bot-stage,.zee-tools{display:none}
-    #zee-bot-root.zee-open .zee-bot-stage{display:flex;height:150px}
+    #zee-bot-root.zee-open .zee-bot-stage{display:flex;height:160px}
     #zee-bot-root.zee-open .zee-tools{display:flex;animation:zeePop .25s ease}
     @keyframes zeePop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-    .zee-avatar{width:140px;height:140px;border-radius:50%;background:#fff url(/assets/zee-lady-bot.png) no-repeat;background-size:210%;background-position:50% 2%;border:3px solid #fff;box-shadow:0 10px 26px rgba(7,26,53,.25)}
+   .zee-avatar{width:150px;height:150px;background:url(/assets/zee-lady-bot.png) no-repeat center bottom/contain}
   `;
   document.head.appendChild(css);
 
