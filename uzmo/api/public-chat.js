@@ -23,6 +23,20 @@ function systemPrompt(agent) {
   return text;
 }
 
+const RU_WORDS = new Set("hai hain hy kya kyun kyu kese kaise kesy mujhe mujhy mera meri mere aap ap tum nahi nahin nhi karo karna karen kren bata batao btao chahiye chahta chahti raha rahi rahe wala wali aur lekin kab kahan kidhar kitna kitni kuch acha achha theek thik shukriya masla madad abhi sab hoga hogi kar sakta sakti sakte liye lye agar jab phir ya".split(" "));
+const EN_WORDS = new Set("the is are was what how why when where who can could you your i my me to of and for with do does did please want need help about this that in on it be have has will would should explain tell give make write show".split(" "));
+
+function replyLanguageHint(text) {
+  const s = String(text || "");
+  if (/[\u0600-\u06FF\u0900-\u097F]/.test(s)) return "The user's latest message is not in Latin letters: reply in that same language and script.";
+  const words = s.toLowerCase().match(/[a-z']+/g) || [];
+  let ru = 0, en = 0;
+  for (const w of words) { if (RU_WORDS.has(w)) ru++; if (EN_WORDS.has(w)) en++; }
+  if (ru >= 1 && ru >= en) return "LANGUAGE RULE: the user's latest message is Roman Urdu (Urdu written in Latin letters). Reply ONLY in Roman Urdu in Latin letters, even if earlier messages in this chat were in English.";
+  if (en >= 1 && en > ru) return "LANGUAGE RULE: the user's latest message is English. Reply ONLY in English, even if earlier messages in this chat were in Roman Urdu.";
+  return "";
+}
+
 const hits = new Map();
 function limited(ip) {
   const now = Date.now();
@@ -71,7 +85,7 @@ export async function handlePublicChat(req, res) {
         model: (process.env.UZMO_GROQ_MODEL || "openai/gpt-oss-120b").trim(),
         temperature: 0.3,
         max_tokens: 800,
-        messages: [{ role: "system", content: systemPrompt(agent) }, ...messages]
+        messages: [{ role: "system", content: systemPrompt(agent) + " " + replyLanguageHint(messages[messages.length - 1].content) }, ...messages]
       })
     });
     if (notePromise) await notePromise;
