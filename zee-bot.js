@@ -50,6 +50,11 @@
     .zee-keyboard-note{font:10px/1.35 Arial,sans-serif;color:#7a8798;margin-bottom:7px}
     @media(max-width:600px){#zee-bot-root{right:12px;bottom:84px}.zee-bot-stage{width:calc(100vw - 24px);height:210px;margin-bottom:-4px}.zee-robot{width:200px;height:200px}.zee-chat{width:calc(100vw - 24px);max-height:170px}#zee-bot-launcher{width:calc(100vw - 24px);min-height:50px}}
     @media(prefers-reduced-motion:reduce){.zee-robot,.zee-robot-core,.zee-robot-eye,.zee-robot-orbit{animation:none}}
+    .zee-bot-stage,.zee-tools{display:none}
+    #zee-bot-root.zee-open .zee-bot-stage{display:flex;height:150px}
+    #zee-bot-root.zee-open .zee-tools{display:flex;animation:zeePop .25s ease}
+    @keyframes zeePop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+    .zee-avatar{width:140px;height:140px;border-radius:50%;background:#fff url(/assets/zee-lady-bot.png) no-repeat;background-size:210%;background-position:50% 2%;border:3px solid #fff;box-shadow:0 10px 26px rgba(7,26,53,.25)}
   `;
   document.head.appendChild(css);
 
@@ -58,7 +63,7 @@
   root.innerHTML = `
     <div id="zee-bot-launcher-wrap">
       <div class="zee-bot-stage" aria-hidden="true">
-            <img class="zee-robot" src="/assets/zee-lady-bot.png" alt="ZEE Bot" style="object-fit:contain">
+            <div class="zee-robot zee-avatar" role="img" aria-label="ZEE Bot"></div>
             <svg class="zee-robot-old" style="display:none" viewBox="0 0 300 300" role="img" aria-label="ZEE Bot" hidden>
             <g class="zee-robot-orbit" fill="none" stroke="#168cff" stroke-width="2" opacity=".45"><ellipse cx="150" cy="165" rx="130" ry="46" transform="rotate(-16 150 165)"/><circle cx="278" cy="122" r="5" fill="#1264d8" stroke="none"/></g>
             <g class="zee-robot-core">
@@ -128,7 +133,8 @@
   const voiceBtn = root.querySelector(".zee-voice");
   const speakerBtn = root.querySelector(".zee-speaker");
   const clearBtn = root.querySelector(".zee-clear");
-
+  input.addEventListener("focus",function(){root.classList.add("zee-open");});
+  document.addEventListener("pointerdown",function(e){if(!root.contains(e.target))root.classList.remove("zee-open");});
   const keyboardChars = {
     ur: "ا ب پ ت ٹ ث ج چ ح خ د ڈ ذ ر ڑ ز ژ س ش ص ض ط ظ ع غ ف ق ک گ ل م ن ں و ہ ھ ء ی ے".split(" "),
     ar: "ا ب ت ث ج ح خ د ذ ر ز س ش ص ض ط ظ ع غ ف ق ك ل م ن ه و ي ء أ إ آ ة ى".split(" "),
