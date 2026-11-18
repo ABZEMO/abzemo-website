@@ -957,9 +957,11 @@
     .med-hero{min-height:0;padding-top:0} 
     .med-slide{pointer-events:none}
     .med-slide.active{pointer-events:auto}
-    .med-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:5;width:46px;height:46px;border:0;border-radius:50%;background:rgba(255,255,255,.92);color:var(--navy);font-size:18px;cursor:pointer}
+    .med-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:5;width:50px;height:70px;border:0;background:none;font-size:0;cursor:pointer;display:flex;align-items:center;justify-content:center}
+    .med-arrow::before{content:"";width:22px;height:22px;border-left:3px solid #fff;border-bottom:3px solid #fff;transform:rotate(45deg);filter:drop-shadow(0 2px 4px rgba(0,0,0,.5))}
+    .med-arrow.next::before{transform:rotate(-135deg)}
     .med-arrow.prev{left:18px}
-    .med-arrow.next{right:18px} 
+    .med-arrow.next{right:90px}
   </style>
 </head>
 
@@ -991,8 +993,6 @@
         <span class="brand-name">ABZEM<span>O</span></span>
       </a>
 
-      <button class="med-arrow prev" id="medPrev" type="button" aria-label="Previous">&#10094;</button>
-      <button class="med-arrow next" id="medNext" type="button" aria-label="Next">&#10095;</button>
     </div>
 
     <nav aria-label="Primary navigation">
@@ -1086,6 +1086,8 @@
   <div class="med-slide"><img src="assets/medical-6.jpg" alt=""><div class="med-caption"><h2><a href="https://www.abzemo.com/pharmacy-medicine-management">AI Pharmacy &amp; Medicine Management</a></h2><p>Medicine and stock management made simple.</p></div></div>
   <div class="med-slide"><img src="assets/medical-7.jpg" alt=""><div class="med-caption"><h2><a href="https://www.abzemo.com/telemedicine">AI Telemedicine</a></h2><p>Consult doctors online, anytime.</p></div></div>
   <div class="med-slide"><img src="assets/medical-8.jpg" alt=""><div class="med-caption"><h2><a href="https://www.abzemo.com/mother-baby-care">AI Mother &amp; Baby Care</a></h2><p>Care for mothers and babies together.</p></div></div>
+  <button class="med-arrow prev" id="medPrev" type="button" aria-label="Previous">&#10094;</button>
+  <button class="med-arrow next" id="medNext" type="button" aria-label="Next">&#10095;</button>
 </div>
     <section class="hero med-hero">
        <div class="container" style="padding:80px 0;position:relative;">
@@ -1243,8 +1245,13 @@
     })();
   </script>
 <script>
-  (function(){var s=document.querySelectorAll("#medSlider .med-slide"),i=0,t;
-  function go(n){i=(n+s.length)%s.length;s.forEach(function(e,k){e.style.transform="translateX("+(k-i)*100+"%)";e.classList.toggle("active",k===i);});}
+  (function(){var s=document.querySelectorAll("#medSlider .med-slide"),n=s.length,i=0,t;
+  function go(x){i=(x+n)%n;s.forEach(function(e,k){
+    var d=((k-i+1)%n+n)%n-1;
+    var jump=e._d!==undefined&&Math.abs(d-e._d)>1;
+    e.style.transition=jump?"none":"";
+    e.style.transform="translateX("+d*100+"%)";
+    e._d=d;e.classList.toggle("active",k===i);});}
   function auto(){clearInterval(t);t=setInterval(function(){go(i+1);},4000);}
   document.getElementById("medNext").onclick=function(){go(i+1);auto();};
   document.getElementById("medPrev").onclick=function(){go(i-1);auto();};
