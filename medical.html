@@ -947,6 +947,14 @@
     .med-popup a{display:block;margin-bottom:8px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;color:var(--navy);font-size:15px;font-weight:700;transition:.2s ease}
     .med-popup a:hover{color:#fff;background:var(--blue);border-color:var(--blue)}
     .med-close{position:absolute;top:12px;right:14px;width:38px;height:38px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--navy);font-size:24px;cursor:pointer}
+    .med-slider{position:relative;margin-top:78px;height:420px;overflow:hidden;background:var(--navy)}
+    .med-slide{position:absolute;inset:0;opacity:0;transition:opacity .8s ease}
+    .med-slide.active{opacity:1}
+    .med-slide img{width:100%;height:100%;object-fit:cover}
+    .med-slide::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(7,26,53,.85),rgba(7,26,53,.15))}
+    .med-caption{position:absolute;z-index:2;left:max(24px,calc((100% - 1180px)/2));top:50%;transform:translateY(-50%);color:#fff;max-width:560px}
+    .med-caption h2{margin:0 0 10px;color:#fff;font-size:clamp(30px,5vw,56px);letter-spacing:-2px;line-height:1.05}
+    .med-caption p{margin:0;color:rgba(255,255,255,.8);font-size:18px}
   </style>
 </head>
 
@@ -1062,6 +1070,16 @@
 
   <main>
 
+  <div class="med-slider" id="medSlider">
+  <div class="med-slide active"><img src="assets/medical-1.jpg" alt=""><div class="med-caption"><h2>AI Pregnancy Plus</h2><p>Smart care through every stage of pregnancy.</p></div></div>
+  <div class="med-slide"><img src="assets/medical-2.jpg" alt=""><div class="med-caption"><h2>AI Patient Health File</h2><p>Your complete health record in one place.</p></div></div>
+  <div class="med-slide"><img src="assets/medical-3.jpg" alt=""><div class="med-caption"><h2>AI Chronic Care Assistant</h2><p>Daily support for long-term conditions.</p></div></div>
+  <div class="med-slide"><img src="assets/medical-4.jpg" alt=""><div class="med-caption"><h2>AI Lab Reports Assistant</h2><p>Understand your lab reports instantly.</p></div></div>
+  <div class="med-slide"><img src="assets/medical-5.jpg" alt=""><div class="med-caption"><h2>AI Hospital Management</h2><p>Smarter operations for hospitals and clinics.</p></div></div>
+  <div class="med-slide"><img src="assets/medical-6.jpg" alt=""><div class="med-caption"><h2>AI Pharmacy &amp; Medicine Management</h2><p>Medicine and stock management made simple.</p></div></div>
+  <div class="med-slide"><img src="assets/medical-7.jpg" alt=""><div class="med-caption"><h2>AI Telemedicine</h2><p>Consult doctors online, anytime.</p></div></div>
+  <div class="med-slide"><img src="assets/medical-8.jpg" alt=""><div class="med-caption"><h2>AI Mother &amp; Baby Care</h2><p>Care for mothers and babies together.</p></div></div>
+</div>
     <section class="hero med-hero">
        <div class="container" style="padding:80px 0;position:relative;">
        <img src="assets/abzemo-medical.jpg" alt="ABZEMO Medical" style="position:absolute;right:0;top:50%;transform:translateY(-50%);width:420px;max-width:40%;border-radius:24px;box-shadow:var(--shadow);object-fit:cover;">
@@ -1217,5 +1235,9 @@
       op();
     })();
   </script>
+<script>
+  (function(){var s=document.querySelectorAll("#medSlider .med-slide"),i=0;
+  setInterval(function(){s[i].classList.remove("active");i=(i+1)%s.length;s[i].classList.add("active");},4000);})();
+</script>
 </body>
 </html>
