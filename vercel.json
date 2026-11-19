@@ -48,9 +48,21 @@
       "source": "/pregnancy-plus/",
       "destination": "https://pregnancy-plus.vercel.app/pregnancy-plus/"
     },
-    {
+        {
       "source": "/pregnancyplus",
       "destination": "https://pregnancy-plus.vercel.app/pregnancy-plus"
+    },
+    {
+      "source": "/patient-file",
+      "destination": "https://abzemo-patient-file.vercel.app/"
+    },
+    {
+      "source": "/patient-file/:path*",
+      "destination": "https://abzemo-patient-file.vercel.app/:path*"
+    },
+    {
+      "source": "/pf-header.js",
+      "destination": "https://abzemo-patient-file.vercel.app/pf-header.js"
     }
   ]
 }
