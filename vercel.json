@@ -60,9 +60,17 @@
       "source": "/patient-file/:path*",
       "destination": "https://abzemo-patient-file.vercel.app/:path*"
     },
-    {
+      {
       "source": "/pf-header.js",
       "destination": "https://abzemo-patient-file.vercel.app/pf-header.js"
+    },
+    {
+      "source": "/(patient-health|chronic-care-assistant|lab-reports-assistant|hospital-management|pharmacy-medicine-management|telemedicine|mother-baby-care)",
+      "destination": "/coming-soon.html"
+    },
+    {
+      "source": "/(patient-health|chronic-care-assistant|lab-reports-assistant|hospital-management|pharmacy-medicine-management|telemedicine|mother-baby-care)/",
+      "destination": "/coming-soon.html"
     }
   ]
 }
