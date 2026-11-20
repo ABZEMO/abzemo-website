@@ -54,19 +54,19 @@
     #zee-bot-root.zee-open .zee-bot-stage{display:flex;height:160px}
     #zee-bot-root.zee-open .zee-tools{display:flex;animation:zeePop .25s ease}
     @keyframes zeePop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-   .zee-avatar{width:44px;height:44px;border-radius:50%;background:#fff url(/assets/zee-lady-bot.png) no-repeat center 12%/cover;border:2px solid #fff;flex:none;animation:none;filter:none}
-#zee-bot-launcher-wrap{display:none;position:relative;align-items:stretch;width:300px;background:#fff;border-radius:18px;box-shadow:0 18px 50px rgba(7,26,53,.28);overflow:hidden}
+.zee-avatar{width:50px;height:50px;border-radius:50%;background:#fff url(/assets/zee-lady-bot.png) no-repeat center 12%/cover;border:2px solid #fff;flex:none;animation:none;filter:none}
+#zee-bot-launcher-wrap{display:none;position:relative;align-items:stretch;width:min(380px,calc(100vw - 24px));background:#fff;border-radius:20px;box-shadow:0 18px 50px rgba(7,26,53,.28);overflow:hidden}
 #zee-bot-root.zee-open #zee-bot-launcher-wrap{display:flex}
-#zee-bot-root.zee-open .zee-bot-stage{width:100%;height:58px;margin:0;padding:0 14px;background:linear-gradient(135deg,#1264d8,#168cff);justify-content:flex-start;align-items:center;gap:10px}
-.zee-bot-stage::after{content:"ZEE Bot";color:#fff;font:700 15px Arial,sans-serif}
-.zee-close{position:absolute;right:12px;top:14px;width:30px;height:30px;border:0;border-radius:50%;background:rgba(255,255,255,.25);color:#fff;font-size:20px;line-height:1;cursor:pointer;z-index:3}
-#zee-bot-root.zee-open .zee-chat{width:100%;height:240px;max-height:none;margin:0;padding:12px;background:#f7faff}
-#zee-bot-root.zee-open #zee-bot-launcher{width:calc(100% - 20px);margin:10px}
-#zee-bot-root.zee-open .zee-tools{width:100%;margin:0;padding:0 10px 10px;justify-content:flex-start}
-#zee-bot-root.zee-open .zee-keyboard{width:calc(100% - 20px);margin:0 10px 10px}
-#zee-fab{display:flex;flex-direction:column;align-items:center;gap:6px;border:0;background:transparent;cursor:pointer;padding:0}
-#zee-fab .zee-fab-img{width:96px;height:96px;border-radius:50%;background:#fff url(/assets/zee-lady-bot.png) no-repeat center 12%/cover;border:3px solid #fff;box-shadow:0 12px 30px rgba(7,26,53,.28)}
-#zee-fab .zee-fab-label{padding:4px 12px;border-radius:999px;background:linear-gradient(135deg,#1264d8,#168cff);color:#fff;font:700 11px Arial,sans-serif}
+#zee-bot-root.zee-open .zee-bot-stage{width:100%;height:70px;margin:0;padding:0 16px;background:linear-gradient(135deg,#1264d8,#168cff);justify-content:flex-start;align-items:center;gap:12px}
+.zee-bot-stage::after{content:"ZEE Bot";color:#fff;font:700 18px Arial,sans-serif}
+.zee-close{position:absolute;right:14px;top:19px;width:32px;height:32px;border:0;border-radius:50%;background:rgba(255,255,255,.25);color:#fff;font-size:22px;line-height:1;cursor:pointer;z-index:3}
+#zee-bot-root.zee-open .zee-chat{width:100%;height:min(360px,calc(100vh - 340px));max-height:none;margin:0;padding:14px;background:#f7faff}
+#zee-bot-root.zee-open #zee-bot-launcher{width:calc(100% - 24px);margin:12px}
+#zee-bot-root.zee-open .zee-tools{width:100%;margin:0;padding:0 12px 12px;justify-content:flex-start}
+#zee-bot-root.zee-open .zee-keyboard{width:calc(100% - 24px);margin:0 12px 12px}
+#zee-fab{display:flex;flex-direction:column;align-items:center;gap:8px;border:0;background:transparent;cursor:pointer;padding:0}
+#zee-fab .zee-fab-img{width:130px;height:130px;border-radius:50%;background:#fff url(/assets/zee-lady-bot.png) no-repeat center 12%/cover;border:4px solid #fff;box-shadow:0 14px 34px rgba(7,26,53,.3)}
+#zee-fab .zee-fab-label{padding:5px 16px;border-radius:999px;background:linear-gradient(135deg,#1264d8,#168cff);color:#fff;font:700 13px Arial,sans-serif}
 #zee-bot-root.zee-open #zee-fab{display:none}
   `;
   document.head.appendChild(css);
