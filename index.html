@@ -938,6 +938,24 @@
         flex-direction: column;
       }
     }
+      /* HOME TICKER */
+    .home-slider{position:relative;margin-top:78px;height:500px;overflow:hidden;background:var(--navy)}
+    .home-slide{position:absolute;inset:0;transition:transform .8s ease;pointer-events:none}
+    .home-slide.active{pointer-events:auto}
+    .home-slide img{width:100%;height:100%;object-fit:cover}
+    .home-slide::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(7,26,53,.85),rgba(7,26,53,.15))}
+    .home-caption{position:absolute;z-index:2;left:max(24px,calc((100% - 1180px)/2));top:50%;transform:translateY(-50%);color:#fff;max-width:620px}
+    .home-no{display:block;margin-bottom:12px;color:#74aaff;font-size:12px;font-weight:900;letter-spacing:2px;text-transform:uppercase}
+    .home-caption h2{margin:0 0 10px;color:#fff;font-size:clamp(28px,4.5vw,52px);letter-spacing:-2px;line-height:1.05}
+    .home-caption p{margin:0;color:rgba(255,255,255,.8);font-size:18px}
+    .home-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:5;width:50px;height:70px;border:0;background:none;font-size:0;cursor:pointer;display:flex;align-items:center;justify-content:center}
+    .home-arrow::before{content:"";width:22px;height:22px;border-left:3px solid #fff;border-bottom:3px solid #fff;transform:rotate(45deg);filter:drop-shadow(0 2px 4px rgba(0,0,0,.5))}
+    .home-arrow.next::before{transform:rotate(-135deg)}
+    .home-arrow.prev{left:90px}
+    .home-arrow.next{right:90px}
+    .home-slider + .hero{min-height:0;padding-top:0}
+    .home-slider + .hero .hero-grid{min-height:0;padding:50px 0}
+    @media (max-width:640px){.home-slider{height:420px}.home-arrow.prev{left:8px}.home-arrow.next{right:8px}}
   </style>
 </head>
 
@@ -1052,6 +1070,14 @@
   </aside>
 
   <main>
+
+    <div class="home-slider" id="homeSlider">
+      <div class="home-slide active"><img src="assets/home-ai.jpg" alt=""><div class="home-caption"><span class="home-no">01 · ABZEMO AI</span><h2><a href="abzemo-ai.html">ABZEMO AI – Intelligent Business Solutions</a></h2><p>AI Agents, Automation &amp; Intelligent Systems</p></div></div>
+      <div class="home-slide"><img src="assets/home-uzmo.jpg" alt=""><div class="home-caption"><span class="home-no">02 · UZMO</span><h2><a href="/uzmo/">UZMO – Agentic AI Ecosystem</a></h2><p>Intelligent Agents &amp; Multi-Step Workflows</p></div></div>
+      <div class="home-slide"><img src="assets/home-medical.jpg" alt=""><div class="home-caption"><span class="home-no">03 · ABZEMO MEDICAL</span><h2><a href="medical.html">ABZEMO MEDICAL – Digital Healthcare Innovation</a></h2><p>AI-Powered Healthcare &amp; Medical Intelligence</p></div></div>
+      <button class="home-arrow prev" id="homePrev" type="button" aria-label="Previous"></button>
+      <button class="home-arrow next" id="homeNext" type="button" aria-label="Next"></button>
+    </div>
 
     <section class="hero">
       <div class="container hero-grid">
@@ -1441,6 +1467,20 @@
   <script src="abzemo-contact.js"></script>
   <script src="zee-bot.js"></script>
 
-  <script src="medical-menu.js"></script>
+ <script src="medical-menu.js"></script>
+
+  <script>
+    (function(){var s=document.querySelectorAll("#homeSlider .home-slide"),n=s.length,i=0,t;
+    function go(x){i=(x+n)%n;s.forEach(function(e,k){
+      var d=((k-i+1)%n+n)%n-1;
+      var jump=e._d!==undefined&&Math.abs(d-e._d)>1;
+      e.style.transition=jump?"none":"";
+      e.style.transform="translateX("+d*100+"%)";
+      e._d=d;e.classList.toggle("active",k===i);});}
+    function auto(){clearInterval(t);t=setInterval(function(){go(i+1);},4000);}
+    document.getElementById("homeNext").onclick=function(){go(i+1);auto();};
+    document.getElementById("homePrev").onclick=function(){go(i-1);auto();};
+    go(0);auto();})();
+  </script>
 </body>
 </html>
