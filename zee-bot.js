@@ -54,14 +54,29 @@
     #zee-bot-root.zee-open .zee-bot-stage{display:flex;height:160px}
     #zee-bot-root.zee-open .zee-tools{display:flex;animation:zeePop .25s ease}
     @keyframes zeePop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-   .zee-avatar{width:150px;height:150px;background:url(/assets/zee-lady-bot.png) no-repeat center bottom/contain}
+   .zee-avatar{width:44px;height:44px;border-radius:50%;background:#fff url(/assets/zee-lady-bot.png) no-repeat center 12%/cover;border:2px solid #fff;flex:none;animation:none;filter:none}
+#zee-bot-launcher-wrap{display:none;position:relative;align-items:stretch;width:300px;background:#fff;border-radius:18px;box-shadow:0 18px 50px rgba(7,26,53,.28);overflow:hidden}
+#zee-bot-root.zee-open #zee-bot-launcher-wrap{display:flex}
+#zee-bot-root.zee-open .zee-bot-stage{width:100%;height:58px;margin:0;padding:0 14px;background:linear-gradient(135deg,#1264d8,#168cff);justify-content:flex-start;align-items:center;gap:10px}
+.zee-bot-stage::after{content:"ZEE Bot";color:#fff;font:700 15px Arial,sans-serif}
+.zee-close{position:absolute;right:12px;top:14px;width:30px;height:30px;border:0;border-radius:50%;background:rgba(255,255,255,.25);color:#fff;font-size:20px;line-height:1;cursor:pointer;z-index:3}
+#zee-bot-root.zee-open .zee-chat{width:100%;height:240px;max-height:none;margin:0;padding:12px;background:#f7faff}
+#zee-bot-root.zee-open #zee-bot-launcher{width:calc(100% - 20px);margin:10px}
+#zee-bot-root.zee-open .zee-tools{width:100%;margin:0;padding:0 10px 10px;justify-content:flex-start}
+#zee-bot-root.zee-open .zee-keyboard{width:calc(100% - 20px);margin:0 10px 10px}
+#zee-fab{display:flex;flex-direction:column;align-items:center;gap:6px;border:0;background:transparent;cursor:pointer;padding:0}
+#zee-fab .zee-fab-img{width:96px;height:96px;border-radius:50%;background:#fff url(/assets/zee-lady-bot.png) no-repeat center 12%/cover;border:3px solid #fff;box-shadow:0 12px 30px rgba(7,26,53,.28)}
+#zee-fab .zee-fab-label{padding:4px 12px;border-radius:999px;background:linear-gradient(135deg,#1264d8,#168cff);color:#fff;font:700 11px Arial,sans-serif}
+#zee-bot-root.zee-open #zee-fab{display:none}
   `;
   document.head.appendChild(css);
 
   const root = document.createElement("div");
   root.id = "zee-bot-root";
   root.innerHTML = `
+        <button type="button" id="zee-fab" aria-label="Open ZEE Bot chat"><span class="zee-fab-img"></span><span class="zee-fab-label">ZEE Bot</span></button>
     <div id="zee-bot-launcher-wrap">
+      <button type="button" class="zee-close" aria-label="Close chat">&times;</button>
       <div class="zee-bot-stage" aria-hidden="true">
             <div class="zee-robot zee-avatar" role="img" aria-label="ZEE Bot"></div>
             <svg class="zee-robot-old" style="display:none" viewBox="0 0 300 300" role="img" aria-label="ZEE Bot" hidden>
@@ -134,6 +149,8 @@
   const speakerBtn = root.querySelector(".zee-speaker");
   const clearBtn = root.querySelector(".zee-clear");
   input.addEventListener("focus",function(){root.classList.add("zee-open");});
+  root.querySelector("#zee-fab").addEventListener("click",function(){root.classList.add("zee-open");input.focus();});
+  root.querySelector(".zee-close").addEventListener("click",function(){root.classList.remove("zee-open");});
   document.addEventListener("pointerdown",function(e){if(!root.contains(e.target))root.classList.remove("zee-open");});
   const keyboardChars = {
     ur: "ا ب پ ت ٹ ث ج چ ح خ د ڈ ذ ر ڑ ز ژ س ش ص ض ط ظ ع غ ف ق ک گ ل م ن ں و ہ ھ ء ی ے".split(" "),
